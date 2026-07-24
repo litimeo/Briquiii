@@ -1,6 +1,92 @@
+@import '@mantine/core/styles.css';
 @import "tailwindcss";
 
+:root {
+  --secondary: #f56902;
+  --secondary-light: #ff8a3d;
+  --chart-3: #fbdcc6;
+  --background-cream: #faf8f5;
+  --foreground: #09090b;
+}
+
+@layer base {
+  html, body {
+    font-family: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    color: #0f172a;
+    background-color: #faf8f5;
+    background-image: 
+      radial-gradient(circle at 50% 0%, rgba(245, 105, 2, 0.06) 0%, transparent 60%),
+      radial-gradient(circle at 100% 100%, rgba(59, 130, 246, 0.04) 0%, transparent 40%);
+    background-attachment: fixed;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-size: 16px;
+    line-height: 1.6;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Outfit', 'Plus Jakarta Sans', sans-serif;
+    letter-spacing: -0.025em;
+  }
+}
+
 @layer utilities {
+  .font-heading {
+    font-family: 'Outfit', 'Plus Jakarta Sans', sans-serif;
+  }
+  .font-body {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+  }
+
+  /* Orange Glow Button from reference */
+  .btn-glow {
+    position: relative;
+    isolation: isolate;
+    background: linear-gradient(135deg, #f56902 0%, #ff8a3d 100%);
+    color: #ffffff;
+    font-weight: 800;
+    box-shadow: inset 0 0 12px rgba(255, 255, 255, 0.25), 0 6px 20px -2px rgba(245, 105, 2, 0.4);
+    transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s cubic-bezier(0.16, 1, 0.3, 1), filter 0.2s;
+  }
+
+  .btn-glow:hover {
+    filter: brightness(1.06);
+    transform: translateY(-1px);
+    box-shadow: inset 0 0 16px rgba(255, 255, 255, 0.35), 0 8px 25px -2px rgba(245, 105, 2, 0.5);
+  }
+
+  .btn-glow:active {
+    transform: translateY(1px) scale(0.98);
+  }
+
+  /* Card Glow & Halo from reference */
+  .card-glow {
+    position: relative;
+    background: rgba(255, 255, 255, 0.96);
+    backdrop-filter: blur(16px);
+    border: 1px solid rgba(226, 232, 240, 0.9);
+    border-radius: 1.5rem;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.02), 0 10px 30px -5px rgba(15, 23, 42, 0.03);
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .card-glow:hover {
+    border-color: rgba(245, 105, 2, 0.35);
+    box-shadow: 0 16px 35px -5px rgba(245, 105, 2, 0.09), 0 4px 12px -2px rgba(15, 23, 42, 0.03);
+    transform: translateY(-2px);
+  }
+
+  /* Stand Badge Glow */
+  .stand {
+    display: inline-flex;
+    position: relative;
+    padding: 2px;
+    border-radius: 9999px;
+    background: linear-gradient(135deg, rgba(245, 105, 2, 0.15) 0%, rgba(255, 138, 61, 0.3) 100%);
+    border: 1px solid rgba(245, 105, 2, 0.25);
+    box-shadow: 0 0 15px rgba(245, 105, 2, 0.15);
+  }
+
   /* Custom scrollbars */
   .custom-scrollbar::-webkit-scrollbar {
     height: 6px;
@@ -17,4 +103,6 @@
     background: rgba(148, 163, 184, 1);
   }
 }
+
+
 

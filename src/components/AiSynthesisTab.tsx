@@ -117,63 +117,63 @@ export const AiSynthesisTab: React.FC<AiSynthesisTabProps> = ({ report }) => {
     <div className="max-w-4xl mx-auto space-y-6 pb-12">
       
       {/* Header */}
-      <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm flex items-center gap-4">
-        <div className="w-12 h-12 rounded-2xl bg-emerald-600 text-white flex items-center justify-center font-bold shadow-sm">
+      <div className="card-glow p-6 sm:p-7 rounded-3xl flex items-center gap-4">
+        <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-[#f56902] to-amber-500 text-white flex items-center justify-center font-bold shadow-md shadow-orange-500/20 flex-shrink-0">
           <Bot className="w-7 h-7 stroke-[2.5]" />
         </div>
         <div>
-          <div className="flex items-center gap-2">
-            <h1 className="text-2xl font-black text-slate-900">Synthèse IA & Expert Immobilier</h1>
-            <span className="bg-emerald-50 text-emerald-800 text-xs font-bold px-2.5 py-0.5 rounded-full border border-emerald-200 flex items-center gap-1">
-              <Sparkles className="w-3 h-3" />
-              Gemini 3.6 Flash
+          <div className="flex items-center gap-2.5 flex-wrap">
+            <h1 className="text-xl sm:text-2xl font-extrabold text-slate-900 font-heading">Synthèse IA & Expert Immobilier</h1>
+            <span className="bg-orange-50 text-orange-950 text-xs font-extrabold px-3 py-1 rounded-full border border-orange-200/90 flex items-center gap-1.5 shadow-2xs">
+              <Sparkles className="w-3.5 h-3.5 text-[#f56902]" />
+              Gemini 2.5 Flash
             </span>
           </div>
-          <p className="text-xs text-slate-600 mt-1 font-medium">Analyse croisée de l'ensemble des indicateurs fonciers pour vous guider lors de votre achat ou négociation.</p>
+          <p className="text-sm text-slate-600 mt-1 leading-relaxed">Analyse croisée de l'ensemble des indicateurs fonciers pour vous guider lors de votre achat ou négociation.</p>
         </div>
       </div>
 
       {/* Suggested Questions */}
-      <div className="space-y-2">
+      <div className="space-y-2.5">
         <span className="text-xs font-bold text-slate-500 uppercase tracking-wider block">Questions Fréquentes sur cet Emplacement</span>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
           {quickPrompts.map((q, idx) => (
             <button
               key={idx}
               onClick={() => handleSend(q)}
               disabled={loading}
-              className="text-left p-3 rounded-2xl bg-white hover:bg-slate-50 text-slate-700 hover:text-slate-900 text-xs font-semibold border border-slate-200 transition-all flex items-center justify-between group shadow-2xs"
+              className="text-left p-3.5 sm:p-4 rounded-2xl bg-white hover:bg-slate-50 text-slate-800 hover:text-slate-950 text-xs sm:text-sm font-semibold border border-slate-200/90 transition-all flex items-center justify-between group shadow-xs"
             >
               <span className="line-clamp-1">{q}</span>
-              <Compass className="w-4 h-4 text-emerald-600 opacity-60 group-hover:opacity-100 flex-shrink-0 ml-2" />
+              <Compass className="w-4 h-4 text-emerald-700 opacity-60 group-hover:opacity-100 flex-shrink-0 ml-2" />
             </button>
           ))}
         </div>
       </div>
 
       {/* Chat / Synthesis Box */}
-      <div className="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden flex flex-col h-[520px]">
+      <div className="bg-white rounded-3xl border border-slate-200/90 shadow-sm overflow-hidden flex flex-col h-[560px]">
         
         {/* Messages Container */}
-        <div className="p-6 overflow-y-auto space-y-4 flex-1 custom-scrollbar">
+        <div className="p-6 sm:p-7 overflow-y-auto space-y-4 flex-1 custom-scrollbar">
           {messages.map((m, idx) => (
             <div
               key={idx}
               className={`flex items-start gap-3 ${m.sender === 'user' ? 'flex-row-reverse' : ''}`}
             >
-              <div className={`w-8 h-8 rounded-xl flex items-center justify-center font-bold text-xs flex-shrink-0 ${
-                m.sender === 'user' ? 'bg-blue-600 text-white' : 'bg-emerald-600 text-white'
+              <div className={`w-9 h-9 rounded-xl flex items-center justify-center font-extrabold text-xs flex-shrink-0 ${
+                m.sender === 'user' ? 'bg-sky-700 text-white' : 'bg-emerald-700 text-white'
               }`}>
-                {m.sender === 'user' ? 'Vous' : <Bot className="w-4 h-4" />}
+                {m.sender === 'user' ? 'Vous' : <Bot className="w-5 h-5" />}
               </div>
 
-              <div className={`max-w-[85%] p-4 rounded-2xl text-xs leading-relaxed space-y-2 ${
+              <div className={`max-w-[85%] p-4 sm:p-5 rounded-2xl text-xs sm:text-sm leading-relaxed space-y-2 ${
                 m.sender === 'user'
-                  ? 'bg-blue-600 text-white font-bold rounded-tr-none'
-                  : 'bg-slate-50 text-slate-800 border border-slate-200 rounded-tl-none whitespace-pre-wrap font-sans'
+                  ? 'bg-sky-700 text-white font-semibold rounded-tr-none'
+                  : 'bg-slate-50 text-slate-900 border border-slate-200/90 rounded-tl-none whitespace-pre-wrap font-sans'
               }`}>
                 <div>{m.text}</div>
-                <span className={`block text-[10px] mt-1 ${m.sender === 'user' ? 'text-blue-200 font-medium' : 'text-slate-400 font-mono'}`}>
+                <span className={`block text-[11px] mt-1 ${m.sender === 'user' ? 'text-sky-200 font-medium' : 'text-slate-400 font-mono'}`}>
                   {m.time}
                 </span>
               </div>
@@ -182,10 +182,10 @@ export const AiSynthesisTab: React.FC<AiSynthesisTabProps> = ({ report }) => {
 
           {loading && (
             <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center border border-emerald-200">
-                <Loader2 className="w-4 h-4 animate-spin" />
+              <div className="w-9 h-9 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center border border-emerald-200">
+                <Loader2 className="w-5 h-5 animate-spin" />
               </div>
-              <div className="p-3 rounded-2xl bg-slate-50 border border-slate-200 text-xs text-slate-600 font-medium">
+              <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200/90 text-xs sm:text-sm text-slate-700 font-medium">
                 Analyse et évaluation foncière de l'emplacement en cours...
               </div>
             </div>
@@ -193,13 +193,13 @@ export const AiSynthesisTab: React.FC<AiSynthesisTabProps> = ({ report }) => {
         </div>
 
         {/* Input Form */}
-        <div className="p-4 bg-slate-50 border-t border-slate-200">
+        <div className="p-4 sm:p-5 bg-slate-50/80 border-t border-slate-200/90">
           <form
             onSubmit={(e) => {
               e.preventDefault();
               handleSend();
             }}
-            className="flex items-center gap-2"
+            className="flex items-center gap-2.5"
           >
             <input
               type="text"
@@ -207,19 +207,19 @@ export const AiSynthesisTab: React.FC<AiSynthesisTabProps> = ({ report }) => {
               value={inputPrompt}
               onChange={(e) => setInputPrompt(e.target.value)}
               disabled={loading}
-              className="flex-1 bg-white text-slate-900 placeholder-slate-400 text-xs px-4 py-3.5 rounded-2xl border border-slate-200 focus:outline-none focus:border-emerald-600 focus:ring-1 focus:ring-emerald-600 shadow-2xs"
+              className="flex-1 bg-white text-slate-900 placeholder-slate-400 text-xs sm:text-sm px-4.5 py-3.5 sm:py-4 rounded-2xl border border-slate-200/90 focus:outline-none focus:border-emerald-600 focus:ring-1 focus:ring-emerald-600 shadow-xs"
             />
 
             <button
               type="submit"
               disabled={!inputPrompt.trim() || loading}
-              className={`p-3.5 rounded-2xl transition-all shadow-xs ${
+              className={`p-3.5 sm:p-4 rounded-2xl transition-all shadow-xs flex items-center justify-center ${
                 !inputPrompt.trim() || loading
                   ? 'bg-slate-100 text-slate-400 cursor-not-allowed border border-slate-200'
-                  : 'bg-emerald-600 hover:bg-emerald-700 text-white font-bold'
+                  : 'btn-glow'
               }`}
             >
-              <Send className="w-4 h-4" />
+              <Send className="w-4 h-4 sm:w-5 sm:h-5" />
             </button>
           </form>
         </div>

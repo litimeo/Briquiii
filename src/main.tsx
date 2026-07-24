@@ -1,7 +1,14 @@
 import {StrictMode} from 'react';
 import {createRoot} from 'react-dom/client';
+import { MantineProvider, createTheme } from '@mantine/core';
 import App from './App.tsx';
 import './index.css';
+
+const mantineTheme = createTheme({
+  fontFamily: "'Plus Jakarta Sans', sans-serif",
+  headings: { fontFamily: "'Outfit', sans-serif" },
+  primaryColor: 'blue',
+});
 
 // Ensure window.fetch can be safely assigned if any library attempts setting it
 try {
@@ -21,7 +28,10 @@ try {
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <App />
+    <MantineProvider theme={mantineTheme}>
+      <App />
+    </MantineProvider>
   </StrictMode>,
 );
+
 
