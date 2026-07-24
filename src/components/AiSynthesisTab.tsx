@@ -89,6 +89,23 @@ Sur quel sujet préférez-vous approfondir le brainstorming ?`;
 - **Grands Programmes** : ${permits?.majorProjectsCount || 2} programmes de création de logements neufs ou surfaces tertiaires.`;
     }
 
+    if (qLower.includes('pense') || qLower.includes('avis') || qLower.includes('opinion') || qLower.includes('propriété') || qLower.includes('bien') || qLower.includes('que tu') || qLower.includes('tu en')) {
+      return `🏡 **Mon Avis & Analyse Globale sur la Propriété à ${addr}** :
+
+Honnêtement, c'est une adresse avec un **très bon potentiel général** (Note Briquia : **${score}/100**). Voici mon avis détaillé sur les points majeurs :
+
+1. **Emplacement & Valorisation (DVF ${dvf?.medianPricePerM2Street || 4200} €/m²)** :
+   Le marché notarié réel dans la rue est solide avec une tendance sur 5 ans de **+${dvf?.fiveYearPriceGrowthPercent || 12}%**. L'adresse bénéficie d'une excellente dynamique d'attractivité.
+
+2. **DPE & Performance Énergétique (${dpe?.energyRating || 'D'})** :
+   ${dpe?.isPassoireThermique ? `⚠️ Point d'attention majeur : Le bien étant classé passoire énergétique (${dpe?.energyRating}), il faudra prévoir une enveloppe travaux d'isolation (et négocier le prix d'achat en conséquence).` : `Le bilan DPE (${dpe?.energyRating}) est satisfaisant et rassurant, ne nécessitant pas de lourds travaux d'urgence.`}
+
+3. **Environnement & Cadre de Vie (${qol?.overallScore || 75}/100)** :
+   Le quartier offre un bon confort au quotidien (Score Commerces: ${qol?.categories?.commerces?.score || 74}, Transports: ${qol?.categories?.transports?.score || 77}) et un bon niveau de sécurité.
+
+**Mon Conseil Global** : Si le prix demandé est aligné sur le prix notarié moyen (${dvf?.medianPricePerM2Street || 4200} €/m²), c'est une opportunité à étudier de très près ! Souhaitez-vous qu'on prépare une stratégie d'offre ou qu'on étudie les travaux ?`;
+    }
+
     return `Analyse personnalisée Briquia AI pour **${addr}** (Indice global : ${score}/100) :
 
 • **Valorisation DVF** : Prix médian notarié à **${dvf?.medianPricePerM2Street || 4200} €/m²** dans la rue.

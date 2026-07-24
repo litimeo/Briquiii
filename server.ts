@@ -90,7 +90,7 @@ Dernier message de l'utilisateur : "${userQuestion || 'Bonjour, fais-moi une pr�
     if (gemini) {
       try {
         const response = await gemini.models.generateContent({
-          model: 'gemini-2.5-flash',
+          model: 'gemini-3.6-flash',
           contents: fullPrompt,
           config: {
             systemInstruction,
@@ -195,6 +195,23 @@ Quel sujet souhaitez-vous approfondir ou brainstormer en priorité ?`;
 - **Retrait-Gonflement des Argiles** : Niveau **${georisques?.claySoilRisk?.level || 'Faible'}**.
 - **Qualité de l'Eau Potable (ARS)** : **${report?.waterQuality?.complianceBacterialPercent || 100}% de conformité** (${report?.waterQuality?.overallSanitaryStatus || 'Excellente Qualité'}).
 - **Tranquillité SSMSI** : Score de sérénité du quartier de **${report?.safetySecurity?.securityIndexScore || 85}/100**.`;
+    }
+
+    if (qLower.includes('pense') || qLower.includes('avis') || qLower.includes('opinion') || qLower.includes('propriété') || qLower.includes('bien') || qLower.includes('que tu') || qLower.includes('tu en')) {
+      return `🏡 **Mon Avis & Analyse Globale sur la Propriété à ${addr}** :
+
+Honnêtement, c'est une adresse avec un **très bon potentiel général** (Note Briquia : **${score}/100**). Voici ce que j'en pense sur les points majeurs :
+
+1. **Emplacement & Valorisation (DVF ${dvf?.medianPricePerM2Street || 4200} €/m²)** :
+   Le marché notarié réel dans la rue est solide avec une tendance sur 5 ans de **+${dvf?.fiveYearPriceGrowthPercent || 12}%**. L'adresse bénéficie d'une excellente dynamique d'attractivité.
+
+2. **DPE & Performance Énergétique (${dpe?.energyRating || 'D'})** :
+   ${dpe?.isPassoireThermique ? `⚠️ Point d'attention majeur : Le bien étant classé passoire énergétique (${dpe?.energyRating}), il faudra prévoir une enveloppe travaux d'isolation (et négocier le prix d'achat en conséquence).` : `Le bilan DPE (${dpe?.energyRating}) est satisfaisant et rassurant, ne nécessitant pas de lourds travaux d'urgence.`}
+
+3. **Environnement & Cadre de Vie (${report?.qualityOfLife?.overallScore || 75}/100)** :
+   Le quartier offre un bon confort au quotidien (Score Commerces: ${report?.qualityOfLife?.categories?.commerces?.score || 74}, Transports: ${report?.qualityOfLife?.categories?.transports?.score || 77}) et un bon niveau de sécurité.
+
+**Mon Conseil Global** : Si le prix demandé est aligné sur le prix notarié moyen (${dvf?.medianPricePerM2Street || 4200} €/m²), c'est une opportunité à étudier de très près ! Souhaitez-vous qu'on prépare une stratégie d'offre ou qu'on étudie les travaux ?`;
     }
 
     return `Analyse personnalisée Briquia AI pour **${addr}** (Indice global : ${score}/100) :
