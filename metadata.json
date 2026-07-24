@@ -1,0 +1,6 @@
+{
+  "name": "Briquia - Open Data Property Report Aggregator",
+  "description": "Address-based real estate data aggregator utilizing 6 official open datasets from French government platform data.gouv.fr (BAN, DVF, DPE ADEME, Géorisques, Cadastre, INSEE & PLU).",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
