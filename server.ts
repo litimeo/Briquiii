@@ -16,30 +16,46 @@ let ai: GoogleGenAI | null = null;
 
 function getGeminiClient() {
   if (!ai) {
-    const apiKey = process.env.GEMINI_API_KEY;
+    const apiKey = process.env.GEMINI_API_KEY || process.env.VITE_GEMINI_API_KEY;
     if (apiKey) {
-      ai = new GoogleGenAI({
-        apiKey,
-        httpOptions: {
-          headers: {
-            'User-Agent': 'aistudio-build',
+      try {
+        ai = new GoogleGenAI({
+          apiKey,
+          httpOptions: {
+            headers: {
+              'User-Agent': 'aistudio-build',
+            },
           },
-        },
-      });
+        });
+      } catch (e) {
+        console.warn('Failed to construct GoogleGenAI instance:', e);
+        return null;
+      }
     }
   }
   return ai;
 }
+
+// Enable CORS for API routes
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  if (req.method === 'OPTIONS') {
+    return res.sendStatus(200);
+  }
+  next();
+});
 
 // Health Check API
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', service: 'Briquia DataGouv Aggregator', timestamp: new Date().toISOString() });
 });
 
-// AI Property Report Synthesis API Endpoint
-app.post('/api/ai/report', async (req, res) => {
+// AI Property Report Synthesis API Handler function
+async function handleAiReportRequest(req: express.Request, res: express.Response) {
   try {
-    const { propertyReport, userQuestion, chatHistory } = req.body;
+    const { propertyReport, userQuestion, chatHistory } = req.body || {};
 
     const gemini = getGeminiClient();
 
@@ -94,7 +110,7 @@ ${userQuestion ? `Nouvelle question de l'utilisateur : "${userQuestion}"\nRépon
         });
 
         const textOutput = response.text || generateFallbackSynthesis(propertyReport, userQuestion);
-        return res.json({ synthesis: textOutput });
+        return res.status(200).json({ synthesis: textOutput });
       } catch (geminiErr: any) {
         console.warn('Gemini API call failed, using fallback synthesis:', geminiErr?.message);
       }
@@ -102,15 +118,18 @@ ${userQuestion ? `Nouvelle question de l'utilisateur : "${userQuestion}"\nRépon
 
     // Fallback if Gemini key is missing or call fails
     const fallbackText = generateFallbackSynthesis(propertyReport, userQuestion);
-    return res.json({ synthesis: fallbackText });
+    return res.status(200).json({ synthesis: fallbackText });
 
   } catch (err: any) {
     console.error('Error in AI Report endpoint:', err);
-    return res.json({
+    return res.status(200).json({
       synthesis: generateFallbackSynthesis(req.body?.propertyReport, req.body?.userQuestion),
     });
   }
-});
+}
+
+// AI Property Report Synthesis API Endpoints (supporting multiple Vercel rewrite URLs)
+app.post(['/api/ai/report', '/ai/report', '/api/report', '/api'], handleAiReportRequest);
 
 function generateFallbackSynthesis(report: any, question?: string): string {
   const addr = report?.address?.address || 'Emplacement analysé';

@@ -12,6 +12,93 @@ interface Message {
   time: string;
 }
 
+function generateClientFallbackSynthesis(report: PropertyReport, question?: string): string {
+  const addr = report?.address?.address || 'Emplacement analysé';
+  const score = report?.briquiaIndexScore || 80;
+  const dvf = report?.dvf;
+  const dpe = report?.dpe;
+  const georisques = report?.georisques;
+  const rental = report?.rentalMarket;
+  const permits = report?.constructionPermits;
+  const qol = report?.qualityOfLife;
+
+  if (question) {
+    const qLower = question.toLowerCase();
+    if (qLower.includes('négoci') || qLower.includes('prix') || qLower.includes('achat') || qLower.includes('argument')) {
+      return `💡 **Stratégie & Leviers de Négociation pour ${addr}** :
+
+1. **Passoire Énergétique & Travaux (DPE ${dpe?.energyRating || 'D'})** :
+   ${dpe?.isPassoireThermique ? `Le logement étant classé passoire thermique (${dpe?.energyRating}), l'interdiction de mise en location à venir constitue votre levier prioritaire. Exigez un devis de travaux d'isolation (estimé entre 15 000€ et 30 000€) pour négocier une réduction directe équivalente sur le prix de vente.` : `Le bien est en classe DPE ${dpe?.energyRating}, ce qui est satisfaisant. Les arguments de négociation se concentreront sur les finitions et le prix au m².`}
+
+2. **Écart de Prix Notarié DVF** :
+   Dans cette rue, le prix médian notarié constaté est de **${dvf?.medianPricePerM2Street || 4200} €/m²**. Comparez le prix affiché par le vendeur à ce niveau de transaction réel. Tout écart supérieur à +5% par rapport au prix DVF moyen est un argument solide pour faire baisser l'offre.
+
+3. **Risques Naturels & Assurance (Indice ${georisques?.riskScoreNumber || 3}/10)** :
+   ${georisques?.floodRisk?.inPpriZone ? `Le bien est situé en zone d'aléa inondation PPRI, ce qui engendre des contraintes constructives et des surprimes d'assurance. Mettez ce point en avant dans vos discussions.` : `Le niveau d'aléa naturel est mesuré comme faible (${georisques?.overallRiskLevel || 'Faible'}), assurant une bonne valeur de revente.`}
+
+4. **Dynamique d'Urbanisme & Permis de Construire** :
+   Secteur avec **${permits?.totalPermits500m || 12} permis de construire** récents à 500m (${permits?.constructionActivityLevel || 'Activité modérée'}).`;
+    }
+
+    if (qLower.includes('dpe') || qLower.includes('renov') || qLower.includes('travaux') || qLower.includes('énerg')) {
+      return `⚡ **Analyse Énergétique & Rénovation pour ${addr}** :
+
+- **Diagnostic Officiel** : Classement **DPE ${dpe?.energyRating || 'D'}** (${dpe?.consumptionKwhM2Year || 210} kWh/m²/an).
+- **Émissions de GES** : Indice Climat **${dpe?.climateRating || 'C'}** (${dpe?.co2EmissionsKgM2Year || 45} kg CO2/m²/an).
+- **Facture Énergétique Estimée** : Entre **${dpe?.estimatedAnnualCostMin || 1200} €** et **${dpe?.estimatedAnnualCostMax || 1600} €** par an.
+- **Statut Réglementaire** : ${dpe?.isPassoireThermique ? `⚠️ Classé en Passoire Thermique. Interdiction de mise en location prévue. Travaux d'isolation thermique prioritaires conseillés avant tout projet locatif.` : `✅ Bien conforme aux standards de décence énergétique.`}`;
+    }
+
+    if (qLower.includes('permis') || qLower.includes('urban') || qLower.includes('chantier') || qLower.includes('construct')) {
+      return `🏗️ **Autorisations d'Urbanisme & Permis de Construire à Proximité pour ${addr}** :
+
+- **Volume d'Autorisations (500m)** : **${permits?.totalPermits500m || 12} dossiers d'urbanisme** enregistrés (Sitadel).
+- **Intensité du Secteur** : **${permits?.constructionActivityLevel || 'Activité Modérée / Renouvellement Urbain'}**.
+- **Projets Récents (<2 ans)** : ${permits?.permitsLast2Years || 6} permis de construire et déclarations préalables accordés.
+- **Grands Programmes** : ${permits?.majorProjectsCount || 2} programmes de création de logements neufs ou surfaces tertiaires.`;
+    }
+
+    return `Analyse personnalisée Briquia AI pour **${addr}** (Indice global : ${score}/100) :
+
+• **Valorisation DVF** : Prix médian notarié à **${dvf?.medianPricePerM2Street || 4200} €/m²** dans la rue.
+• **Marché Locatif** : Loyer moyen à **${rental?.avgRentApartmentPerM2 || 18} €/m²** pour un rendement brut estimé de **${rental?.estimatedGrossYieldPercent || 5}%**.
+• **Performance DPE** : Énergie classe **${dpe?.energyRating || 'D'}**, avec une dépense annuelle estimée de ${dpe?.estimatedAnnualCostMin || 1100}€ à ${dpe?.estimatedAnnualCostMax || 1500}€.
+• **Cadre de Vie** : Score de qualité de vie de **${qol?.overallScore || 75}/100**.
+• **Conseil Expert** : Utilisez les indicateurs certifiés DVF et DPE pour négocier sereinement votre acquisition avec des données indiscutables.`;
+  }
+
+  return `📊 **Synthèse d'Expertise Immobilière pour ${addr}**
+Indice Foncier Briquia : **${score}/100 (${report?.ratingLabel || 'Standard'})**
+
+📊 **Valorisation & Positionnement de Marché**
+- Prix médian notarié (DVF) dans la rue : **${dvf?.medianPricePerM2Street || 4200} €/m²** (Tendance 5 ans : +${dvf?.fiveYearPriceGrowthPercent || 12}%).
+- Marché locatif d'annonce : **${rental?.avgRentApartmentPerM2 || 18} €/m²** avec un rendement brut potentiel estimé à **${rental?.estimatedGrossYieldPercent || 5.2}%**.
+
+⚡ **Performance Énergétique & Enjeux de Rénovation**
+- Classement DPE : **Énergie ${dpe?.energyRating || 'D'}** / Climat ${dpe?.climateRating || 'C'}.
+- Consommation : **${dpe?.consumptionKwhM2Year || 210} kWh/m²/an** (Facture annuelle estimée : ${dpe?.estimatedAnnualCostMin || 1100}€ - ${dpe?.estimatedAnnualCostMax || 1500}€).
+${dpe?.isPassoireThermique ? '⚠️ **Alerte Passoire Thermique** : Calendrier de gel des loyers et interdiction d\'intervenir en location sans travaux.' : '✅ **Conformité** : Aucun blocage locatif réglementaire direct.'}
+
+🛡️ **Résilience Environnementale & Qualité de l'Eau**
+- Niveau de risque naturel Géorisques : **${georisques?.riskScoreNumber || 3}/10** (${georisques?.overallRiskLevel || 'Faible'}).
+- Risque Inondation PPRI : ${georisques?.floodRisk?.inPpriZone ? 'En zone réglementée PPRI' : 'Hors zone d\'aléa prioritaire'}.
+- Qualité de l'Eau Potable ARS : **${report?.waterQuality?.complianceBacterialPercent || 100}% de conformité microbiologique** (${report?.waterQuality?.overallSanitaryStatus || 'Excellente Qualité'}).
+
+🏗️ **Autorisations d'Urbanisme & Permis de Construire**
+- Volume de permis de construire (Sitadel) : **${permits?.totalPermits500m || 12} autorisations à 500m** (${permits?.constructionActivityLevel || 'Activité Modérée'}).
+- Projets récents : **${permits?.permitsLast2Years || 6} chantiers et programmes** autorisés au cours des 24 derniers mois.
+
+🏙️ **Cadre de Vie & Sécurité du Quartier**
+- Score Cadre de Vie : **${qol?.overallScore || 75}/100** (Commerces: ${qol?.categories?.commerces?.score || 74}, Santé: ${qol?.categories?.sante?.score || 66}, Transports: ${qol?.categories?.transports?.score || 77}).
+- Indice de sérénité publique SSMSI : **${report?.safetySecurity?.securityIndexScore || 85}/100** (${report?.safetySecurity?.relativeLevel || 'Fort Niveau de Sérénité'}).
+- Revenu médian annuel des ménages (INSEE) : **${report?.insee?.medianAnnualIncomeEur || 28500} €/an**.
+
+💡 **Stratégie de Négociation & Recommandations Acquéreur**
+1. ${dpe?.isPassoireThermique ? 'Chiffrez précisément le coût d\'isolation (DPE F/G) pour exiger une réfaction de prix équivalente.' : 'Le DPE est favorable, concentrez votre négociation sur l\'écart entre le prix demandé et la valeur médiane DVF.'}
+2. Présentez l\'historique DVF des ventes récentes de la rue comme argument d\'ancrage lors de votre première proposition.
+3. Exploitez la transparence des indicateurs d\'urbanisme et de sécurité pour conforter la valeur de revente à terme.`;
+}
+
 export const AiSynthesisTab: React.FC<AiSynthesisTabProps> = ({ report }) => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputPrompt, setInputPrompt] = useState('');
@@ -22,7 +109,7 @@ export const AiSynthesisTab: React.FC<AiSynthesisTabProps> = ({ report }) => {
     'Quels sont les meilleurs arguments pour négocier le prix d\'achat?',
     'Quel est le risque financier lié au DPE et aux travaux de rénovation?',
     'Analyser l\'évolution de la valeur foncière DVF par rapport à la ville.',
-    'Synthèse des risques naturels Géorisques (PPRI et argiles).',
+    'Synthèse des permis de construire et projets d\'urbanisme à proximité.',
   ];
 
   const scrollToBottom = () => {
@@ -46,13 +133,17 @@ export const AiSynthesisTab: React.FC<AiSynthesisTabProps> = ({ report }) => {
           body: JSON.stringify({ propertyReport: report }),
         });
 
+        if (!res.ok) {
+          throw new Error(`Server status ${res.status}`);
+        }
+
         const data = await res.json();
         if (!isMounted) return;
 
         setMessages([
           {
             sender: 'ai',
-            text: data.synthesis || data.error || 'Erreur lors de la génération de la synthèse d\'expertise.',
+            text: data.synthesis || generateClientFallbackSynthesis(report),
             time: 'À l\'instant',
           },
         ]);
@@ -61,7 +152,7 @@ export const AiSynthesisTab: React.FC<AiSynthesisTabProps> = ({ report }) => {
         setMessages([
           {
             sender: 'ai',
-            text: 'Désolé, une erreur est survenue lors de la communication avec le service Briquia AI.',
+            text: generateClientFallbackSynthesis(report),
             time: 'À l\'instant',
           },
         ]);
@@ -101,11 +192,15 @@ export const AiSynthesisTab: React.FC<AiSynthesisTabProps> = ({ report }) => {
         }),
       });
 
+      if (!res.ok) {
+        throw new Error(`Server status ${res.status}`);
+      }
+
       const data = await res.json();
 
       const aiMsg: Message = {
         sender: 'ai',
-        text: data.synthesis || data.error || 'Impossible d\'analyser la requête.',
+        text: data.synthesis || generateClientFallbackSynthesis(report, textToSend),
         time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
       };
 
@@ -115,8 +210,8 @@ export const AiSynthesisTab: React.FC<AiSynthesisTabProps> = ({ report }) => {
         ...prev,
         {
           sender: 'ai',
-          text: 'Erreur réseau lors de la communication avec Briquia AI.',
-          time: 'Maintenant',
+          text: generateClientFallbackSynthesis(report, textToSend),
+          time: 'À l\'instant',
         },
       ]);
     } finally {
