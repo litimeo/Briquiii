@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { AddressSearchResult, ActiveNavTab } from '../types';
 import { searchBANAddresses } from '../services/apiAdresse';
-import { Search, MapPin, Database, Sparkles, ArrowRightLeft, FileText, Building2, TrendingUp, Zap, ShieldAlert, Users, Compass, Loader2, Home, Droplets, ShieldCheck, Command } from 'lucide-react';
+import { Search, MapPin, Database, Sparkles, ArrowRightLeft, FileText, Building2, TrendingUp, Zap, ShieldAlert, Users, Compass, Loader2, Home, Droplets, ShieldCheck, Command, Footprints, HardHat } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 interface NavbarProps {
@@ -376,6 +376,32 @@ export const Navbar: React.FC<NavbarProps> = ({
             >
               <Compass className="w-4 h-4 text-teal-600" />
               <span>Urbanisme</span>
+            </button>
+
+            {/* Section 10: Qualité de Vie */}
+            <button
+              onClick={() => {
+                setActiveTab('search');
+                const el = document.getElementById('section-qualite-vie');
+                if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+              }}
+              className="px-3.5 py-2 rounded-2xl text-xs sm:text-sm font-bold whitespace-nowrap text-slate-700 hover:text-slate-950 hover:bg-white border border-transparent hover:border-slate-200 transition-all flex items-center gap-1.5"
+            >
+              <Footprints className="w-4 h-4 text-[#f56902]" />
+              <span>Qualité de vie</span>
+            </button>
+
+            {/* Section 11: Permis de Construire */}
+            <button
+              onClick={() => {
+                setActiveTab('search');
+                const el = document.getElementById('section-permis');
+                if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+              }}
+              className="px-3.5 py-2 rounded-2xl text-xs sm:text-sm font-bold whitespace-nowrap text-slate-700 hover:text-slate-950 hover:bg-white border border-transparent hover:border-slate-200 transition-all flex items-center gap-1.5"
+            >
+              <HardHat className="w-4 h-4 text-amber-600" />
+              <span>Permis de Construire</span>
             </button>
 
           </div>

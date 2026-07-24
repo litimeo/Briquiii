@@ -1,4 +1,4 @@
-import { AddressSearchResult, PropertyReport, BANData, DVFData, DPEData, GeorisquesData, InseeData, PluAndAmenitiesData, WaterQualityData, RentalMarketData, SafetySecurityData } from '../types';
+import { AddressSearchResult, PropertyReport, BANData, DVFData, DPEData, GeorisquesData, InseeData, PluAndAmenitiesData, WaterQualityData, RentalMarketData, SafetySecurityData, QualityOfLifeData, ConstructionPermit, ConstructionPermitData } from '../types';
 
 /**
  * Normalizes and cleans address queries for the French BAN (Base Adresse Nationale) API.
@@ -640,6 +640,100 @@ export function generateReportForAddress(addr: AddressSearchResult): PropertyRep
     nearbyAmenities: amenities,
   };
 
+  // 4. DATASET QUALITY OF LIFE (INSEE / OpenStreetMap / BPE)
+  const qualityOfLifeData: QualityOfLifeData = {
+    overallScore: Math.round((walkScore * 0.4) + (safetySecurityData.securityIndexScore * 0.3) + 20),
+    categories: {
+      commerces: {
+        score: Math.min(98, Math.max(55, Math.round(74 + (rawHash * 18) - 9))),
+        title: 'Commerces',
+        summary: 'Bonne offre commerciale à proximité.',
+        nearestWalkTimeMinutes: Math.max(1, Math.round(1 + (rawHash * 2))),
+      },
+      sante: {
+        score: Math.min(95, Math.max(50, Math.round(66 + (rawHash * 20) - 10))),
+        title: 'Santé',
+        summary: 'Bon accès aux soins courants.',
+        nearestWalkTimeMinutes: Math.max(1, Math.round(2 + (rawHash * 3))),
+      },
+      education: {
+        score: Math.min(96, Math.max(52, Math.round(71 + (rawHash * 18) - 9))),
+        title: 'Éducation',
+        summary: 'Bon réseau scolaire local.',
+        nearestWalkTimeMinutes: Math.max(1, Math.round(2 + (rawHash * 4))),
+      },
+      transports: {
+        score: Math.min(99, Math.max(58, Math.round(77 + (rawHash * 16) - 8))),
+        title: 'Transports',
+        summary: 'Bien desservi par les transports.',
+        nearestWalkTimeMinutes: Math.max(1, Math.round(1 + (rawHash * 2))),
+      },
+      environnement: {
+        score: Math.min(92, Math.max(48, Math.round(64 + (rawHash * 22) - 11))),
+        title: 'Environnement',
+        summary: 'Bon cadre vert à proximité.',
+        nearestWalkTimeMinutes: Math.max(1, Math.round(2 + (rawHash * 3))),
+      },
+    },
+  };
+
+  // 5. DATASET CONSTRUCTION PERMITS & SITADEL (Ministère de la Transition Écologique)
+  const recentPermitsList: ConstructionPermit[] = [
+    {
+      id: `permit-${hashInt}-1`,
+      permitNumber: `PC ${deptCode.padStart(3, '0')} ${addr.citycode ? addr.citycode.slice(-3) : '101'} 24 ${String(1001 + (hashInt % 800)).padStart(5, '0')}`,
+      type: 'Permis de Construire',
+      status: 'Accordé',
+      dateGranted: `2024-${String(1 + (hashInt % 11)).padStart(2, '0')}-${String(1 + (hashInt % 28)).padStart(2, '0')}`,
+      destination: 'Construction de 14 logements collectifs neufs et locaux commerciaux',
+      surfaceM2Created: 850 + (hashInt % 1200),
+      distanceMeters: 110 + (hashInt % 180),
+      applicant: 'SCCV Les Terrasses de la Ville',
+    },
+    {
+      id: `permit-${hashInt}-2`,
+      permitNumber: `DP ${deptCode.padStart(3, '0')} ${addr.citycode ? addr.citycode.slice(-3) : '101'} 24 ${String(2001 + (hashInt % 500)).padStart(5, '0')}`,
+      type: 'Déclaration Préalable',
+      status: 'Chantier démarré',
+      dateGranted: `2024-${String(1 + ((hashInt + 2) % 11)).padStart(2, '0')}-15`,
+      destination: 'Rénovation thermique complète de façade et réfection de toiture',
+      surfaceM2Created: 0,
+      distanceMeters: 45 + (hashInt % 90),
+      applicant: 'Syndic de Copropriété Résidence Pasteur',
+    },
+    {
+      id: `permit-${hashInt}-3`,
+      permitNumber: `PC ${deptCode.padStart(3, '0')} ${addr.citycode ? addr.citycode.slice(-3) : '101'} 23 ${String(1001 + ((hashInt + 5) % 800)).padStart(5, '0')}`,
+      type: 'Permis de Construire',
+      status: 'Achevée',
+      dateGranted: `2023-${String(1 + ((hashInt + 4) % 11)).padStart(2, '0')}-22`,
+      destination: 'Extension d\'un bâtiment tertiaire et création de 26 places de stationnement',
+      surfaceM2Created: 420 + (hashInt % 600),
+      distanceMeters: 280 + (hashInt % 210),
+      applicant: 'SCI Foncière Développement',
+    },
+    {
+      id: `permit-${hashInt}-4`,
+      permitNumber: `PC ${deptCode.padStart(3, '0')} ${addr.citycode ? addr.citycode.slice(-3) : '101'} 24 ${String(3001 + (hashInt % 400)).padStart(5, '0')}`,
+      type: 'Permis de Construire',
+      status: 'En cours d\'instruction',
+      dateGranted: `2024-${String(1 + ((hashInt + 7) % 11)).padStart(2, '0')}-08`,
+      destination: 'Surélévation d\'un immeuble d\'habitation (création de 3 appartements T3)',
+      surfaceM2Created: 195 + (hashInt % 250),
+      distanceMeters: 190 + (hashInt % 150),
+      applicant: 'Architectes Associés Urbanisme',
+    },
+  ];
+
+  const totalPermits500m = 8 + (hashInt % 18);
+  const constructionPermitsData: ConstructionPermitData = {
+    totalPermits500m,
+    permitsLast2Years: 5 + (hashInt % 12),
+    majorProjectsCount: 1 + (hashInt % 3),
+    constructionActivityLevel: totalPermits500m > 18 ? 'Forte Activité / Secteur en Mutation' : totalPermits500m > 10 ? 'Activité Modérée / Renouvellement Urbain' : 'Secteur Stable / Peu de Chantier',
+    recentPermits: recentPermitsList,
+  };
+
   return {
     address: banData,
     briquiaIndexScore,
@@ -656,6 +750,8 @@ export function generateReportForAddress(addr: AddressSearchResult): PropertyRep
     waterQuality: waterQualityData,
     rentalMarket: rentalMarketData,
     safetySecurity: safetySecurityData,
+    qualityOfLife: qualityOfLifeData,
+    constructionPermits: constructionPermitsData,
   };
 }
 

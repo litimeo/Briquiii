@@ -137,7 +137,7 @@ export const AiSynthesisTab: React.FC<AiSynthesisTabProps> = ({ report }) => {
             <h1 className="text-xl sm:text-2xl font-extrabold text-slate-900 font-heading">Synthèse IA & Expert Immobilier</h1>
             <span className="bg-orange-50 text-orange-950 text-xs font-extrabold px-3 py-1 rounded-full border border-orange-200/90 flex items-center gap-1.5 shadow-2xs">
               <Sparkles className="w-3.5 h-3.5 text-[#f56902]" />
-              Gemini 3.6 Flash
+              Gemini 2.5 Flash
             </span>
           </div>
           <p className="text-sm text-slate-600 mt-1 leading-relaxed">Analyse croisée de l'ensemble des indicateurs fonciers pour vous guider lors de votre achat ou négociation.</p>

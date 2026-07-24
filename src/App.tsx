@@ -10,13 +10,15 @@ import { DatasetPLU } from './components/DatasetPLU';
 import { DatasetRentalMarket } from './components/DatasetRentalMarket';
 import { DatasetWaterQuality } from './components/DatasetWaterQuality';
 import { DatasetSafetySecurity } from './components/DatasetSafetySecurity';
+import { DatasetQualityOfLife } from './components/DatasetQualityOfLife';
+import { DatasetConstructionPermits } from './components/DatasetConstructionPermits';
 import { AiSynthesisTab } from './components/AiSynthesisTab';
 import { CompareAddressesModal } from './components/CompareAddressesModal';
 
 import { generateReportForAddress, searchBANAddresses } from './services/apiAdresse';
 import { AddressSearchResult, ActiveNavTab, PropertyReport } from './types';
 
-import { Database, Search, MapPin, Building2, TrendingUp, Zap, ShieldAlert, Users, Compass, Loader2, ArrowRight, Sparkles, Home, Droplets, ShieldCheck } from 'lucide-react';
+import { Database, Search, MapPin, Building2, TrendingUp, Zap, ShieldAlert, Users, Compass, Loader2, ArrowRight, Sparkles, Home, Droplets, ShieldCheck, Footprints, HardHat } from 'lucide-react';
 
 // Preset Sample Addresses for 1-Click Instant Analysis
 const PRESET_SAMPLE_ADDRESSES: AddressSearchResult[] = [
@@ -406,6 +408,16 @@ export default function App() {
                     <DatasetPLU plu={currentReport.pluAmenities} />
                   </section>
 
+                  {/* Section 10: Qualité de Vie */}
+                  <section id="section-qualite-vie" className="scroll-mt-24">
+                    <DatasetQualityOfLife qualityOfLife={currentReport.qualityOfLife} />
+                  </section>
+
+                  {/* Section 11: Permis de Construire */}
+                  <section id="section-permis" className="scroll-mt-24">
+                    <DatasetConstructionPermits constructionPermits={currentReport.constructionPermits} />
+                  </section>
+
                 </div>
               )}
 
@@ -453,6 +465,16 @@ export default function App() {
               {activeTab === 'dataset-plu' && (
                 <div className="space-y-6">
                   <DatasetPLU plu={currentReport.pluAmenities} />
+                </div>
+              )}
+              {activeTab === 'dataset-quality' && (
+                <div className="space-y-6">
+                  <DatasetQualityOfLife qualityOfLife={currentReport.qualityOfLife} />
+                </div>
+              )}
+              {activeTab === 'dataset-permits' && (
+                <div className="space-y-6">
+                  <DatasetConstructionPermits constructionPermits={currentReport.constructionPermits} />
                 </div>
               )}
 

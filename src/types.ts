@@ -171,6 +171,44 @@ export interface SafetySecurityData {
   policeDistrictName: string;
 }
 
+export interface QualityOfLifeItem {
+  score: number; // 0-100
+  title: string; // Commerces, Santé, Éducation, Transports, Environnement
+  summary: string;
+  nearestWalkTimeMinutes: number;
+}
+
+export interface QualityOfLifeData {
+  overallScore: number;
+  categories: {
+    commerces: QualityOfLifeItem;
+    sante: QualityOfLifeItem;
+    education: QualityOfLifeItem;
+    transports: QualityOfLifeItem;
+    environnement: QualityOfLifeItem;
+  };
+}
+
+export interface ConstructionPermit {
+  id: string;
+  permitNumber: string;
+  type: 'Permis de Construire' | 'Déclaration Préalable' | 'Permis de Démolir' | 'Permis d\'Aménager';
+  status: 'Accordé' | 'En cours d\'instruction' | 'Chantier démarré' | 'Achevée';
+  dateGranted: string;
+  destination: string;
+  surfaceM2Created: number;
+  distanceMeters: number;
+  applicant: string;
+}
+
+export interface ConstructionPermitData {
+  totalPermits500m: number;
+  permitsLast2Years: number;
+  majorProjectsCount: number;
+  constructionActivityLevel: 'Forte Activité / Secteur en Mutation' | 'Activité Modérée / Renouvellement Urbain' | 'Secteur Stable / Peu de Chantier';
+  recentPermits: ConstructionPermit[];
+}
+
 export interface PropertyReport {
   address: BANData;
   briquiaIndexScore: number; // 0 to 100
@@ -187,6 +225,8 @@ export interface PropertyReport {
   waterQuality: WaterQualityData;
   rentalMarket: RentalMarketData;
   safetySecurity: SafetySecurityData;
+  qualityOfLife: QualityOfLifeData;
+  constructionPermits: ConstructionPermitData;
 }
 
-export type ActiveNavTab = 'search' | 'dataset-ban' | 'dataset-dvf' | 'dataset-dpe' | 'dataset-georisques' | 'dataset-insee' | 'dataset-plu' | 'dataset-water' | 'dataset-rental' | 'dataset-safety' | 'compare' | 'ai-synthesis';
+export type ActiveNavTab = 'search' | 'dataset-ban' | 'dataset-dvf' | 'dataset-dpe' | 'dataset-georisques' | 'dataset-insee' | 'dataset-plu' | 'dataset-water' | 'dataset-rental' | 'dataset-safety' | 'dataset-quality' | 'dataset-permits' | 'compare' | 'ai-synthesis';

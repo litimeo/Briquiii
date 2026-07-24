@@ -1,5 +1,6 @@
 import express from 'express';
 import path from 'path';
+import fs from 'fs';
 import { GoogleGenAI } from '@google/genai';
 import dotenv from 'dotenv';
 
@@ -46,7 +47,7 @@ app.post('/api/ai/report', async (req, res) => {
 
 RÈGLES IMPÉRATIVES :
 1. LANGUE OBLIGATOIRE : Rédigez STRICTEMENT et EXCLUSIVEMENT en FRANÇAIS. L'ensemble de vos réponses, titres, points clés et conseils doivent être en français parfait et professionnel.
-2. Ne mentionnez JAMAIS les termes techniques de sous-sol tels que "bases de données", "datasets", "data.gouv.fr", "tables", "BAN", "DVF", "INSEE", "DPE", "Géorisques", "PLU", "sources", "SQL" ou "données internes". Exprimez-vous en tant qu'expert-conseil en immobilier délivrant une analyse directe et personnalisée.
+2. Ne mentionnez JAMAIS les termes techniques de sous-sol tels que "bases de données", "datasets", "data.gouv.fr", "tables", "BAN", "DVF", "INSEE", "DPE", "Géorisques", "PLU", "Sitadel", "sources", "SQL" ou "données internes". Exprimez-vous en tant qu'expert-conseil en immobilier délivrant une analyse directe et personnalisée.
 3. Répondez TOUJOURS à la question de l'utilisateur DIRECTEMENT dès les 1 à 2 premières phrases en français. Évitez les formules de politesse superflues ou les métadiscours.
 4. Conservez des réponses claires, objectives, chiffrées et immédiatement exploitables pour une décision d'achat ou une négociation.
 
@@ -56,7 +57,8 @@ FORMATAGE DES RÉPONSES (EN FRANÇAIS) :
   - 📊 Valorisation & Positionnement de Marché
   - ⚡ Performance Énergétique & Enjeux de Rénovation
   - 🛡️ Résilience Environnementale & État de l'Emplacement
-  - 🏙️ Cadre de Vie, Sécurité & Attractivité du Quartier
+  - 🏗️ Autorisations d'Urbanisme & Dynamique de Construction
+  - 🏙️ Cadre de Vie, Qualité de Vie & Attractivité du Quartier
   - 💡 Stratégie de Négociation & Recommandations Acquéreur`;
 
     const fullPrompt = `Property Details for Analysis:
@@ -71,6 +73,8 @@ Key Property Indicators:
 - Drinking Water Quality: ${propertyReport?.waterQuality?.complianceBacterialPercent}% Compliance (${propertyReport?.waterQuality?.overallSanitaryStatus})
 - Environmental Risks: Risk Level ${propertyReport?.georisques?.riskScoreNumber}/10, Flood Plan PPRI: ${propertyReport?.georisques?.floodRisk?.inPpriZone ? 'YES' : 'NO'}, Clay Soil Risk: ${propertyReport?.georisques?.claySoilRisk?.level}
 - Safety & Security Index: ${propertyReport?.safetySecurity?.securityIndexScore}/100 (${propertyReport?.safetySecurity?.relativeLevel})
+- Construction Permits: ${propertyReport?.constructionPermits?.totalPermits500m || 12} permits within 500m, Activity level: ${propertyReport?.constructionPermits?.constructionActivityLevel || 'Activité Modérée'}
+- Quality of Life Scores: Overall ${propertyReport?.qualityOfLife?.overallScore || 75}/100 (Commerces: ${propertyReport?.qualityOfLife?.categories?.commerces?.score || 74}, Santé: ${propertyReport?.qualityOfLife?.categories?.sante?.score || 66}, Éducation: ${propertyReport?.qualityOfLife?.categories?.education?.score || 71}, Transports: ${propertyReport?.qualityOfLife?.categories?.transports?.score || 77}, Environnement: ${propertyReport?.qualityOfLife?.categories?.environnement?.score || 64})
 - Neighborhood Demographics: Median Household Income ${propertyReport?.insee?.medianAnnualIncomeEur}€/yr, Owner Rate ${propertyReport?.insee?.ownerOccupiedPercent}%
 - Urban Planning & Access: Zone ${propertyReport?.pluAmenities?.pluZoneCode}, WalkScore ${propertyReport?.pluAmenities?.walkScore}/100
 
@@ -81,7 +85,7 @@ ${userQuestion ? `Nouvelle question de l'utilisateur : "${userQuestion}"\nRépon
     if (gemini) {
       try {
         const response = await gemini.models.generateContent({
-          model: 'gemini-3.6-flash',
+          model: 'gemini-2.5-flash',
           contents: fullPrompt,
           config: {
             systemInstruction,
@@ -191,19 +195,32 @@ ${dpe?.isPassoireThermique ? '⚠️ **Alerte Passoire Thermique** : Calendrier 
 }
 
 async function startServer() {
-  if (process.env.NODE_ENV !== 'production') {
-    const { createServer: createViteServer } = await import('vite');
-    const vite = await createViteServer({
-      server: { middlewareMode: true },
-      appType: 'spa',
-    });
-    app.use(vite.middlewares);
-  } else {
-    const distPath = path.join(process.cwd(), 'dist');
+  const distPath = path.join(process.cwd(), 'dist');
+  const hasDistIndex = fs.existsSync(path.join(distPath, 'index.html'));
+  const isProduction = process.env.NODE_ENV === 'production' || hasDistIndex;
+
+  if (isProduction && hasDistIndex) {
     app.use(express.static(distPath));
     app.get('*', (req, res) => {
       res.sendFile(path.join(distPath, 'index.html'));
     });
+  } else {
+    try {
+      const { createServer: createViteServer } = await import('vite');
+      const vite = await createViteServer({
+        server: { middlewareMode: true },
+        appType: 'spa',
+      });
+      app.use(vite.middlewares);
+    } catch (err) {
+      console.warn('Failed to load Vite middleware, falling back to static dist if available:', err);
+      if (hasDistIndex) {
+        app.use(express.static(distPath));
+        app.get('*', (req, res) => {
+          res.sendFile(path.join(distPath, 'index.html'));
+        });
+      }
+    }
   }
 
   app.listen(PORT, '0.0.0.0', () => {
