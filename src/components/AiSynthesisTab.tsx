@@ -23,7 +23,38 @@ function generateClientFallbackSynthesis(report: PropertyReport, question?: stri
   const qol = report?.qualityOfLife;
 
   if (question) {
-    const qLower = question.toLowerCase();
+    const qLower = question.toLowerCase().trim();
+
+    if (qLower.includes('bonjour') || qLower.includes('salut') || qLower.includes('hello') || qLower.includes('coucou') || qLower.includes('qui es-tu') || qLower.includes('comment vas')) {
+      return `Bonjour ! 👋 Je suis **Briquia AI**, votre assistant conversationnel et partenaire d'expertise pour vos projets d'achat, d'investissement et d'analyse immobilière.
+
+Comment puis-je vous aider aujourd'hui concernant **${addr}** ou tout autre sujet ?
+- **Brainstormer** des idées d'aménagement, de travaux ou de valorisation
+- Élaborer une **stratégie de négociation** solide sur le prix
+- Évaluer le rendement locatif ou la qualité de vie du quartier
+- Discuter librement de toute question immobilière !`;
+    }
+
+    if (qLower.includes('brainstorm') || qLower.includes('idée') || qLower.includes('projet') || qLower.includes('conseil') || qLower.includes('stratégie')) {
+      return `💡 **Brainstorming & Pistes Stratégiques pour ${addr}** :
+
+Voici quelques axes clés d'échange pour optimiser votre projet :
+
+1. **Valeur Verte & Travaux DPE** :
+   ${dpe?.isPassoireThermique ? `Le bien étant en DPE passoire (${dpe?.energyRating}), utilisez ce point comme levier principal pour négocier le prix et déduire le coût des travaux.` : `Avec un DPE classe ${dpe?.energyRating || 'D'}, vous pouvez vous concentrer sur la modernisation et l'optimisation des charges.`}
+
+2. **Prix Réel DVF vs Offre** :
+   Le prix notarié médian constaté dans la rue est de **${dvf?.medianPricePerM2Street || 4200} €/m²**. Nous pouvons fonder votre offre sur ces transactions réelles.
+
+3. **Dynamique du Quartier** :
+   Secteur comptant **${permits?.totalPermits500m || 12} permis de construire** à proximité, garantissant un renouvellement urbain et un maintien de l'attractivité.
+
+4. **Rentabilité Locative** :
+   Loyer estimé à **${rental?.avgRentApartmentPerM2 || 18} €/m²** (~${rental?.estimatedGrossYieldPercent || 5}% brut).
+
+Sur quel sujet préférez-vous approfondir le brainstorming ?`;
+    }
+
     if (qLower.includes('négoci') || qLower.includes('prix') || qLower.includes('achat') || qLower.includes('argument')) {
       return `💡 **Stratégie & Leviers de Négociation pour ${addr}** :
 
@@ -106,9 +137,9 @@ export const AiSynthesisTab: React.FC<AiSynthesisTabProps> = ({ report }) => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const quickPrompts = [
+    'Aide-moi à brainstormer des idées pour financer et valoriser ce bien',
     'Quels sont les meilleurs arguments pour négocier le prix d\'achat?',
     'Quel est le risque financier lié au DPE et aux travaux de rénovation?',
-    'Analyser l\'évolution de la valeur foncière DVF par rapport à la ville.',
     'Synthèse des permis de construire et projets d\'urbanisme à proximité.',
   ];
 
@@ -235,7 +266,7 @@ export const AiSynthesisTab: React.FC<AiSynthesisTabProps> = ({ report }) => {
               Gemini 2.5 Flash
             </span>
           </div>
-          <p className="text-sm text-slate-600 mt-1 leading-relaxed">Analyse croisée de l'ensemble des indicateurs fonciers pour vous guider lors de votre achat ou négociation.</p>
+          <p className="text-sm text-slate-600 mt-1 leading-relaxed">Assistant IA conversationnel : discutez librement, brainstormez vos projets et obtenez une analyse sur-mesure de cet emplacement.</p>
         </div>
       </div>
 

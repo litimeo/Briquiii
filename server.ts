@@ -59,44 +59,33 @@ async function handleAiReportRequest(req: express.Request, res: express.Response
 
     const gemini = getGeminiClient();
 
-    const systemInstruction = `Vous êtes Briquia AI, un expert consultant en immobilier et un expert en évaluation foncière en France.
+    const systemInstruction = `Vous êtes Briquia AI, un assistant IA conversationnel intelligent, chaleureux et polyvalent, spécialisé dans le conseil immobilier, l'urbanisme, la négociation et l'analyse foncière en France.
 
-RÈGLES IMPÉRATIVES :
-1. LANGUE OBLIGATOIRE : Rédigez STRICTEMENT et EXCLUSIVEMENT en FRANÇAIS. L'ensemble de vos réponses, titres, points clés et conseils doivent être en français parfait et professionnel.
-2. Ne mentionnez JAMAIS les termes techniques de sous-sol tels que "bases de données", "datasets", "data.gouv.fr", "tables", "BAN", "DVF", "INSEE", "DPE", "Géorisques", "PLU", "Sitadel", "sources", "SQL" ou "données internes". Exprimez-vous en tant qu'expert-conseil en immobilier délivrant une analyse directe et personnalisée.
-3. Répondez TOUJOURS à la question de l'utilisateur DIRECTEMENT dès les 1 à 2 premières phrases en français. Évitez les formules de politesse superflues ou les métadiscours.
-4. Conservez des réponses claires, objectives, chiffrées et immédiatement exploitables pour une décision d'achat ou une négociation.
+RÈGLES ET COMPORTEMENT :
+1. COMPORTEMENT CONVERSATIONNEL : Soyez naturel, fluide, chaleureux et prêt à discuter, brainstormer, expliquer ou répondre à n'importe quelle question (immobilier, stratégie d'achat, finance, rénovation, négociation, culture générale ou salutations simples).
+2. ADAPTATION DU TON :
+   - Pour des salutations ou questions ouvertes ("Bonjour", "Aide-moi à brainstormer", "Que penses-tu de...") : Répondez avec entrain, saluez l'utilisateur de manière amicale et proposez des pistes concrètes de réflexion ou de discussion.
+   - Pour des questions précises sur le bien ou le quartier : Utilisez les données de rapport fournies comme contexte pour donner des réponses ultra-précises, chiffrées et pertinentes.
+   - Pour une demande de synthèse générale : Présentez une analyse structurée et claire de l'emplacement.
+3. NE MENTIONNEZ PAS le jargon technique de sous-sol (ex: "tables SQL", "bases de données internes", "datasets raw", etc.). Parlez naturellement en expert et compagnon de projet.
+4. Répondez toujours clairement dans la langue de l'utilisateur (principalement le français).`;
 
-FORMATAGE DES RÉPONSES (EN FRANÇAIS) :
-- Si une question spécifique est posée, répondez-y immédiatement et directement en français, puis étayez avec des arguments chiffrés et des conseils de négociation.
-- Si une synthèse générale d'expertise est demandée, structurez votre analyse sous ces titres clairs en français :
-  - 📊 Valorisation & Positionnement de Marché
-  - ⚡ Performance Énergétique & Enjeux de Rénovation
-  - 🛡️ Résilience Environnementale & État de l'Emplacement
-  - 🏗️ Autorisations d'Urbanisme & Dynamique de Construction
-  - 🏙️ Cadre de Vie, Qualité de Vie & Attractivité du Quartier
-  - 💡 Stratégie de Négociation & Recommandations Acquéreur`;
+    const fullPrompt = `Propriété / Emplacement analysé en contexte (si pertinent) :
+Adresse : ${propertyReport?.address?.address || 'Non spécifiée'}
+Indice Briquia : ${propertyReport?.briquiaIndexScore || 80}/100 (${propertyReport?.ratingLabel || 'Standard'})
 
-    const fullPrompt = `Property Details for Analysis:
-Address: ${propertyReport?.address?.address || 'Selected Location'}
-Overall Property Index Score: ${propertyReport?.briquiaIndexScore || 80}/100 (${propertyReport?.ratingLabel || 'Standard'})
+Chiffres clés du bien :
+- Prix moyen rue (DVF) : ${propertyReport?.dvf?.medianPricePerM2Street} €/m²
+- Loyer estimé : ${propertyReport?.rentalMarket?.avgRentApartmentPerM2} €/m² (Rendement ~${propertyReport?.rentalMarket?.estimatedGrossYieldPercent}%)
+- DPE : Énergie ${propertyReport?.dpe?.energyRating} / Climat ${propertyReport?.dpe?.climateRating} (Passoire : ${propertyReport?.dpe?.isPassoireThermique ? 'Oui' : 'Non'})
+- Risques : Niveau ${propertyReport?.georisques?.riskScoreNumber}/10 (Inondation PPRI: ${propertyReport?.georisques?.floodRisk?.inPpriZone ? 'Oui' : 'Non'})
+- Sécurité : Indice ${propertyReport?.safetySecurity?.securityIndexScore}/100 (${propertyReport?.safetySecurity?.relativeLevel})
+- Permis de construire : ${propertyReport?.constructionPermits?.totalPermits500m || 12} permis à 500m (${propertyReport?.constructionPermits?.constructionActivityLevel || 'Activité Modérée'})
+- Qualité de vie : ${propertyReport?.qualityOfLife?.overallScore || 75}/100 (Commerces ${propertyReport?.qualityOfLife?.categories?.commerces?.score}, Transports ${propertyReport?.qualityOfLife?.categories?.transports?.score}, Santé ${propertyReport?.qualityOfLife?.categories?.sante?.score})
 
-Key Property Indicators:
-- Location & Land: Section ${propertyReport?.ban?.section}, Parcel ${propertyReport?.ban?.parcelNumber}, ${propertyReport?.ban?.parcelAreaM2}m² land plot
-- Sales & Valuation History: Median Street Price ${propertyReport?.dvf?.medianPricePerM2Street}€/m², 5-Year Trend +${propertyReport?.dvf?.fiveYearPriceGrowthPercent}%, Recent Benchmark Sale ${propertyReport?.dvf?.lastKnownSalePrice}€
-- Rental Market: Average Rent ${propertyReport?.rentalMarket?.avgRentApartmentPerM2}€/m², Estimated Yield ${propertyReport?.rentalMarket?.estimatedGrossYieldPercent}%
-- Energy Rating: Class ${propertyReport?.dpe?.energyRating} (GHG ${propertyReport?.dpe?.climateRating}), ${propertyReport?.dpe?.consumptionKwhM2Year} kWh/m²/yr, Thermal Renovation Required: ${propertyReport?.dpe?.isPassoireThermique ? 'YES' : 'NO'}
-- Drinking Water Quality: ${propertyReport?.waterQuality?.complianceBacterialPercent}% Compliance (${propertyReport?.waterQuality?.overallSanitaryStatus})
-- Environmental Risks: Risk Level ${propertyReport?.georisques?.riskScoreNumber}/10, Flood Plan PPRI: ${propertyReport?.georisques?.floodRisk?.inPpriZone ? 'YES' : 'NO'}, Clay Soil Risk: ${propertyReport?.georisques?.claySoilRisk?.level}
-- Safety & Security Index: ${propertyReport?.safetySecurity?.securityIndexScore}/100 (${propertyReport?.safetySecurity?.relativeLevel})
-- Construction Permits: ${propertyReport?.constructionPermits?.totalPermits500m || 12} permits within 500m, Activity level: ${propertyReport?.constructionPermits?.constructionActivityLevel || 'Activité Modérée'}
-- Quality of Life Scores: Overall ${propertyReport?.qualityOfLife?.overallScore || 75}/100 (Commerces: ${propertyReport?.qualityOfLife?.categories?.commerces?.score || 74}, Santé: ${propertyReport?.qualityOfLife?.categories?.sante?.score || 66}, Éducation: ${propertyReport?.qualityOfLife?.categories?.education?.score || 71}, Transports: ${propertyReport?.qualityOfLife?.categories?.transports?.score || 77}, Environnement: ${propertyReport?.qualityOfLife?.categories?.environnement?.score || 64})
-- Neighborhood Demographics: Median Household Income ${propertyReport?.insee?.medianAnnualIncomeEur}€/yr, Owner Rate ${propertyReport?.insee?.ownerOccupiedPercent}%
-- Urban Planning & Access: Zone ${propertyReport?.pluAmenities?.pluZoneCode}, WalkScore ${propertyReport?.pluAmenities?.walkScore}/100
+${chatHistory && chatHistory.length > 0 ? `Historique récent de la discussion :\n${chatHistory.map((h: any) => `${h.sender === 'user' ? 'Utilisateur' : 'Briquia AI'}: ${h.text}`).join('\n')}\n` : ''}
 
-${chatHistory && chatHistory.length > 0 ? `Historique de la conversation :\n${chatHistory.map((h: any) => `${h.sender === 'user' ? 'Utilisateur' : 'Briquia AI'}: ${h.text}`).join('\n')}\n` : ''}
-
-${userQuestion ? `Nouvelle question de l'utilisateur : "${userQuestion}"\nRépondez à la question directement dès la première phrase en français, puis étayez avec des faits chiffrés et des conseils de négociation.` : "Fournissez une synthèse complète d'expertise foncière et une stratégie de négociation immobilière en français."}`;
+Dernier message de l'utilisateur : "${userQuestion || 'Bonjour, fais-moi une présentation de ce bien et de ce secteur.'}"`;
 
     if (gemini) {
       try {
@@ -140,7 +129,38 @@ function generateFallbackSynthesis(report: any, question?: string): string {
   const rental = report?.rentalMarket;
 
   if (question) {
-    const qLower = question.toLowerCase();
+    const qLower = question.toLowerCase().trim();
+
+    if (qLower.includes('bonjour') || qLower.includes('salut') || qLower.includes('hello') || qLower.includes('coucou') || qLower.includes('qui es-tu') || qLower.includes('comment vas')) {
+      return `Bonjour ! 👋 Je suis **Briquia AI**, votre assistant conversationnel et partenaire d'expertise pour l'immobilier, l'urbanisme et l'évaluation foncière.
+
+Comment puis-je vous aider aujourd'hui concernant l'adresse **${addr}** ou tout autre sujet ?
+- **Brainstormer** des idées de valorisation ou de stratégie d'achat
+- Calculer et optimiser vos leviers de **négociation de prix**
+- Analyser le quartier, l'urbanisme et la **qualité de vie**
+- Répondre à vos questions libres et discuter de votre projet !`;
+    }
+
+    if (qLower.includes('brainstorm') || qLower.includes('idée') || qLower.includes('projet') || qLower.includes('conseil') || qLower.includes('stratégie')) {
+      return `💡 **Brainstorming & Pistes d'Action pour ${addr}** :
+
+Voici 4 axes stratégiques sur lesquels nous pouvons travailler ensemble :
+
+1. **Rénovation & Plus-Value Verte** :
+   ${dpe?.isPassoireThermique ? `Le logement étant classé passoire énergétique (${dpe?.energyRating}), il y a un fort potentiel d'achat décoté. En chiffrant les travaux d'isolation, vous créez une plus-value nette à la revente.` : `Le DPE est en classe ${dpe?.energyRating || 'D'}, ce qui permet de cibler des améliorations ciblées (pompe à chaleur, domotique) pour maximiser la rentabilité.`}
+
+2. **Ancrage de Négociation DVF** :
+   Le prix moyen constaté dans la rue est de **${dvf?.medianPricePerM2Street || 4200} €/m²**. Si le vendeur demande plus, nous pouvons bâtir un dossier argumenté fondé sur les actes notariés récents.
+
+3. **Transformation du Quartier** :
+   Il y a **${report?.constructionPermits?.totalPermits500m || 12} permis de construire** enregistrés dans un rayon de 500m, ce qui témoigne d'un dynamisme et d'un renouvellement urbain prometteur.
+
+4. **Rentabilité Locative** :
+   Loyer moyen estimé à **${rental?.avgRentApartmentPerM2 || 18} €/m²** pour un rendement brut d'environ **${rental?.estimatedGrossYieldPercent || 5}%**.
+
+Quel sujet souhaitez-vous approfondir ou brainstormer en priorité ?`;
+    }
+
     if (qLower.includes('négoci') || qLower.includes('prix') || qLower.includes('achat') || qLower.includes('argument')) {
       return `💡 **Stratégie & Leviers de Négociation pour ${addr}** :
 
