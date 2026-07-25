@@ -244,32 +244,34 @@ export const AddressHeaderCard: React.FC<AddressHeaderCardProps> = ({ report, on
       </div>
 
       {/* Action Footer Buttons */}
-      <div className="flex items-center justify-between pt-4 border-t border-slate-200/80 gap-4 flex-wrap">
+      <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between pt-4 border-t border-slate-200/80 gap-3 sm:gap-4">
         <button
           onClick={onOpenAiSynthesis}
-          className="btn-glow px-6 py-3.5 rounded-2xl text-xs sm:text-sm font-extrabold flex items-center gap-2.5 shadow-lg"
+          className="btn-glow w-full sm:w-auto px-5 sm:px-6 py-3 sm:py-3.5 rounded-2xl text-xs sm:text-sm font-extrabold flex items-center justify-center gap-2 sm:gap-2.5 shadow-lg"
         >
-          <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 text-amber-200" />
+          <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 text-amber-200 shrink-0" />
           <span>Lancer la Synthèse IA & Leviers de Négociation</span>
         </button>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 sm:gap-3 w-full sm:w-auto">
           {onResetAddress && (
             <button
               onClick={onResetAddress}
-              className="px-4.5 py-3 rounded-2xl bg-white hover:bg-slate-100 text-slate-800 text-xs sm:text-sm font-bold border border-slate-300/80 flex items-center gap-2 transition-colors shadow-2xs"
+              className="flex-1 sm:flex-initial px-3.5 sm:px-4.5 py-2.5 sm:py-3 rounded-2xl bg-white hover:bg-slate-100 text-slate-800 text-xs sm:text-sm font-bold border border-slate-300/80 flex items-center justify-center gap-1.5 sm:gap-2 transition-colors shadow-2xs whitespace-nowrap"
             >
-              <Search className="w-4 h-4 text-[#f56902]" />
-              <span>Changer d'adresse</span>
+              <Search className="w-4 h-4 text-[#f56902] shrink-0" />
+              <span className="hidden min-[380px]:inline">Changer d'adresse</span>
+              <span className="min-[380px]:hidden">Changer</span>
             </button>
           )}
 
           <button
             onClick={() => window.print()}
-            className="px-4.5 py-3 rounded-2xl bg-white hover:bg-slate-100 text-slate-800 text-xs sm:text-sm font-bold border border-slate-300/80 flex items-center gap-2 transition-colors shadow-2xs"
+            className="flex-1 sm:flex-initial px-3.5 sm:px-4.5 py-2.5 sm:py-3 rounded-2xl bg-white hover:bg-slate-100 text-slate-800 text-xs sm:text-sm font-bold border border-slate-300/80 flex items-center justify-center gap-1.5 sm:gap-2 transition-colors shadow-2xs whitespace-nowrap"
           >
-            <Printer className="w-4 h-4 text-slate-700" />
-            <span>Imprimer le Rapport</span>
+            <Printer className="w-4 h-4 text-slate-700 shrink-0" />
+            <span className="hidden min-[380px]:inline">Imprimer le Rapport</span>
+            <span className="min-[380px]:hidden">Imprimer</span>
           </button>
         </div>
       </div>

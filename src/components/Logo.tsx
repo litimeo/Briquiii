@@ -17,10 +17,10 @@ export const Logo: React.FC<LogoProps> = ({
 
   // Sizing definitions
   const dimensions = {
-    sm: { iconWidth: 28, iconHeight: 28, text: 'text-lg', gap: 'gap-2' },
-    md: { iconWidth: 36, iconHeight: 36, text: 'text-2xl', gap: 'gap-2.5' },
-    lg: { iconWidth: 44, iconHeight: 44, text: 'text-3xl', gap: 'gap-3' },
-    xl: { iconWidth: 56, iconHeight: 56, text: 'text-4xl', gap: 'gap-3.5' },
+    sm: { iconWidth: 26, iconHeight: 26, text: 'text-base sm:text-lg', gap: 'gap-1.5 sm:gap-2' },
+    md: { iconWidth: 32, iconHeight: 32, text: 'text-xl sm:text-2xl', gap: 'gap-2 sm:gap-2.5' },
+    lg: { iconWidth: 40, iconHeight: 40, text: 'text-2xl sm:text-3xl', gap: 'gap-2.5 sm:gap-3' },
+    xl: { iconWidth: 50, iconHeight: 50, text: 'text-3xl sm:text-4xl', gap: 'gap-3 sm:gap-3.5' },
   }[size];
 
   // Unique ID generator for SVG Gradients so multiple logo instances don't clash

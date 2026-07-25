@@ -82,13 +82,13 @@ export const Navbar: React.FC<NavbarProps> = ({
     <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-slate-100 shadow-2xs transition-all">
       
       {/* Top Main Navigation Bar */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-20 gap-4">
+      <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between h-16 sm:h-20 gap-2 sm:gap-4">
           
           {/* Predikt Brand Logo */}
           <button
             onClick={() => setActiveTab('search')}
-            className="flex items-center gap-3 text-left group focus:outline-none flex-shrink-0"
+            className="flex items-center gap-2 sm:gap-3 text-left group focus:outline-none shrink-0"
           >
             <Logo size="md" />
           </button>
@@ -104,9 +104,9 @@ export const Navbar: React.FC<NavbarProps> = ({
             </nav>
           ) : (
             /* BAN Address Search Input Header when Address is Selected */
-            <div ref={searchRef} className="relative flex-1 min-w-0 max-w-xl mx-2 sm:mx-0">
+            <div ref={searchRef} className="relative flex-1 min-w-0 max-w-xl mx-1 sm:mx-0">
               <div className="relative">
-                <Search className="w-4 h-4 text-slate-400 absolute left-3 sm:left-4 top-1/2 -translate-y-1/2 flex-shrink-0" />
+                <Search className="w-4 h-4 text-slate-400 absolute left-2.5 sm:left-4 top-1/2 -translate-y-1/2 shrink-0" />
                 <input
                   ref={inputRef}
                   type="text"
@@ -116,7 +116,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                   onFocus={() => {
                     if (results.length > 0) setShowDropdown(true);
                   }}
-                  className="w-full bg-slate-50 text-slate-900 placeholder-slate-400 text-xs sm:text-sm pl-9 sm:pl-11 pr-8 sm:pr-16 py-2 sm:py-2.5 rounded-full border border-slate-200 focus:bg-white focus:outline-none focus:border-slate-800 focus:ring-2 focus:ring-slate-900/10 font-medium transition-all min-w-0"
+                  className="w-full bg-slate-50 text-slate-900 placeholder-slate-400 text-xs sm:text-sm pl-8 sm:pl-11 pr-7 sm:pr-16 py-1.5 sm:py-2.5 rounded-full border border-slate-200 focus:bg-white focus:outline-none focus:border-slate-800 focus:ring-2 focus:ring-slate-900/10 font-medium transition-all min-w-0"
                 />
 
                 <div className="absolute right-3 top-1/2 -translate-y-1/2 hidden sm:flex items-center gap-0.5 px-2 py-0.5 rounded-md bg-slate-200/60 border border-slate-300/60 text-[10px] font-mono font-bold text-slate-600 pointer-events-none">
@@ -125,7 +125,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                 </div>
 
                 {isLoading && (
-                  <div className="absolute right-2.5 sm:right-12 top-1/2 -translate-y-1/2 text-emerald-600">
+                  <div className="absolute right-2 sm:right-12 top-1/2 -translate-y-1/2 text-emerald-600">
                     <Loader2 className="w-4 h-4 animate-spin" />
                   </div>
                 )}
@@ -150,7 +150,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                       }}
                       className="w-full p-3 text-left hover:bg-slate-50 transition-colors flex items-start gap-3 group"
                     >
-                      <MapPin className="w-4 h-4 text-emerald-500 mt-0.5 flex-shrink-0" />
+                      <MapPin className="w-4 h-4 text-emerald-500 mt-0.5 shrink-0" />
                       <div>
                         <div className="text-xs sm:text-sm font-bold text-slate-900">{item.label}</div>
                         <div className="text-xs text-slate-500 mt-0.5">{item.context}</div>
@@ -163,35 +163,36 @@ export const Navbar: React.FC<NavbarProps> = ({
           )}
 
           {/* Right Header Actions */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 sm:gap-3 shrink-0">
             {selectedAddress ? (
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
                 <button
                   onClick={() => setActiveTab('compare')}
-                  className={`px-3.5 py-2 rounded-full text-xs font-bold transition-all flex items-center gap-1.5 border ${
+                  className={`px-2.5 sm:px-3.5 py-1.5 sm:py-2 rounded-full text-[11px] sm:text-xs font-bold transition-all flex items-center gap-1 sm:gap-1.5 border shrink-0 whitespace-nowrap ${
                     activeTab === 'compare'
                       ? 'bg-slate-900 text-white border-slate-900'
                       : 'bg-white hover:bg-slate-50 text-slate-700 border-slate-200'
                   }`}
                 >
-                  <ArrowRightLeft className="w-3.5 h-3.5" />
+                  <ArrowRightLeft className="w-3.5 h-3.5 shrink-0" />
                   <span className="hidden sm:inline">Comparer</span>
                 </button>
 
                 <button
                   onClick={() => setActiveTab('ai-synthesis')}
-                  className={`px-3.5 py-2 rounded-full text-xs font-bold transition-all flex items-center gap-1.5 border ${
+                  className={`px-2.5 sm:px-3.5 py-1.5 sm:py-2 rounded-full text-[11px] sm:text-xs font-bold transition-all flex items-center gap-1 sm:gap-1.5 border shrink-0 whitespace-nowrap ${
                     activeTab === 'ai-synthesis'
                       ? 'bg-emerald-600 text-white border-emerald-600'
                       : 'bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border-emerald-200'
                   }`}
                 >
-                  <Sparkles className="w-3.5 h-3.5 text-emerald-600" />
-                  <span>Rapport AI</span>
+                  <Sparkles className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                  <span className="hidden min-[380px]:inline">Rapport AI</span>
+                  <span className="min-[380px]:hidden">AI</span>
                 </button>
               </div>
             ) : (
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2 sm:gap-3 shrink-0">
                 <button className="hidden sm:inline-block text-sm font-medium text-slate-700 hover:text-slate-950 transition-colors px-3 py-2">
                   Se connecter
                 </button>
@@ -202,10 +203,11 @@ export const Navbar: React.FC<NavbarProps> = ({
                     const searchEl = document.getElementById('hero-search-input');
                     if (searchEl) searchEl.focus();
                   }}
-                  className="bg-slate-900 hover:bg-slate-800 text-white text-xs sm:text-sm font-semibold px-5 py-2.5 rounded-full transition-all duration-200 shadow-xs flex items-center gap-2 group cursor-pointer"
+                  className="bg-slate-900 hover:bg-slate-800 text-white text-xs sm:text-sm font-semibold px-3 sm:px-5 py-2 sm:py-2.5 rounded-full transition-all duration-200 shadow-xs flex items-center gap-1.5 sm:gap-2 group cursor-pointer shrink-0 whitespace-nowrap"
                 >
-                  <span>Demander une démo</span>
-                  <ChevronRight className="w-4 h-4 text-slate-400 group-hover:translate-x-0.5 transition-transform" />
+                  <span className="hidden min-[380px]:inline">Demander une démo</span>
+                  <span className="min-[380px]:hidden">Démo</span>
+                  <ChevronRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-slate-400 group-hover:translate-x-0.5 transition-transform shrink-0" />
                 </button>
               </div>
             )}
