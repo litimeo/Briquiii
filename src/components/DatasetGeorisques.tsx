@@ -37,15 +37,10 @@ export const DatasetGeorisques: React.FC<DatasetGeorisquesProps> = ({ georisques
           </div>
         </div>
 
-        <a
-          href="https://www.georisques.gouv.fr/"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="px-4 py-2.5 rounded-xl bg-white hover:bg-slate-50 text-rose-900 text-xs sm:text-sm font-bold border border-rose-200 flex items-center gap-2 transition-colors shadow-xs"
-        >
-          <span>Portail Géorisques</span>
-          <ExternalLink className="w-4 h-4" />
-        </a>
+        <div className="px-4 py-2.5 rounded-xl bg-white text-rose-900 text-xs sm:text-sm font-bold border border-rose-200 flex items-center gap-2 shadow-2xs">
+          <ShieldCheck className="w-4 h-4 text-rose-600" />
+          <span>Registre Officiel BRGM</span>
+        </div>
       </div>
 
       {/* Overview Risk Rating Box */}

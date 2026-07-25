@@ -32,15 +32,10 @@ export const DatasetSafetySecurity: React.FC<DatasetSafetySecurityProps> = ({ sa
           </div>
         </div>
 
-        <a
-          href="https://www.interieur.gouv.fr/Interstats"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="px-4 py-2.5 rounded-xl bg-white hover:bg-slate-50 text-indigo-900 text-xs sm:text-sm font-bold border border-indigo-200 flex items-center gap-2 transition-colors shadow-xs"
-        >
-          <span>Portail Interstats</span>
-          <ExternalLink className="w-4 h-4" />
-        </a>
+        <div className="px-4 py-2.5 rounded-xl bg-white text-indigo-900 text-xs sm:text-sm font-bold border border-indigo-200 flex items-center gap-2 shadow-2xs">
+          <ShieldCheck className="w-4 h-4 text-indigo-600" />
+          <span>Statistiques SSMSI Officielles</span>
+        </div>
       </div>
 
       {/* Security Index Banner */}

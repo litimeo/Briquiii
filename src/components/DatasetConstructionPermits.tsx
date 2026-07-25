@@ -1,6 +1,6 @@
 import React from 'react';
 import { ConstructionPermitData } from '../types';
-import { HardHat, FileCheck2, Hammer, Building, AlertCircle, Clock, CheckCircle2, ArrowUpRight, ExternalLink } from 'lucide-react';
+import { HardHat, FileCheck2, Hammer, Building, AlertCircle, Clock, CheckCircle2, ArrowUpRight, ExternalLink, ShieldCheck } from 'lucide-react';
 
 interface DatasetConstructionPermitsProps {
   constructionPermits: ConstructionPermitData;
@@ -41,15 +41,10 @@ export const DatasetConstructionPermits: React.FC<DatasetConstructionPermitsProp
           </div>
         </div>
 
-        <a
-          href="https://www.statistiques.developpement-durable.gouv.fr/construction-de-logements-sitadel"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="px-4 py-2.5 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-900 text-xs sm:text-sm font-bold border border-amber-200 flex items-center gap-2 transition-colors shadow-xs self-start sm:self-auto"
-        >
+        <div className="px-4 py-2.5 rounded-xl bg-amber-50 text-amber-900 text-xs sm:text-sm font-bold border border-amber-200 flex items-center gap-2 shadow-2xs self-start sm:self-auto">
+          <ShieldCheck className="w-4 h-4 text-amber-600" />
           <span>Base Sitadel Officielle</span>
-          <ExternalLink className="w-4 h-4" />
-        </a>
+        </div>
       </div>
 
       {/* KPI Stats Row */}

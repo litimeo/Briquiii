@@ -12,13 +12,16 @@ import { DatasetWaterQuality } from './components/DatasetWaterQuality';
 import { DatasetSafetySecurity } from './components/DatasetSafetySecurity';
 import { DatasetQualityOfLife } from './components/DatasetQualityOfLife';
 import { DatasetConstructionPermits } from './components/DatasetConstructionPermits';
+import { DatasetElus } from './components/DatasetElus';
+import { DatasetCultural } from './components/DatasetCultural';
+import { DatasetConnectivity } from './components/DatasetConnectivity';
 import { AiSynthesisTab } from './components/AiSynthesisTab';
 import { CompareAddressesModal } from './components/CompareAddressesModal';
 
 import { generateReportForAddress, searchBANAddresses } from './services/apiAdresse';
 import { AddressSearchResult, ActiveNavTab, PropertyReport } from './types';
 
-import { Database, Search, MapPin, Building2, TrendingUp, Zap, ShieldAlert, Users, Compass, Loader2, ArrowRight, Sparkles, Home, Droplets, ShieldCheck, Footprints, HardHat } from 'lucide-react';
+import { Database, Search, MapPin, Building2, TrendingUp, Zap, ShieldAlert, Users, Compass, Loader2, ArrowRight, Sparkles, Home, Droplets, ShieldCheck, Footprints, HardHat, Landmark, Palette, Wifi } from 'lucide-react';
 
 // Preset Sample Addresses for 1-Click Instant Analysis
 const PRESET_SAMPLE_ADDRESSES: AddressSearchResult[] = [
@@ -155,7 +158,7 @@ export default function App() {
               <div className="stand">
                 <span className="inline-flex items-center gap-2 bg-gradient-to-r from-orange-500/10 via-amber-500/10 to-orange-500/10 text-orange-950 px-4 py-1.5 rounded-full text-xs font-black uppercase tracking-wider">
                   <Database className="w-4 h-4 text-[#f56902]" />
-                  <span>Plateforme d'Audit Foncier Open Data 9 Axes</span>
+                  <span>Plateforme d'Audit Foncier Open Data 12 Axes</span>
                 </span>
               </div>
 
@@ -164,7 +167,7 @@ export default function App() {
               </h1>
 
               <p className="text-base sm:text-lg text-slate-600 max-w-2xl mx-auto font-medium leading-relaxed">
-                Briquia croise en direct <strong className="text-slate-900 font-bold">9 axes d'analyses foncières certifiées</strong> (Cadastre, Prix & Transactions DVF, Marché Locatif, Performance Énergétique, Eau ARS, Risques Naturels, Sécurité SSMSI, Démographie et Urbanisme).
+                Briquia croise en direct <strong className="text-slate-900 font-bold">12 axes d'analyses foncières certifiées</strong> (Cadastre, DVF, Loyers, DPE, Eau, Risques, Sécurité, Démographie, Urbanisme, Élus & Politique, Équipements Culturels, Internet & Fibre).
               </p>
             </div>
 
@@ -342,6 +345,36 @@ export default function App() {
                   </div>
                   <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">Zonage d'urbanisme, hauteur maximale autorisée, WalkScore et proximité des services.</p>
                 </div>
+
+                <div className="card-glow p-5 sm:p-6 rounded-3xl space-y-2">
+                  <div className="flex items-center gap-3 text-indigo-800 font-extrabold text-sm sm:text-base font-heading">
+                    <div className="w-9 h-9 rounded-2xl bg-indigo-100/80 text-indigo-700 flex items-center justify-center flex-shrink-0">
+                      <Landmark className="w-4.5 h-4.5" />
+                    </div>
+                    <span>10. Élus Locaux & Cadre Politique (RNE)</span>
+                  </div>
+                  <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">Équipe municipale, couleur politique du maire, programme local et vision de la fiscalité.</p>
+                </div>
+
+                <div className="card-glow p-5 sm:p-6 rounded-3xl space-y-2">
+                  <div className="flex items-center gap-3 text-amber-900 font-extrabold text-sm sm:text-base font-heading">
+                    <div className="w-9 h-9 rounded-2xl bg-amber-100/80 text-amber-700 flex items-center justify-center flex-shrink-0">
+                      <Palette className="w-4.5 h-4.5" />
+                    </div>
+                    <span>11. Équipements Culturels (BASILIC)</span>
+                  </div>
+                  <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">Musées, théâtres, cinémas art/essai, monuments historiques et événements culturels.</p>
+                </div>
+
+                <div className="card-glow p-5 sm:p-6 rounded-3xl space-y-2">
+                  <div className="flex items-center gap-3 text-cyan-800 font-extrabold text-sm sm:text-base font-heading">
+                    <div className="w-9 h-9 rounded-2xl bg-cyan-100/80 text-cyan-700 flex items-center justify-center flex-shrink-0">
+                      <Wifi className="w-4.5 h-4.5" />
+                    </div>
+                    <span>12. Connexion Internet & Fibre (ARCEP)</span>
+                  </div>
+                  <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">Éligibilité Fibre optique, débits max descendant/montant, couverture 5G et arrêt ADSL.</p>
+                </div>
               </div>
 
               {/* End of 9 Axes Grid */}
@@ -418,6 +451,21 @@ export default function App() {
                     <DatasetConstructionPermits constructionPermits={currentReport.constructionPermits} />
                   </section>
 
+                  {/* Section 12: Élus & Cadre Politique */}
+                  <section id="section-elus" className="scroll-mt-24">
+                    <DatasetElus elus={currentReport.elus} />
+                  </section>
+
+                  {/* Section 13: Équipements Culturels */}
+                  <section id="section-culture" className="scroll-mt-24">
+                    <DatasetCultural cultural={currentReport.cultural} />
+                  </section>
+
+                  {/* Section 14: Connexion Internet */}
+                  <section id="section-internet" className="scroll-mt-24">
+                    <DatasetConnectivity connectivity={currentReport.connectivity} />
+                  </section>
+
                 </div>
               )}
 
@@ -475,6 +523,21 @@ export default function App() {
               {activeTab === 'dataset-permits' && (
                 <div className="space-y-6">
                   <DatasetConstructionPermits constructionPermits={currentReport.constructionPermits} />
+                </div>
+              )}
+              {activeTab === 'dataset-elus' && (
+                <div className="space-y-6">
+                  <DatasetElus elus={currentReport.elus} />
+                </div>
+              )}
+              {activeTab === 'dataset-cultural' && (
+                <div className="space-y-6">
+                  <DatasetCultural cultural={currentReport.cultural} />
+                </div>
+              )}
+              {activeTab === 'dataset-connectivity' && (
+                <div className="space-y-6">
+                  <DatasetConnectivity connectivity={currentReport.connectivity} />
                 </div>
               )}
 

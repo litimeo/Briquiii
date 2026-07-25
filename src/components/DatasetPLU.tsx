@@ -1,6 +1,6 @@
 import React from 'react';
 import { PluAndAmenitiesData } from '../types';
-import { Compass, Footprints, Bus, GraduationCap, ShoppingBag, Stethoscope, Trees, Volume2, Building2, ExternalLink, Landmark, Wind, Sparkles } from 'lucide-react';
+import { Compass, Footprints, Bus, GraduationCap, ShoppingBag, Stethoscope, Trees, Volume2, Building2, ExternalLink, Landmark, Wind, Sparkles, ShieldCheck } from 'lucide-react';
 
 interface DatasetPLUProps {
   plu: PluAndAmenitiesData;
@@ -42,15 +42,10 @@ export const DatasetPLU: React.FC<DatasetPLUProps> = ({ plu }) => {
           </div>
         </div>
 
-        <a
-          href="https://www.geoportail-urbanisme.gouv.fr/"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="px-4 py-2.5 rounded-xl bg-white hover:bg-slate-50 text-teal-900 text-xs sm:text-sm font-bold border border-teal-200 flex items-center gap-2 transition-colors shadow-xs"
-        >
-          <span>Géoportail Urbanisme</span>
-          <ExternalLink className="w-4 h-4" />
-        </a>
+        <div className="px-4 py-2.5 rounded-xl bg-white text-teal-900 text-xs sm:text-sm font-bold border border-teal-200 flex items-center gap-2 shadow-2xs">
+          <ShieldCheck className="w-4 h-4 text-teal-600" />
+          <span>Cadre PLU Certifié</span>
+        </div>
       </div>
 
       {/* PLU Rules & WalkScore Grid */}

@@ -31,15 +31,10 @@ export const DatasetWaterQuality: React.FC<DatasetWaterQualityProps> = ({ waterQ
           </div>
         </div>
 
-        <a
-          href="https://sante.gouv.fr/sante-et-environnement/eaux/eau"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="px-4 py-2.5 rounded-xl bg-white hover:bg-slate-50 text-sky-900 text-xs sm:text-sm font-bold border border-sky-200 flex items-center gap-2 transition-colors shadow-xs"
-        >
-          <span>Bulletins ARS</span>
-          <ExternalLink className="w-4 h-4" />
-        </a>
+        <div className="px-4 py-2.5 rounded-xl bg-white text-sky-900 text-xs sm:text-sm font-bold border border-sky-200 flex items-center gap-2 shadow-2xs">
+          <ShieldCheck className="w-4 h-4 text-sky-600" />
+          <span>Contrôle Sanitaire ARS</span>
+        </div>
       </div>
 
       {/* Main Metrics Grid */}

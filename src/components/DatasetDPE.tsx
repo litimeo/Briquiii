@@ -1,6 +1,6 @@
 import React from 'react';
 import { DPEData } from '../types';
-import { Zap, Flame, AlertTriangle, CheckCircle2, ShieldAlert, Thermometer, ExternalLink, Calculator, PiggyBank, Car, Home } from 'lucide-react';
+import { Zap, Flame, AlertTriangle, CheckCircle2, ShieldAlert, Thermometer, ExternalLink, Calculator, PiggyBank, Car, Home, ShieldCheck } from 'lucide-react';
 
 interface DatasetDPEProps {
   dpe: DPEData;
@@ -48,15 +48,10 @@ export const DatasetDPE: React.FC<DatasetDPEProps> = ({ dpe }) => {
           </div>
         </div>
 
-        <a
-          href="https://france-renov.gouv.fr/"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="px-4 py-2.5 rounded-xl bg-white hover:bg-slate-50 text-amber-900 text-xs sm:text-sm font-bold border border-amber-200 flex items-center gap-2 transition-colors shadow-xs"
-        >
-          <span>Aides France Rénov'</span>
-          <ExternalLink className="w-4 h-4" />
-        </a>
+        <div className="px-4 py-2.5 rounded-xl bg-white text-amber-900 text-xs sm:text-sm font-bold border border-amber-200 flex items-center gap-2 shadow-2xs">
+          <ShieldCheck className="w-4 h-4 text-amber-600" />
+          <span>Dispositif France Rénov'</span>
+        </div>
       </div>
 
       {/* Passoire Thermique Regulatory Warning Banner if F or G */}

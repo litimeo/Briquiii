@@ -21,6 +21,9 @@ function generateClientFallbackSynthesis(report: PropertyReport, question?: stri
   const rental = report?.rentalMarket;
   const permits = report?.constructionPermits;
   const qol = report?.qualityOfLife;
+  const elus = report?.elus;
+  const cultural = report?.cultural;
+  const connectivity = report?.connectivity;
 
   if (question) {
     const qLower = question.toLowerCase().trim();
@@ -31,8 +34,42 @@ function generateClientFallbackSynthesis(report: PropertyReport, question?: stri
 Comment puis-je vous aider aujourd'hui concernant **${addr}** ou tout autre sujet ?
 - **Brainstormer** des idées d'aménagement, de travaux ou de valorisation
 - Élaborer une **stratégie de négociation** solide sur le prix
-- Évaluer le rendement locatif ou la qualité de vie du quartier
+- Évaluer l'équipe d'**élus locaux**, la vie **culturelle** et le réseau **Fibre Internet**
 - Discuter librement de toute question immobilière !`;
+    }
+
+    if (qLower.includes('élu') || qLower.includes('politique') || qLower.includes('maire') || qLower.includes('municipal') || qLower.includes('programme') || qLower.includes('taxe foncière')) {
+      return `🏛️ **Élus Locaux, Tendance Politique & Orientation Municipale à ${addr}** (Répertoire National des Élus - RNE) :
+
+- **Maire de la Commune** : **${elus?.mayorName || 'Le Maire'}** (${elus?.mayorParty || 'Majorité Municipale'}, ${elus?.mayorPoliticalTendency || 'Tendance Locale'}).
+- **Participation aux Élections** : **${elus?.lastElectionTurnoutPercent || 58.5}%** de taux de participation.
+- **Vision de la Taxe Foncière & Fiscalité** : ${elus?.localTaxPolicyVision || 'Maintien des taux de taxe foncière avec priorité aux investissements de transition et de sécurité.'}
+- **Principaux Axes du Programme Municipal** :
+  ${elus?.keyMunicipalProgram?.slice(0, 3).map(p => `• ${p}`).join('\n  ') || '• Encadrement des loyers et développement de logements abordables\n  • Végétalisation et transition écologique\n  • Maintien de la fiscalité locale'}
+- **Représentants Clés** :
+  ${elus?.officials?.slice(0, 3).map(o => `• **${o.name}** (${o.role}) - ${o.keyProjects.join(', ')}`).join('\n  ') || ''}`;
+    }
+
+    if (qLower.includes('cultur') || qLower.includes('musée') || qLower.includes('théâtre') || qLower.includes('cinéma') || qLower.includes('monument') || qLower.includes('activité')) {
+      return `🎭 **Équipements & Offre Culturelle autour de ${addr}** (Base BASILIC / Ministère de la Culture) :
+
+- **Indice de Densité Culturelle** : **${cultural?.culturalDensityScore || 80} / 100**.
+- **Équipements à moins de 500m** : **${cultural?.totalCulturalSites500m || 8} lieux culturels** enregistrés.
+- **Monuments Historiques Protégés** : **${cultural?.totalHistoricalMonuments || 2} édifices classés/inscrits** dans le quartier.
+- **Événements & Festivals** : Environ **~${cultural?.annualEventsCount || 35} événements culturels par an**.
+- **Principaux Lieux à Proximité** :
+  ${cultural?.keySites?.slice(0, 4).map(s => `• **${s.name}** (${s.category}) à ${s.distanceMeters}m (~${s.walkTimeMinutes} min) - ${s.description}`).join('\n  ') || ''}`;
+    }
+
+    if (qLower.includes('internet') || qLower.includes('fibre') || qLower.includes('adsl') || qLower.includes('5g') || qLower.includes('connexion') || qLower.includes('débit') || qLower.includes('wifi')) {
+      return `📶 **Couverture Numérique, Fibre Optique & Réseau Mobile à ${addr}** (ARCEP - Ma Connexion Internet) :
+
+- **Éligibilité Fibre Optique (FttH)** : **${connectivity?.fiberEligible ? '✅ Intégralement Raccordable' : 'En cours de déploiement'}** (${connectivity?.fiberCoveragePercent || 98.5}% des logements raccordés).
+- **Débit Descendant Max** : Jusqu'à **${connectivity?.maxDownloadMbps ? (connectivity.maxDownloadMbps >= 1000 ? `${(connectivity.maxDownloadMbps / 1000).toFixed(1)} Gbps` : `${connectivity.maxDownloadMbps} Mbps`) : '2 Gbps'}**.
+- **Débit Montant Max (Upload)** : **${connectivity?.maxUploadMbps || 800} Mbps** (idéal télétravail, visioconférence et transfert cloud).
+- **Opérateurs Disponibles en Fibre** : Orange, Free, SFR, Bouygues Telecom.
+- **Réseau Mobile 5G** : Indice **${connectivity?.mobile5gRating || 'Excellente'}** (Antennes multi-opérateurs).
+- **Extinction du Réseau Cuivre (ADSL)** : ${connectivity?.adslStatus || 'Fermeture programmée du réseau cuivre par Orange d\'ici 2028.'}`;
     }
 
     if (qLower.includes('brainstorm') || qLower.includes('idée') || qLower.includes('projet') || qLower.includes('conseil') || qLower.includes('stratégie')) {
@@ -43,14 +80,14 @@ Voici quelques axes clés d'échange pour optimiser votre projet :
 1. **Valeur Verte & Travaux DPE** :
    ${dpe?.isPassoireThermique ? `Le bien étant en DPE passoire (${dpe?.energyRating}), utilisez ce point comme levier principal pour négocier le prix et déduire le coût des travaux.` : `Avec un DPE classe ${dpe?.energyRating || 'D'}, vous pouvez vous concentrer sur la modernisation et l'optimisation des charges.`}
 
-2. **Prix Réel DVF vs Offre** :
-   Le prix notarié médian constaté dans la rue est de **${dvf?.medianPricePerM2Street || 4200} €/m²**. Nous pouvons fonder votre offre sur ces transactions réelles.
+2. **Valeur Foncier DVF & Négociation** :
+   Prix notarié médian dans la rue : **${dvf?.medianPricePerM2Street || 4200} €/m²**.
 
-3. **Dynamique du Quartier** :
-   Secteur comptant **${permits?.totalPermits500m || 12} permis de construire** à proximité, garantissant un renouvellement urbain et un maintien de l'attractivité.
+3. **Élus & Tendance Municipale (RNE)** :
+   Mairie dirigée par **${elus?.mayorName || 'la municipalité'}** (${elus?.mayorParty || 'Majorité municipale'}). Priorités : ${elus?.keyMunicipalProgram?.[0] || 'maintien de la fiscalité locale et aménagements'}.
 
-4. **Rentabilité Locative** :
-   Loyer estimé à **${rental?.avgRentApartmentPerM2 || 18} €/m²** (~${rental?.estimatedGrossYieldPercent || 5}% brut).
+4. **Cadre de Vie, Culture & Fibre** :
+   Fibre FttH disponible jusqu'à **${connectivity?.maxDownloadMbps ? (connectivity.maxDownloadMbps >= 1000 ? `${(connectivity.maxDownloadMbps / 1000).toFixed(1)} Gbps` : `${connectivity.maxDownloadMbps} Mbps`) : '2 Gbps'}**, **${cultural?.totalCulturalSites500m || 8} lieux culturels** à 500m.
 
 Sur quel sujet préférez-vous approfondir le brainstorming ?`;
     }
@@ -59,16 +96,16 @@ Sur quel sujet préférez-vous approfondir le brainstorming ?`;
       return `💡 **Stratégie & Leviers de Négociation pour ${addr}** :
 
 1. **Passoire Énergétique & Travaux (DPE ${dpe?.energyRating || 'D'})** :
-   ${dpe?.isPassoireThermique ? `Le logement étant classé passoire thermique (${dpe?.energyRating}), l'interdiction de mise en location à venir constitue votre levier prioritaire. Exigez un devis de travaux d'isolation (estimé entre 15 000€ et 30 000€) pour négocier une réduction directe équivalente sur le prix de vente.` : `Le bien est en classe DPE ${dpe?.energyRating}, ce qui est satisfaisant. Les arguments de négociation se concentreront sur les finitions et le prix au m².`}
+   ${dpe?.isPassoireThermique ? `Le logement étant classé passoire thermique (${dpe?.energyRating}), l'interdiction de mise en location à venir constitue votre levier prioritaire. Exigez un devis de travaux d'isolation pour négocier une réduction directe.` : `Le bien est en classe DPE ${dpe?.energyRating}, ce qui est satisfaisant. Les arguments de négociation se concentreront sur le prix au m².`}
 
 2. **Écart de Prix Notarié DVF** :
-   Dans cette rue, le prix médian notarié constaté est de **${dvf?.medianPricePerM2Street || 4200} €/m²**. Comparez le prix affiché par le vendeur à ce niveau de transaction réel. Tout écart supérieur à +5% par rapport au prix DVF moyen est un argument solide pour faire baisser l'offre.
+   Dans cette rue, le prix médian notarié constaté est de **${dvf?.medianPricePerM2Street || 4200} €/m²**. Comparez le prix affiché par le vendeur à ce niveau de transaction réel.
 
-3. **Risques Naturels & Assurance (Indice ${georisques?.riskScoreNumber || 3}/10)** :
-   ${georisques?.floodRisk?.inPpriZone ? `Le bien est situé en zone d'aléa inondation PPRI, ce qui engendre des contraintes constructives et des surprimes d'assurance. Mettez ce point en avant dans vos discussions.` : `Le niveau d'aléa naturel est mesuré comme faible (${georisques?.overallRiskLevel || 'Faible'}), assurant une bonne valeur de revente.`}
+3. **Environnement Politique & Fiscal (RNE)** :
+   Mairie dirigée par **${elus?.mayorName || 'l\'exécutif municipal'}**. Politique de taxe foncière : ${elus?.localTaxPolicyVision || 'stabilité fiscale'}.
 
-4. **Dynamique d'Urbanisme & Permis de Construire** :
-   Secteur avec **${permits?.totalPermits500m || 12} permis de construire** récents à 500m (${permits?.constructionActivityLevel || 'Activité modérée'}).`;
+4. **Risques Naturels & Assurance (Indice ${georisques?.riskScoreNumber || 3}/10)** :
+   ${georisques?.floodRisk?.inPpriZone ? `Le bien est situé en zone d'aléa inondation PPRI, ce qui engendre des contraintes constructives et des surprimes d'assurance.` : `Le niveau d'aléa naturel est mesuré comme faible (${georisques?.overallRiskLevel || 'Faible'}).`}`;
     }
 
     if (qLower.includes('dpe') || qLower.includes('renov') || qLower.includes('travaux') || qLower.includes('énerg')) {
@@ -77,7 +114,7 @@ Sur quel sujet préférez-vous approfondir le brainstorming ?`;
 - **Diagnostic Officiel** : Classement **DPE ${dpe?.energyRating || 'D'}** (${dpe?.consumptionKwhM2Year || 210} kWh/m²/an).
 - **Émissions de GES** : Indice Climat **${dpe?.climateRating || 'C'}** (${dpe?.co2EmissionsKgM2Year || 45} kg CO2/m²/an).
 - **Facture Énergétique Estimée** : Entre **${dpe?.estimatedAnnualCostMin || 1200} €** et **${dpe?.estimatedAnnualCostMax || 1600} €** par an.
-- **Statut Réglementaire** : ${dpe?.isPassoireThermique ? `⚠️ Classé en Passoire Thermique. Interdiction de mise en location prévue. Travaux d'isolation thermique prioritaires conseillés avant tout projet locatif.` : `✅ Bien conforme aux standards de décence énergétique.`}`;
+- **Statut Réglementaire** : ${dpe?.isPassoireThermique ? `⚠️ Classé en Passoire Thermique. Interdiction de mise en location prévue. Travaux d'isolation thermique prioritaires.` : `✅ Bien conforme aux standards de décence énergétique.`}`;
     }
 
     if (qLower.includes('permis') || qLower.includes('urban') || qLower.includes('chantier') || qLower.includes('construct')) {
@@ -95,15 +132,18 @@ Sur quel sujet préférez-vous approfondir le brainstorming ?`;
 Honnêtement, c'est une adresse avec un **très bon potentiel général** (Note Briquia : **${score}/100**). Voici mon avis détaillé sur les points majeurs :
 
 1. **Emplacement & Valorisation (DVF ${dvf?.medianPricePerM2Street || 4200} €/m²)** :
-   Le marché notarié réel dans la rue est solide avec une tendance sur 5 ans de **+${dvf?.fiveYearPriceGrowthPercent || 12}%**. L'adresse bénéficie d'une excellente dynamique d'attractivité.
+   Le marché notarié réel dans la rue est solide (+${dvf?.fiveYearPriceGrowthPercent || 12}% sur 5 ans).
 
-2. **DPE & Performance Énergétique (${dpe?.energyRating || 'D'})** :
-   ${dpe?.isPassoireThermique ? `⚠️ Point d'attention majeur : Le bien étant classé passoire énergétique (${dpe?.energyRating}), il faudra prévoir une enveloppe travaux d'isolation (et négocier le prix d'achat en conséquence).` : `Le bilan DPE (${dpe?.energyRating}) est satisfaisant et rassurant, ne nécessitant pas de lourds travaux d'urgence.`}
+2. **Connectivité & Vie Locale** :
+   Fibre FttH active jusqu'à **${connectivity?.maxDownloadMbps ? (connectivity.maxDownloadMbps >= 1000 ? `${(connectivity.maxDownloadMbps / 1000).toFixed(1)} Gbps` : `${connectivity.maxDownloadMbps} Mbps`) : '2 Gbps'}**, **${cultural?.totalCulturalSites500m || 8} lieux culturels** à 500m.
 
-3. **Environnement & Cadre de Vie (${qol?.overallScore || 75}/100)** :
-   Le quartier offre un bon confort au quotidien (Score Commerces: ${qol?.categories?.commerces?.score || 74}, Transports: ${qol?.categories?.transports?.score || 77}) et un bon niveau de sécurité.
+3. **Cadre Politique & Élus (RNE)** :
+   Mairie dirigée par **${elus?.mayorName || 'l\'équipe municipale'}** (${elus?.mayorParty || 'Gouvernance locale'}). Politique axée sur ${elus?.keyMunicipalProgram?.[0] || 'la qualité de vie'}.
 
-**Mon Conseil Global** : Si le prix demandé est aligné sur le prix notarié moyen (${dvf?.medianPricePerM2Street || 4200} €/m²), c'est une opportunité à étudier de très près ! Souhaitez-vous qu'on prépare une stratégie d'offre ou qu'on étudie les travaux ?`;
+4. **DPE & Performance Énergétique (${dpe?.energyRating || 'D'})** :
+   ${dpe?.isPassoireThermique ? `⚠️ Point d'attention : Le bien étant classé passoire énergétique (${dpe?.energyRating}), il faudra prévoir une enveloppe travaux d'isolation.` : `Le bilan DPE (${dpe?.energyRating}) est satisfaisant et ne nécessite pas de lourds travaux d'urgence.`}
+
+**Mon Conseil Global** : Si le prix demandé est aligné sur le prix notarié moyen (${dvf?.medianPricePerM2Street || 4200} €/m²), c'est une opportunité à étudier de très près !`;
     }
 
     return `Analyse personnalisée Briquia AI pour **${addr}** (Indice global : ${score}/100) :
@@ -111,8 +151,10 @@ Honnêtement, c'est une adresse avec un **très bon potentiel général** (Note 
 • **Valorisation DVF** : Prix médian notarié à **${dvf?.medianPricePerM2Street || 4200} €/m²** dans la rue.
 • **Marché Locatif** : Loyer moyen à **${rental?.avgRentApartmentPerM2 || 18} €/m²** pour un rendement brut estimé de **${rental?.estimatedGrossYieldPercent || 5}%**.
 • **Performance DPE** : Énergie classe **${dpe?.energyRating || 'D'}**, avec une dépense annuelle estimée de ${dpe?.estimatedAnnualCostMin || 1100}€ à ${dpe?.estimatedAnnualCostMax || 1500}€.
-• **Cadre de Vie** : Score de qualité de vie de **${qol?.overallScore || 75}/100**.
-• **Conseil Expert** : Utilisez les indicateurs certifiés DVF et DPE pour négocier sereinement votre acquisition avec des données indiscutables.`;
+• **Élus Locaux (RNE)** : Municipalité dirigée par **${elus?.mayorName || 'le Maire'}** (${elus?.mayorParty || 'Majorité'}).
+• **Vie Culturelle (BASILIC)** : **${cultural?.totalCulturalSites500m || 8} équipements culturels** à 500m (Indice ${cultural?.culturalDensityScore || 80}/100).
+• **Connexion Internet (ARCEP)** : Fibre FttH active à **${connectivity?.fiberCoveragePercent || 98.5}%** (jusqu'à ${connectivity?.maxDownloadMbps ? (connectivity.maxDownloadMbps >= 1000 ? `${(connectivity.maxDownloadMbps / 1000).toFixed(1)} Gbps` : `${connectivity.maxDownloadMbps} Mbps`) : '2 Gbps'}).
+• **Conseil Expert** : Utilisez ces indicateurs certifiés pour négocier sereinement votre acquisition avec des données indiscutables.`;
   }
 
   return `📊 **Synthèse d'Expertise Immobilière pour ${addr}**
@@ -122,6 +164,18 @@ Indice Foncier Briquia : **${score}/100 (${report?.ratingLabel || 'Standard'})**
 - Prix médian notarié (DVF) dans la rue : **${dvf?.medianPricePerM2Street || 4200} €/m²** (Tendance 5 ans : +${dvf?.fiveYearPriceGrowthPercent || 12}%).
 - Marché locatif d'annonce : **${rental?.avgRentApartmentPerM2 || 18} €/m²** avec un rendement brut potentiel estimé à **${rental?.estimatedGrossYieldPercent || 5.2}%**.
 
+🏛️ **Élus Locaux & Politique Municipale (RNE)**
+- Maire : **${elus?.mayorName || 'Exécutif municipal'}** (${elus?.mayorParty || 'Majorité'}).
+- Fiscalité : ${elus?.localTaxPolicyVision || 'Maintien de la fiscalité locale et soutien à l\'attractivité.'}
+
+🎭 **Équipements Culturels & Vie de Quartier (BASILIC)**
+- Score Culturel : **${cultural?.culturalDensityScore || 80}/100** (${cultural?.totalCulturalSites500m || 8} lieux culturels à 500m).
+- Patrimoine : **${cultural?.totalHistoricalMonuments || 2} monuments historiques** protégés.
+
+📶 **Internet & Fibre Optique (ARCEP)**
+- Fibre FttH : **${connectivity?.fiberEligible ? 'Raccordable' : 'En cours'}** (${connectivity?.fiberCoveragePercent || 98.5}% du quartier raccordé).
+- Débit Max Descendant : **${connectivity?.maxDownloadMbps ? (connectivity.maxDownloadMbps >= 1000 ? `${(connectivity.maxDownloadMbps / 1000).toFixed(1)} Gbps` : `${connectivity.maxDownloadMbps} Mbps`) : '2 Gbps'}** (5G: ${connectivity?.mobile5gRating || 'Excellente'}).
+
 ⚡ **Performance Énergétique & Enjeux de Rénovation**
 - Classement DPE : **Énergie ${dpe?.energyRating || 'D'}** / Climat ${dpe?.climateRating || 'C'}.
 - Consommation : **${dpe?.consumptionKwhM2Year || 210} kWh/m²/an** (Facture annuelle estimée : ${dpe?.estimatedAnnualCostMin || 1100}€ - ${dpe?.estimatedAnnualCostMax || 1500}€).
@@ -129,22 +183,12 @@ ${dpe?.isPassoireThermique ? '⚠️ **Alerte Passoire Thermique** : Calendrier 
 
 🛡️ **Résilience Environnementale & Qualité de l'Eau**
 - Niveau de risque naturel Géorisques : **${georisques?.riskScoreNumber || 3}/10** (${georisques?.overallRiskLevel || 'Faible'}).
-- Risque Inondation PPRI : ${georisques?.floodRisk?.inPpriZone ? 'En zone réglementée PPRI' : 'Hors zone d\'aléa prioritaire'}.
-- Qualité de l'Eau Potable ARS : **${report?.waterQuality?.complianceBacterialPercent || 100}% de conformité microbiologique** (${report?.waterQuality?.overallSanitaryStatus || 'Excellente Qualité'}).
-
-🏗️ **Autorisations d'Urbanisme & Permis de Construire**
-- Volume de permis de construire (Sitadel) : **${permits?.totalPermits500m || 12} autorisations à 500m** (${permits?.constructionActivityLevel || 'Activité Modérée'}).
-- Projets récents : **${permits?.permitsLast2Years || 6} chantiers et programmes** autorisés au cours des 24 derniers mois.
-
-🏙️ **Cadre de Vie & Sécurité du Quartier**
-- Score Cadre de Vie : **${qol?.overallScore || 75}/100** (Commerces: ${qol?.categories?.commerces?.score || 74}, Santé: ${qol?.categories?.sante?.score || 66}, Transports: ${qol?.categories?.transports?.score || 77}).
-- Indice de sérénité publique SSMSI : **${report?.safetySecurity?.securityIndexScore || 85}/100** (${report?.safetySecurity?.relativeLevel || 'Fort Niveau de Sérénité'}).
-- Revenu médian annuel des ménages (INSEE) : **${report?.insee?.medianAnnualIncomeEur || 28500} €/an**.
+- Qualité de l'Eau Potable ARS : **${report?.waterQuality?.complianceBacterialPercent || 100}% de conformité microbiologique**.
 
 💡 **Stratégie de Négociation & Recommandations Acquéreur**
 1. ${dpe?.isPassoireThermique ? 'Chiffrez précisément le coût d\'isolation (DPE F/G) pour exiger une réfaction de prix équivalente.' : 'Le DPE est favorable, concentrez votre négociation sur l\'écart entre le prix demandé et la valeur médiane DVF.'}
 2. Présentez l\'historique DVF des ventes récentes de la rue comme argument d\'ancrage lors de votre première proposition.
-3. Exploitez la transparence des indicateurs d\'urbanisme et de sécurité pour conforter la valeur de revente à terme.`;
+3. Exploitez la transparence des indicateurs d\'urbanisme, des élus et de la connectivité pour conforter la valeur de revente à terme.`;
 }
 
 export const AiSynthesisTab: React.FC<AiSynthesisTabProps> = ({ report }) => {

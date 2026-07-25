@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { AddressSearchResult, ActiveNavTab } from '../types';
 import { searchBANAddresses } from '../services/apiAdresse';
-import { Search, MapPin, Database, Sparkles, ArrowRightLeft, FileText, Building2, TrendingUp, Zap, ShieldAlert, Users, Compass, Loader2, Home, Droplets, ShieldCheck, Command, Footprints, HardHat } from 'lucide-react';
+import { Search, MapPin, Database, Sparkles, ArrowRightLeft, FileText, Building2, TrendingUp, Zap, ShieldAlert, Users, Compass, Loader2, Home, Droplets, ShieldCheck, Command, Footprints, HardHat, Landmark, Palette, Wifi } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 interface NavbarProps {
@@ -107,7 +107,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                       <span className="relative inline-flex rounded-full h-2 w-2 bg-[#f56902]"></span>
                     </span>
                     <Database className="w-3 h-3 text-[#f56902]" />
-                    Open Data 9 Axes
+                    Open Data 12 Axes
                   </span>
                 </div>
                 <p className="text-xs text-slate-500 font-medium line-clamp-1">Audit Foncier, Risques, Prix & Urbanisme en France</p>
@@ -402,6 +402,45 @@ export const Navbar: React.FC<NavbarProps> = ({
             >
               <HardHat className="w-4 h-4 text-amber-600" />
               <span>Permis de Construire</span>
+            </button>
+
+            {/* Section 12: Élus & Politique */}
+            <button
+              onClick={() => {
+                setActiveTab('search');
+                const el = document.getElementById('section-elus');
+                if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+              }}
+              className="px-3.5 py-2 rounded-2xl text-xs sm:text-sm font-bold whitespace-nowrap text-slate-700 hover:text-slate-950 hover:bg-white border border-transparent hover:border-slate-200 transition-all flex items-center gap-1.5"
+            >
+              <Landmark className="w-4 h-4 text-indigo-600" />
+              <span>Élus & Politique</span>
+            </button>
+
+            {/* Section 13: Équipements Culturels */}
+            <button
+              onClick={() => {
+                setActiveTab('search');
+                const el = document.getElementById('section-culture');
+                if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+              }}
+              className="px-3.5 py-2 rounded-2xl text-xs sm:text-sm font-bold whitespace-nowrap text-slate-700 hover:text-slate-950 hover:bg-white border border-transparent hover:border-slate-200 transition-all flex items-center gap-1.5"
+            >
+              <Palette className="w-4 h-4 text-amber-600" />
+              <span>Lieux Culturels</span>
+            </button>
+
+            {/* Section 14: Internet & Fibre */}
+            <button
+              onClick={() => {
+                setActiveTab('search');
+                const el = document.getElementById('section-internet');
+                if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+              }}
+              className="px-3.5 py-2 rounded-2xl text-xs sm:text-sm font-bold whitespace-nowrap text-slate-700 hover:text-slate-950 hover:bg-white border border-transparent hover:border-slate-200 transition-all flex items-center gap-1.5"
+            >
+              <Wifi className="w-4 h-4 text-cyan-600" />
+              <span>Connexion Internet</span>
             </button>
 
           </div>

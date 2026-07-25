@@ -32,24 +32,10 @@ export const DatasetBAN: React.FC<DatasetBANProps> = ({ ban }) => {
         </div>
 
         <div className="flex items-center gap-2 flex-wrap">
-          <a
-            href={`https://cadastre.gouv.fr/scpc/rechercherPlan.do?commune=${encodeURIComponent(ban.city)}&codeCommune=${ban.parcelId.substring(0,5)}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="px-4 py-2.5 rounded-xl bg-white hover:bg-slate-50 text-sky-800 text-xs sm:text-sm font-bold border border-sky-200 flex items-center gap-2 transition-colors shadow-xs"
-          >
-            <span>Cadastre Officiel</span>
-            <ExternalLink className="w-4 h-4" />
-          </a>
-          <a
-            href={`https://www.google.com/maps/search/?api=1&query=${ban.lat},${ban.lon}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="px-4 py-2.5 rounded-xl bg-sky-600 hover:bg-sky-700 text-white text-xs sm:text-sm font-bold flex items-center gap-2 transition-colors shadow-xs"
-          >
-            <MapPin className="w-4 h-4" />
-            <span>Google Maps Satellite</span>
-          </a>
+          <span className="px-4 py-2.5 rounded-xl bg-white text-sky-900 text-xs sm:text-sm font-bold border border-sky-200 flex items-center gap-2 shadow-2xs">
+            <ShieldCheck className="w-4 h-4 text-sky-600" />
+            <span>Cadastre Officiel DGFiP</span>
+          </span>
         </div>
       </div>
 

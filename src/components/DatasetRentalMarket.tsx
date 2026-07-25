@@ -1,6 +1,6 @@
 import React from 'react';
 import { RentalMarketData } from '../types';
-import { Home, TrendingUp, Percent, Building2, ShieldAlert, ArrowUpRight, DollarSign, ExternalLink, Calendar, Key, AlertCircle } from 'lucide-react';
+import { Home, TrendingUp, Percent, Building2, ShieldAlert, ArrowUpRight, DollarSign, ExternalLink, Calendar, Key, AlertCircle, ShieldCheck } from 'lucide-react';
 
 interface DatasetRentalMarketProps {
   rentalMarket: RentalMarketData;
@@ -33,15 +33,10 @@ export const DatasetRentalMarket: React.FC<DatasetRentalMarketProps> = ({ rental
           </div>
         </div>
 
-        <a
-          href="https://www.carte.observatoire-des-loyers.org/"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="px-4 py-2.5 rounded-xl bg-white hover:bg-slate-50 text-cyan-900 text-xs sm:text-sm font-bold border border-cyan-200 flex items-center gap-2 transition-colors shadow-xs"
-        >
-          <span>Observatoire des Loyers</span>
-          <ExternalLink className="w-4 h-4" />
-        </a>
+        <div className="px-4 py-2.5 rounded-xl bg-white text-cyan-900 text-xs sm:text-sm font-bold border border-cyan-200 flex items-center gap-2 shadow-2xs">
+          <ShieldCheck className="w-4 h-4 text-cyan-600" />
+          <span>Données Référence OLL</span>
+        </div>
       </div>
 
       {/* Rent Control Encadrement Warning Banner */}

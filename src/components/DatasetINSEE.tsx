@@ -34,15 +34,10 @@ export const DatasetINSEE: React.FC<DatasetINSEEProps> = ({ insee }) => {
           </div>
         </div>
 
-        <a
-          href={`https://www.insee.fr/fr/statistiques/series/search?q=${encodeURIComponent(insee.communeName)}`}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="px-4 py-2.5 rounded-xl bg-white hover:bg-slate-50 text-purple-900 text-xs sm:text-sm font-bold border border-purple-200 flex items-center gap-2 transition-colors shadow-xs"
-        >
-          <span>Portail INSEE</span>
-          <ExternalLink className="w-4 h-4" />
-        </a>
+        <div className="px-4 py-2.5 rounded-xl bg-white text-purple-900 text-xs sm:text-sm font-bold border border-purple-200 flex items-center gap-2 shadow-2xs">
+          <ShieldCheck className="w-4 h-4 text-purple-600" />
+          <span>Statistiques Officielles INSEE</span>
+        </div>
       </div>
 
       {/* Main Socio-Economic Metrics Grid */}

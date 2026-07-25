@@ -259,6 +259,73 @@ export interface ConstructionPermitData {
   impactOnNeighborhoodValue?: string;
 }
 
+export interface ElectedOfficial {
+  name: string;
+  role: string;
+  politicalTendency: string;
+  partyAbbreviation: string;
+  mandateYears: string;
+  keyProjects: string[];
+  description?: string;
+}
+
+export interface ElusData {
+  mayorName: string;
+  mayorParty: string;
+  mayorPoliticalTendency: string;
+  municipalCouncilSize: number;
+  politicalTendencyOverview: string;
+  lastElectionTurnoutPercent: number;
+  keyMunicipalProgram: string[];
+  officials: ElectedOfficial[];
+  departmentalRepresentatives: ElectedOfficial[];
+  regionalRepresentatives: ElectedOfficial[];
+  localTaxPolicyVision: string;
+}
+
+export interface CulturalSite {
+  id: string;
+  name: string;
+  category: 'Musée & Galerie' | 'Théâtre & Spectacle' | 'Médiathèque & Bibliothèque' | 'Monument Historique' | 'Cinéma' | 'Conservatoire & École d\'Art';
+  distanceMeters: number;
+  walkTimeMinutes: number;
+  isHistoricalMonument: boolean;
+  description: string;
+  address?: string;
+}
+
+export interface CulturalData {
+  totalCulturalSites500m: number;
+  totalHistoricalMonuments: number;
+  culturalDensityScore: number; // 0-100
+  keySites: CulturalSite[];
+  annualEventsCount: number;
+  nearbyLibrariesCount: number;
+  nearbyCinemasCount: number;
+  nearbyTheatresCount: number;
+}
+
+export interface ConnectivityOperator {
+  name: string;
+  hasFiber: boolean;
+  maxDownloadSpeed: string;
+  maxUploadSpeed: string;
+  coverage5G: 'Excellente' | 'Bonne' | 'Moyenne';
+}
+
+export interface ConnectivityData {
+  fiberEligible: boolean;
+  fiberCoveragePercent: number;
+  maxDownloadMbps: number;
+  maxUploadMbps: number;
+  operatorsAvailable: ConnectivityOperator[];
+  adslStatus: string;
+  mobile5gRating: 'Excellente' | 'Très Bonne' | 'Moyenne';
+  arcepDataYear: string;
+  starlinkSatelliteEligible: boolean;
+  copperPhaseOutYear: number;
+}
+
 export interface PropertyReport {
   address: BANData;
   briquiaIndexScore: number; // 0 to 100
@@ -277,6 +344,10 @@ export interface PropertyReport {
   safetySecurity: SafetySecurityData;
   qualityOfLife: QualityOfLifeData;
   constructionPermits: ConstructionPermitData;
+  elus: ElusData;
+  cultural: CulturalData;
+  connectivity: ConnectivityData;
 }
 
-export type ActiveNavTab = 'search' | 'dataset-ban' | 'dataset-dvf' | 'dataset-dpe' | 'dataset-georisques' | 'dataset-insee' | 'dataset-plu' | 'dataset-water' | 'dataset-rental' | 'dataset-safety' | 'dataset-quality' | 'dataset-permits' | 'compare' | 'ai-synthesis';
+export type ActiveNavTab = 'search' | 'dataset-ban' | 'dataset-dvf' | 'dataset-dpe' | 'dataset-georisques' | 'dataset-insee' | 'dataset-plu' | 'dataset-water' | 'dataset-rental' | 'dataset-safety' | 'dataset-quality' | 'dataset-permits' | 'dataset-elus' | 'dataset-cultural' | 'dataset-connectivity' | 'compare' | 'ai-synthesis';
+
