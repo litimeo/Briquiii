@@ -1,6 +1,6 @@
 import React from 'react';
 import { ConstructionPermitData } from '../types';
-import { HardHat, FileCheck2, Hammer, Building, AlertCircle, Clock, CheckCircle2, ArrowUpRight } from 'lucide-react';
+import { HardHat, FileCheck2, Hammer, Building, AlertCircle, Clock, CheckCircle2, ArrowUpRight, ExternalLink } from 'lucide-react';
 
 interface DatasetConstructionPermitsProps {
   constructionPermits: ConstructionPermitData;
@@ -22,6 +22,8 @@ export const DatasetConstructionPermits: React.FC<DatasetConstructionPermitsProp
     }
   };
 
+  const totalSurfaceM2 = constructionPermits.recentPermits.reduce((acc, curr) => acc + (curr.surfaceM2Created || 0), 0);
+
   return (
     <div className="bg-white rounded-3xl border border-slate-200/90 p-6 sm:p-8 shadow-sm space-y-6">
       
@@ -33,45 +35,55 @@ export const DatasetConstructionPermits: React.FC<DatasetConstructionPermitsProp
               <HardHat className="w-5 h-5" />
             </div>
             <div>
-              <h2 className="text-xl sm:text-2xl font-extrabold text-slate-900 font-heading">Permis de Construire & Autorisations d'Urbanisme</h2>
+              <h2 className="text-xl sm:text-2xl font-extrabold text-slate-900 font-heading">Permis de Construire & Sitadel</h2>
               <p className="text-xs sm:text-sm text-slate-500 font-medium">Suivi des demandes de permis de construire (Sitadel - Ministère de la Transition Écologique).</p>
             </div>
           </div>
         </div>
 
-        <div className="flex items-center gap-2 bg-amber-50 border border-amber-200/90 px-4 py-2 rounded-2xl self-start sm:self-auto">
-          <Building className="w-4 h-4 text-amber-700" />
-          <div>
-            <div className="text-[10px] font-bold text-amber-900 uppercase tracking-wider">Activité d'Urbanisme</div>
-            <div className="text-xs font-black text-slate-900">{constructionPermits.constructionActivityLevel}</div>
-          </div>
-        </div>
+        <a
+          href="https://www.statistiques.developpement-durable.gouv.fr/construction-de-logements-sitadel"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="px-4 py-2.5 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-900 text-xs sm:text-sm font-bold border border-amber-200 flex items-center gap-2 transition-colors shadow-xs self-start sm:self-auto"
+        >
+          <span>Base Sitadel Officielle</span>
+          <ExternalLink className="w-4 h-4" />
+        </a>
       </div>
 
       {/* KPI Stats Row */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
         <div className="p-4 sm:p-5 rounded-2xl bg-slate-50 border border-slate-200/80 space-y-1">
-          <div className="text-xs font-bold text-slate-500 uppercase tracking-wider">Autorisations à 500m</div>
+          <div className="text-xs font-bold text-slate-500 uppercase tracking-wider">Autorisations 500m</div>
           <div className="text-2xl sm:text-3xl font-black text-slate-900 font-heading">
             {constructionPermits.totalPermits500m} <span className="text-xs font-normal text-slate-500">dossiers</span>
           </div>
-          <p className="text-[11px] text-slate-500">Permis de construire & déclarations sur le secteur</p>
+          <p className="text-[11px] text-slate-500">Permis & déclarations secteur</p>
         </div>
 
         <div className="p-4 sm:p-5 rounded-2xl bg-slate-50 border border-slate-200/80 space-y-1">
-          <div className="text-xs font-bold text-slate-500 uppercase tracking-wider">Permis Récents (2 ans)</div>
+          <div className="text-xs font-bold text-slate-500 uppercase tracking-wider">Permis Récents</div>
           <div className="text-2xl sm:text-3xl font-black text-amber-600 font-heading">
             {constructionPermits.permitsLast2Years} <span className="text-xs font-normal text-slate-500">projets</span>
           </div>
-          <p className="text-[11px] text-slate-500">Déposés ou accordés depuis moins de 24 mois</p>
+          <p className="text-[11px] text-slate-500">Moins de 24 mois</p>
         </div>
 
         <div className="p-4 sm:p-5 rounded-2xl bg-slate-50 border border-slate-200/80 space-y-1">
-          <div className="text-xs font-bold text-slate-500 uppercase tracking-wider">Grands Projets / Collectifs</div>
+          <div className="text-xs font-bold text-slate-500 uppercase tracking-wider">Grands Projets</div>
           <div className="text-2xl sm:text-3xl font-black text-slate-900 font-heading">
             {constructionPermits.majorProjectsCount} <span className="text-xs font-normal text-slate-500">programmes</span>
           </div>
-          <p className="text-[11px] text-slate-500">Création de logements neufs ou surfaces tertiaires</p>
+          <p className="text-[11px] text-slate-500">Création de logements neufs</p>
+        </div>
+
+        <div className="p-4 sm:p-5 rounded-2xl bg-slate-50 border border-slate-200/80 space-y-1">
+          <div className="text-xs font-bold text-slate-500 uppercase tracking-wider">Surface Plancher Récents</div>
+          <div className="text-2xl sm:text-3xl font-black text-amber-800 font-heading">
+            +{totalSurfaceM2.toLocaleString('fr-FR')} <span className="text-xs font-normal text-slate-500">m²</span>
+          </div>
+          <p className="text-[11px] text-slate-500">Surface cumulée créée</p>
         </div>
       </div>
 
@@ -125,3 +137,4 @@ export const DatasetConstructionPermits: React.FC<DatasetConstructionPermitsProp
     </div>
   );
 };
+

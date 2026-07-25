@@ -439,6 +439,10 @@ export function generateReportForAddress(addr: AddressSearchResult): PropertyRep
     overallSanitaryStatus: complianceBacterial > 99.5 ? 'Excellente Qualité' : 'Bonne Qualité',
     lastArsControlDate: `2024-${String(1 + (hashInt % 11)).padStart(2, '0')}-${String(1 + (hashInt % 28)).padStart(2, '0')}`,
     networkManager: `Régie des Eaux de la Communauté de Communes de ${addr.city}`,
+    pesticidesDetected: false,
+    heavyMetalsConformity: true,
+    waterOrigin: 'Nappe phréatique sous-terraine protégée (Captage de profondeur)',
+    limescaleRiskScore: Math.min(10, Math.round(hardnessVal / 3)),
   };
 
   // 2. DATASET RENTAL MARKET (Carte des Loyers / Ministère du Logement & OLL)
@@ -458,6 +462,13 @@ export function generateReportForAddress(addr: AddressSearchResult): PropertyRep
     avgRent60m2T3Eur: Math.round(60 * avgRentApartmentPerM2),
     occupancyRatePercent: Number((96.5 + ((hashInt % 30) / 10)).toFixed(1)),
     dataYear: '2024 (OLL / Carte des Loyers)',
+    avgRentStudio30m2: Math.round(30 * avgRentApartmentPerM2),
+    avgRentT2_45m2: Math.round(45 * avgRentApartmentPerM2 * 0.95),
+    avgRentT3_60m2: Math.round(60 * avgRentApartmentPerM2 * 0.90),
+    avgRentT4_80m2: Math.round(80 * avgRentApartmentPerM2 * 0.86),
+    netYieldPercent: Number((grossYieldPercent * 0.72).toFixed(2)),
+    rentControlStatus: isParisOrIDF ? 'Encadrement des loyers actif (Plafond préfectoral respecté)' : 'Non soumis à l\'encadrement préfectoral',
+    avgDaysToLease: Math.max(8, Math.round(18 - (avgRentApartmentPerM2 * 0.3))),
   };
 
   // 3. DATASET SAFETY & SECURITY (SSMSI Police / Gendarmerie)
@@ -475,6 +486,10 @@ export function generateReportForAddress(addr: AddressSearchResult): PropertyRep
     nationalBurglariesAvgPer1000: 5.1,
     nationalDamageAvgPer1000: 9.8,
     policeDistrictName: `Commissariat de Police Nationale de ${addr.city}`,
+    vehicleTheftsPer1000: Number((burglariesVal * 0.7).toFixed(1)),
+    assaultsPer1000: Number((burglariesVal * 0.5).toFixed(1)),
+    serenityRankInDept: `Top ${(100 - securityIndexScore + 5)}% des communes les plus sûres`,
+    nighttimeSafetyScore: Math.min(98, Math.max(55, securityIndexScore - 5)),
   };
 
   // Highlights & Red Flags
@@ -551,6 +566,11 @@ export function generateReportForAddress(addr: AddressSearchResult): PropertyRep
     parcelAreaM2,
     buildingFootprintM2,
     cadastreSectionName: `Section ${sectionCode} Parcelle N°${parcelNum}`,
+    gardenAreaM2: Math.max(0, parcelAreaM2 - buildingFootprintM2),
+    landCoveragePercent: Math.round((buildingFootprintM2 / parcelAreaM2) * 100),
+    buildableAreaM2: Math.round(parcelAreaM2 * 0.75 - buildingFootprintM2),
+    epsgProjection: 'Lambert 93 (EPSG:2192)',
+    cadastreUpdateDate: 'Mise à jour Cadastre DGFiP 2024-Q4',
   };
 
   const dvfData: DVFData = {
@@ -562,6 +582,10 @@ export function generateReportForAddress(addr: AddressSearchResult): PropertyRep
     totalTransactionsInArea: 35 + Math.floor(rawHash * 40),
     recentSales,
     historicalPriceTrend: historicalTrend,
+    streetVsCityPriceGapPercent: Number((((medianPriceStreet - medianPriceCity) / medianPriceCity) * 100).toFixed(1)),
+    negotiabilityMarginPercent: Number((3.5 + (rawHash * 3.2)).toFixed(1)),
+    avgPricePerRoom: Math.round(medianPriceStreet * 28),
+    liquidityScore: Math.min(98, Math.max(50, Math.round(72 + (rawHash * 22)))),
   };
 
   const dpeData: DPEData = {
@@ -580,6 +604,12 @@ export function generateReportForAddress(addr: AddressSearchResult): PropertyRep
     },
     isPassoireThermique: isPassoire,
     rentalBanDate,
+    estimatedMonthlyCostMin: Math.round(estimatedAnnualCostMin / 12),
+    estimatedMonthlyCostMax: Math.round(estimatedAnnualCostMax / 12),
+    recommendedRenovationBudget: isPassoire ? Math.round(sampleSurface * 450) : Math.round(sampleSurface * 120),
+    maPrimeRenovGrantEstimate: isPassoire ? Math.round(sampleSurface * 180) : Math.round(sampleSurface * 40),
+    co2EquivalentCarKm: Math.round((co2EmissionsKgM2Year * sampleSurface) * 8.2),
+    thermalLossBreakdown: energyRating <= 'C' ? { roof: 15, walls: 20, windows: 15, ventilation: 20 } : { roof: 30, walls: 25, windows: 20, ventilation: 15 },
   };
 
   const georisquesData: GeorisquesData = {
@@ -607,6 +637,20 @@ export function generateReportForAddress(addr: AddressSearchResult): PropertyRep
       sitesWithin1km: hashInt % 3,
       description: hashInt % 3 === 0 ? 'Aucun site industriel BASIAS/SEVESO recensé dans le périmètre direct de 1000 mètres.' : '1 site industriel historique BASIAS répertorié à 750 mètres.',
     },
+    mouvementsTerrain: {
+      level: hashInt % 4 === 0 ? 'Modéré' : 'Faible',
+      description: 'Stabilisation des talus et cavités souterraines sous contrôle municipal.',
+    },
+    cavitesSouterraines: {
+      count: hashInt % 5 === 0 ? 1 : 0,
+      description: 'Inventaire national des cavités souterraines (BD Cavités BRGM).',
+    },
+    basiasPollution: {
+      count: hashInt % 3,
+      description: 'Sites industriels et activités de service historiques (BASIAS).',
+    },
+    insuranceSurprimePercent: floodInPpri ? 12 : clayLevel === 'Fort' ? 8 : 0,
+    ialObligationCompliant: true,
     allFactors: [
       { name: 'Risque Inondation (PPRI)', level: floodLevel, code: 'INOND', description: floodInPpri ? 'Zone soumise au plan de prévention des inondations' : 'Sans restriction particulière', iconName: 'Waves' },
       { name: 'Retrait-Gonflement Argiles', level: clayLevel === 'Fort' ? 'Élevé' : clayLevel === 'Moyen' ? 'Modéré' : 'Faible', code: 'ARGIL', description: 'Mouvements de terrain différentiels', iconName: 'Layers' },
@@ -626,6 +670,12 @@ export function generateReportForAddress(addr: AddressSearchResult): PropertyRep
     unemploymentRatePercent: deptMeta.unemp,
     executiveWorkersPercent,
     safetyScore: safetySecurityData.securityIndexScore,
+    employeesPercent: Number((28.5 + (rawHash * 8)).toFixed(1)),
+    workersPercent: Number((16.2 + (rawHash * 6)).toFixed(1)),
+    retireesPercent: Number((22.4 + (rawHash * 10)).toFixed(1)),
+    singlePersonHouseholdsPercent: Number((42.1 + (rawHash * 14)).toFixed(1)),
+    familiesWithChildrenPercent: Number((34.5 + (rawHash * 10)).toFixed(1)),
+    avgHouseholdSize: Number((2.1 + (rawHash * 0.4)).toFixed(2)),
   };
 
   const pluAmenitiesData: PluAndAmenitiesData = {
@@ -638,9 +688,12 @@ export function generateReportForAddress(addr: AddressSearchResult): PropertyRep
     noiseLevelDb: isParisOrIDF ? 62 : 52,
     noiseCategory,
     nearbyAmenities: amenities,
+    maxGreenSpacePercent: 20,
+    abfProtectionZone: isParisOrIDF || hashInt % 3 === 0,
+    abfZoneName: isParisOrIDF || hashInt % 3 === 0 ? 'Périmètre de 500m autour d\'un Monument Historique Protégé' : 'Hors périmètre ABF',
+    airQualityAtmoIndex: 'Bon (1/6)',
   };
 
-  // 4. DATASET QUALITY OF LIFE (INSEE / OpenStreetMap / BPE)
   const qualityOfLifeData: QualityOfLifeData = {
     overallScore: Math.round((walkScore * 0.4) + (safetySecurityData.securityIndexScore * 0.3) + 20),
     categories: {
@@ -675,6 +728,9 @@ export function generateReportForAddress(addr: AddressSearchResult): PropertyRep
         nearestWalkTimeMinutes: Math.max(1, Math.round(2 + (rawHash * 3))),
       },
     },
+    airQualityIndex: 2, // Atmo 1-6
+    greenSpaceM2PerHab: Math.round(18 + (rawHash * 35)),
+    atmoRating: 'Indice ATMO 2/6 (Bonne Qualité de l\'Air)',
   };
 
   // 5. DATASET CONSTRUCTION PERMITS & SITADEL (Ministère de la Transition Écologique)

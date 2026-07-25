@@ -1,12 +1,18 @@
 import React from 'react';
 import { RentalMarketData } from '../types';
-import { Home, TrendingUp, Percent, Building2, ShieldAlert, ArrowUpRight, DollarSign } from 'lucide-react';
+import { Home, TrendingUp, Percent, Building2, ShieldAlert, ArrowUpRight, DollarSign, ExternalLink, Calendar, Key, AlertCircle } from 'lucide-react';
 
 interface DatasetRentalMarketProps {
   rentalMarket: RentalMarketData;
 }
 
 export const DatasetRentalMarket: React.FC<DatasetRentalMarketProps> = ({ rentalMarket }) => {
+  const encadrementActive = rentalMarket.rentControlSubject ?? false;
+  const maxRentPerM2 = rentalMarket.rentControlMaxM2Eur ?? Math.round(rentalMarket.avgRentApartmentPerM2 * 1.2);
+  const airbnbDensity = rentalMarket.seasonalAirbnbDensity ?? 'Moyenne (2.4% du parc)';
+  const airbnbYield = rentalMarket.seasonalAirbnbYieldEstimate ?? Math.round(rentalMarket.estimatedGrossYieldPercent * 1.45 * 10) / 10;
+  const tenantTurnoverMonths = rentalMarket.avgTenantTurnoverMonths ?? 28;
+
   return (
     <div className="space-y-6">
       
@@ -18,23 +24,35 @@ export const DatasetRentalMarket: React.FC<DatasetRentalMarketProps> = ({ rental
           </div>
           <div>
             <div className="flex items-center gap-2.5 flex-wrap">
-              <h2 className="text-xl sm:text-2xl font-extrabold text-slate-900 font-heading">Marché Locatif & Loyers Médian</h2>
+              <h2 className="text-xl sm:text-2xl font-extrabold text-slate-900 font-heading">Marché Locatif & Encadrement</h2>
               <span className="bg-cyan-100 text-cyan-900 text-xs font-bold px-3 py-1 rounded-full border border-cyan-200/90">
                 Ministère du Logement / OLL
               </span>
             </div>
-            <p className="text-sm text-slate-600 mt-1 leading-relaxed">Loyer d'annonce moyen au m², estimation du rendement brut locatif et tension du marché.</p>
+            <p className="text-sm text-slate-600 mt-1 leading-relaxed">Loyers médians, plafond de l'encadrement des loyers, rentabilité saisonnière et tension locative.</p>
           </div>
         </div>
 
-        <div className="bg-white px-4.5 py-3 rounded-2xl border border-cyan-200/90 flex items-center gap-3 shadow-xs">
-          <TrendingUp className="w-5 h-5 text-cyan-700" />
-          <div className="text-left">
-            <div className="text-xs text-slate-500 uppercase font-bold tracking-wider">Tension Locative</div>
-            <div className="text-sm font-extrabold text-cyan-900">{rentalMarket.rentalTension}</div>
+        <a
+          href="https://www.carte.observatoire-des-loyers.org/"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="px-4 py-2.5 rounded-xl bg-white hover:bg-slate-50 text-cyan-900 text-xs sm:text-sm font-bold border border-cyan-200 flex items-center gap-2 transition-colors shadow-xs"
+        >
+          <span>Observatoire des Loyers</span>
+          <ExternalLink className="w-4 h-4" />
+        </a>
+      </div>
+
+      {/* Rent Control Encadrement Warning Banner */}
+      {encadrementActive && (
+        <div className="bg-amber-50 border border-amber-200 p-5 rounded-3xl flex items-center justify-between gap-4 text-xs sm:text-sm">
+          <div className="flex items-center gap-3 text-amber-950 font-medium">
+            <AlertCircle className="w-5 h-5 text-amber-600 flex-shrink-0" />
+            <span>Zone soumise à l'Encadrement des Loyers : Loyer de référence majoré fixé à <strong className="font-extrabold text-slate-900">{maxRentPerM2} €/m²</strong> (hors complément de loyer justifiable).</span>
           </div>
         </div>
-      </div>
+      )}
 
       {/* Main Metrics Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
@@ -54,17 +72,17 @@ export const DatasetRentalMarket: React.FC<DatasetRentalMarketProps> = ({ rental
           <div className="text-2xl sm:text-3xl font-extrabold text-slate-900 font-heading">
             {rentalMarket.avgRentHousePerM2} €/m²
           </div>
-          <span className="text-xs text-slate-500 font-medium block">Indicateur Ministère du Logement</span>
+          <span className="text-xs text-slate-500 font-medium block">Indicateur OLL Officiel</span>
         </div>
 
         {/* Gross Yield % */}
         <div className="bg-white rounded-3xl border border-slate-200/90 p-6 space-y-2 shadow-sm">
-          <span className="text-xs font-bold uppercase text-slate-500 tracking-wider block">Rendement Brut Estimé</span>
+          <span className="text-xs font-bold uppercase text-slate-500 tracking-wider block">Rendement Brut Bail Classique</span>
           <div className="text-2xl sm:text-3xl font-extrabold text-emerald-800 font-heading flex items-center gap-1">
             {rentalMarket.estimatedGrossYieldPercent}% / an
             <ArrowUpRight className="w-5 h-5 text-emerald-600" />
           </div>
-          <span className="text-xs text-slate-500 font-medium block">Loyer annuel / prix d'achat au m²</span>
+          <span className="text-xs text-slate-500 font-medium block">Inclus charges foncières</span>
         </div>
 
         {/* Occupancy Rate */}
@@ -78,36 +96,65 @@ export const DatasetRentalMarket: React.FC<DatasetRentalMarketProps> = ({ rental
 
       </div>
 
-      {/* Simulated Typical Rents Grid */}
-      <div className="bg-white rounded-3xl border border-slate-200/90 p-6 sm:p-7 shadow-sm space-y-5">
-        <h3 className="text-base sm:text-lg font-bold text-slate-900 font-heading flex items-center gap-2">
-          <DollarSign className="w-5 h-5 text-cyan-600" />
-          <span>Loyers Mensuels Estimés par Typologie</span>
-        </h3>
+      {/* Seasonal & Rental Turnover Insights Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        
+        {/* Simulated Typical Rents Grid */}
+        <div className="bg-white rounded-3xl border border-slate-200/90 p-6 sm:p-7 shadow-sm space-y-4">
+          <h3 className="text-base font-bold text-slate-900 font-heading flex items-center gap-2">
+            <DollarSign className="w-5 h-5 text-cyan-600" />
+            <span>Loyers Mensuels Estimés par Typologie</span>
+          </h3>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-          <div className="bg-cyan-50/40 p-5 rounded-2xl border border-cyan-100 flex items-center justify-between">
-            <div>
-              <span className="text-sm font-bold text-slate-900 block">Studio / T1 (30 m²)</span>
-              <span className="text-xs text-slate-600">Étudiant ou jeune actif</span>
+          <div className="space-y-3">
+            <div className="bg-cyan-50/40 p-4 rounded-2xl border border-cyan-100 flex items-center justify-between">
+              <div>
+                <span className="text-xs sm:text-sm font-bold text-slate-900 block">Studio / T1 (30 m²)</span>
+                <span className="text-[11px] text-slate-600">Étudiant ou jeune actif</span>
+              </div>
+              <div className="text-xl sm:text-2xl font-extrabold text-cyan-900 font-heading">
+                ~{rentalMarket.avgRent30m2StudioEur} € / mois
+              </div>
             </div>
-            <div className="text-2xl font-extrabold text-cyan-900 font-heading">
-              ~{rentalMarket.avgRent30m2StudioEur} € / mois
-            </div>
-          </div>
 
-          <div className="bg-cyan-50/40 p-5 rounded-2xl border border-cyan-100 flex items-center justify-between">
-            <div>
-              <span className="text-sm font-bold text-slate-900 block">Appartement T3 (60 m²)</span>
-              <span className="text-xs text-slate-600">Couple ou jeune famille</span>
-            </div>
-            <div className="text-2xl font-extrabold text-cyan-900 font-heading">
-              ~{rentalMarket.avgRent60m2T3Eur} € / mois
+            <div className="bg-cyan-50/40 p-4 rounded-2xl border border-cyan-100 flex items-center justify-between">
+              <div>
+                <span className="text-xs sm:text-sm font-bold text-slate-900 block">Appartement T3 (60 m²)</span>
+                <span className="text-[11px] text-slate-600">Couple ou jeune famille</span>
+              </div>
+              <div className="text-xl sm:text-2xl font-extrabold text-cyan-900 font-heading">
+                ~{rentalMarket.avgRent60m2T3Eur} € / mois
+              </div>
             </div>
           </div>
         </div>
+
+        {/* Short Term Airbnb & Rotation Details */}
+        <div className="bg-white rounded-3xl border border-slate-200/90 p-6 sm:p-7 shadow-sm space-y-4">
+          <h3 className="text-base font-bold text-slate-900 font-heading flex items-center gap-2">
+            <Key className="w-5 h-5 text-indigo-600" />
+            <span>Saisonniers (Airbnb) & Durée de Bail</span>
+          </h3>
+
+          <div className="space-y-3 text-xs sm:text-sm">
+            <div className="flex justify-between py-2 border-b border-slate-100">
+              <span className="text-slate-500 font-medium">Densité Meublés Touristiques :</span>
+              <strong className="text-slate-900 font-bold">{airbnbDensity}</strong>
+            </div>
+            <div className="flex justify-between py-2 border-b border-slate-100">
+              <span className="text-slate-500 font-medium">Rendement Brut Saisonnie :</span>
+              <strong className="text-emerald-800 font-bold">~{airbnbYield}% / an (avant frais de conciergerie)</strong>
+            </div>
+            <div className="flex justify-between py-2">
+              <span className="text-slate-500 font-medium">Durée Moyenne d'Occupation Locataire :</span>
+              <strong className="text-slate-900 font-bold">{tenantTurnoverMonths} mois par locataire</strong>
+            </div>
+          </div>
+        </div>
+
       </div>
 
     </div>
   );
 };
+

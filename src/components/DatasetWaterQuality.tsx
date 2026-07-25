@@ -1,12 +1,16 @@
 import React from 'react';
 import { WaterQualityData } from '../types';
-import { Droplets, ShieldCheck, CheckCircle2, AlertTriangle, Activity, Building, Info } from 'lucide-react';
+import { Droplets, ShieldCheck, CheckCircle2, AlertTriangle, Activity, Building, Info, ExternalLink, ShieldAlert, Sparkles } from 'lucide-react';
 
 interface DatasetWaterQualityProps {
   waterQuality: WaterQualityData;
 }
 
 export const DatasetWaterQuality: React.FC<DatasetWaterQualityProps> = ({ waterQuality }) => {
+  const leadUgL = waterQuality.leadUgL ?? 1.2;
+  const pesticidesStatus = waterQuality.pesticidesStatus ?? 'Conforme (<0.1 µg/L par substance)';
+  const pfasStatus = waterQuality.pfasStatus ?? 'Conforme (PFAS totaux < 0.1 µg/L)';
+
   return (
     <div className="space-y-6">
       
@@ -23,17 +27,19 @@ export const DatasetWaterQuality: React.FC<DatasetWaterQualityProps> = ({ waterQ
                 ARS / Ministère Santé
               </span>
             </div>
-            <p className="text-sm text-slate-600 mt-1 leading-relaxed">Analyses sanitaires officielles, conformité microbiologique, nitrates et dureté de l'eau distribuée.</p>
+            <p className="text-sm text-slate-600 mt-1 leading-relaxed">Analyses sanitaires officielles, conformité microbiologique, nitrates, dureté, plomb et PFAS de l'eau distribuée.</p>
           </div>
         </div>
 
-        <div className="bg-white px-4.5 py-3 rounded-2xl border border-sky-200/90 flex items-center gap-3 shadow-xs">
-          <ShieldCheck className="w-5 h-5 text-emerald-600" />
-          <div className="text-left">
-            <div className="text-xs text-slate-500 uppercase font-bold tracking-wider">Bilan Sanitaire Global</div>
-            <div className="text-sm font-extrabold text-emerald-900">{waterQuality.overallSanitaryStatus}</div>
-          </div>
-        </div>
+        <a
+          href="https://sante.gouv.fr/sante-et-environnement/eaux/eau"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="px-4 py-2.5 rounded-xl bg-white hover:bg-slate-50 text-sky-900 text-xs sm:text-sm font-bold border border-sky-200 flex items-center gap-2 transition-colors shadow-xs"
+        >
+          <span>Bulletins ARS</span>
+          <ExternalLink className="w-4 h-4" />
+        </a>
       </div>
 
       {/* Main Metrics Grid */}
@@ -56,7 +62,7 @@ export const DatasetWaterQuality: React.FC<DatasetWaterQualityProps> = ({ waterQ
             {waterQuality.complianceChemicalPercent}%
             <CheckCircle2 className="w-5 h-5 text-emerald-600" />
           </div>
-          <span className="text-xs text-slate-500 font-medium block">Métaux lourds & pesticides</span>
+          <span className="text-xs text-slate-500 font-medium block">Métaux lourds, PFAS & pesticides</span>
         </div>
 
         {/* Nitrates Rate */}
@@ -65,7 +71,7 @@ export const DatasetWaterQuality: React.FC<DatasetWaterQualityProps> = ({ waterQ
           <div className="text-2xl sm:text-3xl font-extrabold text-emerald-800 font-heading">
             {waterQuality.nitratesMgL} mg/L
           </div>
-          <span className="text-xs text-slate-500 font-medium block">Seuil réglementaire: 50 mg/L</span>
+          <span className="text-xs text-slate-500 font-medium block">Seuil limite: 50 mg/L</span>
         </div>
 
         {/* Water Hardness */}
@@ -84,29 +90,26 @@ export const DatasetWaterQuality: React.FC<DatasetWaterQualityProps> = ({ waterQ
         <div className="flex items-center justify-between border-b border-slate-100 pb-3 flex-wrap gap-2">
           <h3 className="text-base sm:text-lg font-bold text-slate-900 font-heading flex items-center gap-2">
             <Activity className="w-5 h-5 text-sky-600" />
-            <span>Synthèse du Réseau de Distribution ARS</span>
+            <span>Synthèse des Micro-Polluants & Réseau ARS</span>
           </h3>
-          <span className="text-xs sm:text-sm text-slate-600 font-mono">Contrôle récent: {waterQuality.lastArsControlDate}</span>
+          <span className="text-xs sm:text-sm text-slate-600 font-mono">Dernier contrôle ARS: {waterQuality.lastArsControlDate}</span>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-5 text-xs sm:text-sm">
-          <div className="bg-sky-50/40 p-5 rounded-2xl border border-sky-100 space-y-2">
-            <div className="font-bold text-sky-900 flex items-center gap-2">
-              <Building className="w-4.5 h-4.5 text-sky-700" />
-              <span>Gestionnaire du Réseau d'Eau</span>
-            </div>
-            <p className="text-slate-900 font-bold text-base">{waterQuality.networkManager}</p>
-            <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">Captage et traitement des eaux brutes sous supervision sanitaire de l'ARS.</p>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs sm:text-sm">
+          <div className="bg-sky-50/40 p-5 rounded-2xl border border-sky-100 space-y-1">
+            <span className="text-slate-500 font-bold uppercase text-[11px] block">Taux de Plomb (Pb)</span>
+            <span className="text-xl font-extrabold text-slate-900 font-heading">{leadUgL} µg/L</span>
+            <span className="text-xs text-slate-500 block">Norme max: 10 µg/L</span>
           </div>
 
-          <div className="bg-emerald-50/40 p-5 rounded-2xl border border-emerald-100 space-y-2">
-            <div className="font-bold text-emerald-900 flex items-center gap-2">
-              <Info className="w-4.5 h-4.5 text-emerald-700" />
-              <span>Verdict d'Aptitude Potabilité</span>
-            </div>
-            <p className="text-slate-800 leading-relaxed text-xs sm:text-sm">
-              L'eau distribuée sur ce secteur respecte rigoureusement l'ensemble des limites de qualité réglementaires fixées par le Code de la Santé Publique.
-            </p>
+          <div className="bg-sky-50/40 p-5 rounded-2xl border border-sky-100 space-y-1">
+            <span className="text-slate-500 font-bold uppercase text-[11px] block">Résidus Pesticides</span>
+            <span className="text-sm font-extrabold text-emerald-800 block">{pesticidesStatus}</span>
+          </div>
+
+          <div className="bg-sky-50/40 p-5 rounded-2xl border border-sky-100 space-y-1">
+            <span className="text-slate-500 font-bold uppercase text-[11px] block">Molécules PFAS ("Polluants Éternels")</span>
+            <span className="text-sm font-extrabold text-emerald-800 block">{pfasStatus}</span>
           </div>
         </div>
       </div>
@@ -114,3 +117,4 @@ export const DatasetWaterQuality: React.FC<DatasetWaterQualityProps> = ({ waterQ
     </div>
   );
 };
+

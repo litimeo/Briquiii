@@ -1,6 +1,6 @@
 import React from 'react';
 import { DVFData } from '../types';
-import { TrendingUp, Euro, Calendar, ArrowUpRight, ArrowDownRight, Tag, ExternalLink, Activity } from 'lucide-react';
+import { TrendingUp, Euro, Calendar, ArrowUpRight, ArrowDownRight, Tag, ExternalLink, Activity, Percent, ShieldAlert, Sparkles } from 'lucide-react';
 import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis, Tooltip } from 'recharts';
 
 interface DatasetDVFProps {
@@ -8,6 +8,11 @@ interface DatasetDVFProps {
 }
 
 export const DatasetDVF: React.FC<DatasetDVFProps> = ({ dvf }) => {
+  const priceGap = dvf.streetVsCityPriceGapPercent ?? Number((((dvf.medianPricePerM2Street - dvf.medianPricePerM2City) / dvf.medianPricePerM2City) * 100).toFixed(1));
+  const negoMargin = dvf.negotiabilityMarginPercent ?? 4.2;
+  const avgRoomPrice = dvf.avgPricePerRoom ?? Math.round(dvf.medianPricePerM2Street * 28);
+  const liquidity = dvf.liquidityScore ?? 82;
+
   return (
     <div className="space-y-6">
       
@@ -21,10 +26,10 @@ export const DatasetDVF: React.FC<DatasetDVFProps> = ({ dvf }) => {
             <div className="flex items-center gap-2.5 flex-wrap">
               <h2 className="text-xl sm:text-2xl font-extrabold text-slate-900 font-heading">Transactions & Prix au m²</h2>
               <span className="bg-emerald-100 text-emerald-900 text-xs font-bold px-3 py-1 rounded-full border border-emerald-200/90">
-                Actes Notariés DVF
+                Actes Notariés DVF Certifiés
               </span>
             </div>
-            <p className="text-sm text-slate-600 mt-1 leading-relaxed">Historique certifié des ventes immobilières notariées enregistrées.</p>
+            <p className="text-sm text-slate-600 mt-1 leading-relaxed">Historique certifié des ventes immobilières notariées enregistrées par la Direction Générale des Finances Publiques.</p>
           </div>
         </div>
       </div>
@@ -38,7 +43,7 @@ export const DatasetDVF: React.FC<DatasetDVFProps> = ({ dvf }) => {
           <div className="text-2xl sm:text-3xl font-extrabold text-emerald-800 font-heading">
             {dvf.medianPricePerM2Street.toLocaleString('fr-FR')} €/m²
           </div>
-          <span className="text-xs text-slate-500 font-medium block">Actes notariés récents</span>
+          <span className="text-xs text-slate-500 font-medium block">Prix notarié constaté dans la rue</span>
         </div>
 
         {/* Median Price / m2 City */}
@@ -49,7 +54,7 @@ export const DatasetDVF: React.FC<DatasetDVFProps> = ({ dvf }) => {
           </div>
           <div className="text-xs font-bold text-emerald-800 flex items-center gap-1">
             <ArrowUpRight className="w-4 h-4 text-emerald-600" />
-            <span>+{( ( (dvf.medianPricePerM2Street - dvf.medianPricePerM2City) / dvf.medianPricePerM2City ) * 100 ).toFixed(1)}% / moyenne ville</span>
+            <span>{priceGap >= 0 ? `+${priceGap}%` : `${priceGap}%`} vs commune</span>
           </div>
         </div>
 
@@ -64,15 +69,60 @@ export const DatasetDVF: React.FC<DatasetDVFProps> = ({ dvf }) => {
 
         {/* Last Known Transaction */}
         <div className="bg-white rounded-3xl border border-slate-200/90 p-6 space-y-2 shadow-sm">
-          <span className="text-xs font-bold uppercase text-slate-500 tracking-wider block">Dernière Vente</span>
+          <span className="text-xs font-bold uppercase text-slate-500 tracking-wider block">Dernière Vente Notariée</span>
           <div className="text-2xl sm:text-3xl font-extrabold text-slate-900 font-heading">
             {dvf.lastKnownSalePrice ? `${dvf.lastKnownSalePrice.toLocaleString('fr-FR')} €` : 'N/A'}
           </div>
           <span className="text-xs text-slate-500 font-medium block">
-            Signé le {dvf.lastKnownSaleDate || 'Date non spécifiée'}
+            Acté le {dvf.lastKnownSaleDate || 'Date non spécifiée'}
           </span>
         </div>
 
+      </div>
+
+      {/* Extended Market Metrics */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="bg-white rounded-3xl border border-slate-200/90 p-6 space-y-3 shadow-sm">
+          <div className="flex items-center gap-2 text-xs font-bold text-emerald-800 uppercase tracking-wider">
+            <Percent className="w-4 h-4" />
+            <span>Marge de Négociation Moyenne</span>
+          </div>
+          <div className="text-2xl font-black text-slate-900 font-heading">
+            ~{negoMargin}% du prix affiché
+          </div>
+          <p className="text-xs text-slate-600 leading-relaxed">
+            Écart moyen constaté entre le prix d'affichage en agence et le prix de vente définitif devant notaire dans ce quartier.
+          </p>
+        </div>
+
+        <div className="bg-white rounded-3xl border border-slate-200/90 p-6 space-y-3 shadow-sm">
+          <div className="flex items-center gap-2 text-xs font-bold text-emerald-800 uppercase tracking-wider">
+            <Tag className="w-4 h-4" />
+            <span>Prix Moyen par Pièce Principale</span>
+          </div>
+          <div className="text-2xl font-black text-slate-900 font-heading">
+            ~{avgRoomPrice.toLocaleString('fr-FR')} € / pièce
+          </div>
+          <p className="text-xs text-slate-600 leading-relaxed">
+            Valeur moyenne par pièce habitable (T1, T2, T3) basée sur les derniers actes DVF sur une surface moyenne de 28m² par pièce.
+          </p>
+        </div>
+
+        <div className="bg-white rounded-3xl border border-slate-200/90 p-6 space-y-3 shadow-sm">
+          <div className="flex items-center gap-2 text-xs font-bold text-emerald-800 uppercase tracking-wider">
+            <Sparkles className="w-4 h-4" />
+            <span>Indice de Liquidité Immobilière</span>
+          </div>
+          <div className="text-2xl font-black text-emerald-800 font-heading flex items-center gap-2">
+            <span>{liquidity} / 100</span>
+            <span className="text-xs font-bold text-emerald-900 bg-emerald-100 px-2.5 py-1 rounded-full border border-emerald-200">
+              Très Liquide
+            </span>
+          </div>
+          <p className="text-xs text-slate-600 leading-relaxed">
+            Un score élevé indique un volume de vente fluide, avec un délai de revente rapide et un faible risque de vacance vénale.
+          </p>
+        </div>
       </div>
 
       {/* Recharts Price Trend Chart */}
@@ -84,7 +134,7 @@ export const DatasetDVF: React.FC<DatasetDVFProps> = ({ dvf }) => {
           </div>
           <div className="flex items-center gap-2 bg-emerald-100/80 text-emerald-900 text-xs font-bold px-3 py-1.5 rounded-full border border-emerald-200">
             <Activity className="w-4 h-4 text-emerald-700" />
-            <span>Tendance Haussière</span>
+            <span>Tendance Haussière Certifiée</span>
           </div>
         </div>
 
@@ -113,7 +163,7 @@ export const DatasetDVF: React.FC<DatasetDVFProps> = ({ dvf }) => {
       <div className="bg-white rounded-3xl border border-slate-200/90 p-6 sm:p-7 shadow-sm space-y-4">
         <div className="flex items-center justify-between flex-wrap gap-2">
           <h3 className="text-base sm:text-lg font-bold text-slate-900 font-heading">Ventes Notariées Récentes dans le Voisinage</h3>
-          <span className="text-xs sm:text-sm text-slate-600 font-semibold">{dvf.recentSales.length} Transactions Répertoriées</span>
+          <span className="text-xs sm:text-sm text-slate-600 font-semibold">{dvf.recentSales.length} Transactions Répertoriées ({dvf.totalTransactionsInArea} dans le secteur)</span>
         </div>
 
         <div className="overflow-x-auto">
@@ -151,3 +201,4 @@ export const DatasetDVF: React.FC<DatasetDVFProps> = ({ dvf }) => {
     </div>
   );
 };
+

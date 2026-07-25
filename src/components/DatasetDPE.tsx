@@ -1,6 +1,6 @@
 import React from 'react';
 import { DPEData } from '../types';
-import { Zap, Flame, AlertTriangle, CheckCircle2, ShieldAlert, Thermometer, ExternalLink } from 'lucide-react';
+import { Zap, Flame, AlertTriangle, CheckCircle2, ShieldAlert, Thermometer, ExternalLink, Calculator, PiggyBank, Car, Home } from 'lucide-react';
 
 interface DatasetDPEProps {
   dpe: DPEData;
@@ -21,6 +21,13 @@ export const DatasetDPE: React.FC<DatasetDPEProps> = ({ dpe }) => {
     }
   };
 
+  const monthlyMin = dpe.estimatedMonthlyCostMin ?? Math.round(dpe.estimatedAnnualCostMin / 12);
+  const monthlyMax = dpe.estimatedMonthlyCostMax ?? Math.round(dpe.estimatedAnnualCostMax / 12);
+  const renovationBudget = dpe.recommendedRenovationBudget ?? (dpe.isPassoireThermique ? 31500 : 8400);
+  const grantEstimate = dpe.maPrimeRenovGrantEstimate ?? (dpe.isPassoireThermique ? 12600 : 2800);
+  const carKmEquivalent = dpe.co2EquivalentCarKm ?? Math.round(dpe.co2EmissionsKgM2Year * 70 * 8.2);
+  const thermalLoss = dpe.thermalLossBreakdown ?? (dpe.energyRating <= 'C' ? { roof: 15, walls: 20, windows: 15, ventilation: 20 } : { roof: 30, walls: 25, windows: 20, ventilation: 15 });
+
   return (
     <div className="space-y-6">
       
@@ -34,12 +41,22 @@ export const DatasetDPE: React.FC<DatasetDPEProps> = ({ dpe }) => {
             <div className="flex items-center gap-2.5 flex-wrap">
               <h2 className="text-xl sm:text-2xl font-extrabold text-slate-900 font-heading">Performance Énergétique & DPE</h2>
               <span className="bg-amber-100 text-amber-900 text-xs font-bold px-3 py-1 rounded-full border border-amber-200/90">
-                Bilan DPE Certifié
+                Bilan DPE Certifié ADEME
               </span>
             </div>
-            <p className="text-sm text-slate-600 mt-1 leading-relaxed">Évaluations énergétiques certifiées et estimation des coûts de chauffage.</p>
+            <p className="text-sm text-slate-600 mt-1 leading-relaxed">Évaluations énergétiques certifiées, projection des charges de chauffage et plan MaPrimeRénov'.</p>
           </div>
         </div>
+
+        <a
+          href="https://france-renov.gouv.fr/"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="px-4 py-2.5 rounded-xl bg-white hover:bg-slate-50 text-amber-900 text-xs sm:text-sm font-bold border border-amber-200 flex items-center gap-2 transition-colors shadow-xs"
+        >
+          <span>Aides France Rénov'</span>
+          <ExternalLink className="w-4 h-4" />
+        </a>
       </div>
 
       {/* Passoire Thermique Regulatory Warning Banner if F or G */}
@@ -51,7 +68,7 @@ export const DatasetDPE: React.FC<DatasetDPEProps> = ({ dpe }) => {
               Alerte Passoire Thermique (Loi Climat & Résilience)
             </h4>
             <p className="text-xs sm:text-sm leading-relaxed text-rose-900">
-              Ce logement est classé en <strong className="text-slate-950 underline font-bold">Classe {dpe.energyRating}</strong>. Selon la réglementation française, il est soumis aux gel des loyers et aux interdictions progressives de mise en location ({dpe.rentalBanDate}).
+              Ce logement est classé en <strong className="text-slate-950 underline font-bold">Classe {dpe.energyRating}</strong>. Selon la réglementation française, il est soumis au gel des loyers et aux interdictions progressives de mise en location ({dpe.rentalBanDate}).
             </p>
           </div>
         </div>
@@ -89,12 +106,17 @@ export const DatasetDPE: React.FC<DatasetDPEProps> = ({ dpe }) => {
           
           {/* Estimated Energy Bill */}
           <div className="bg-white rounded-3xl border border-slate-200/90 p-6 sm:p-7 shadow-sm space-y-3">
-            <span className="text-xs font-bold text-slate-500 uppercase tracking-wider block">Facture Énergétique Annuelle Estimée</span>
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-bold text-slate-500 uppercase tracking-wider block">Facture Énergétique Estimée</span>
+              <span className="text-xs font-bold text-amber-900 bg-amber-100 px-2.5 py-1 rounded-md">
+                ~{monthlyMin}€ à {monthlyMax}€ / mois
+              </span>
+            </div>
             <div className="text-2xl sm:text-3xl font-extrabold text-amber-900 font-heading">
               {dpe.estimatedAnnualCostMin.toLocaleString('fr-FR')} € - {dpe.estimatedAnnualCostMax.toLocaleString('fr-FR')} € / an
             </div>
             <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
-              Estimation basée sur un usage standard des équipements de chauffage, eau chaude sanitaire et éclairage.
+              Estimation basée sur un usage standard des équipements de chauffage, eau chaude sanitaire et éclairage (tarifs réglementés 2024).
             </p>
           </div>
 
@@ -130,6 +152,81 @@ export const DatasetDPE: React.FC<DatasetDPEProps> = ({ dpe }) => {
 
       </div>
 
+      {/* Extended Renovation, Grant Estimates & Carbon Footprint Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        
+        {/* Recommended Renovation Budget */}
+        <div className="bg-white rounded-3xl border border-slate-200/90 p-6 space-y-3 shadow-sm">
+          <div className="flex items-center gap-2 text-xs font-bold text-amber-800 uppercase tracking-wider">
+            <Calculator className="w-4 h-4" />
+            <span>Budget Rénovation Énergétique</span>
+          </div>
+          <div className="text-2xl font-black text-slate-900 font-heading">
+            ~{renovationBudget.toLocaleString('fr-FR')} €
+          </div>
+          <p className="text-xs text-slate-600 leading-relaxed">
+            Estimation des travaux pour passer de la classe DPE actuelle à une classe B ou C (isolation, pompe à chaleur, VMC double flux).
+          </p>
+        </div>
+
+        {/* Subsidies MaPrimeRénov */}
+        <div className="bg-white rounded-3xl border border-slate-200/90 p-6 space-y-3 shadow-sm">
+          <div className="flex items-center gap-2 text-xs font-bold text-emerald-800 uppercase tracking-wider">
+            <PiggyBank className="w-4 h-4" />
+            <span>Estimation Subventions MaPrimeRénov'</span>
+          </div>
+          <div className="text-2xl font-black text-emerald-800 font-heading">
+            jusqu'à {grantEstimate.toLocaleString('fr-FR')} €
+          </div>
+          <p className="text-xs text-slate-600 leading-relaxed">
+            Financements publics cumulables (Anah + CEE) accessibles selon les barèmes de revenus pour le parcours accompagné.
+          </p>
+        </div>
+
+        {/* Carbon Impact Equivalent */}
+        <div className="bg-white rounded-3xl border border-slate-200/90 p-6 space-y-3 shadow-sm">
+          <div className="flex items-center gap-2 text-xs font-bold text-amber-800 uppercase tracking-wider">
+            <Car className="w-4 h-4" />
+            <span>Impact Émissions CO₂ Logement</span>
+          </div>
+          <div className="text-2xl font-black text-slate-900 font-heading">
+            {dpe.co2EmissionsKgM2Year} kg/m²/an
+          </div>
+          <p className="text-xs text-slate-600 leading-relaxed">
+            Équivalent à l'empreinte carbone d'environ <strong className="text-slate-900 font-bold">{carKmEquivalent.toLocaleString('fr-FR')} km</strong> parcourus en voiture thermique chaque année.
+          </p>
+        </div>
+
+      </div>
+
+      {/* Thermal Loss Distribution Diagram */}
+      <div className="bg-white rounded-3xl border border-slate-200/90 p-6 sm:p-7 shadow-sm space-y-4">
+        <h3 className="text-base sm:text-lg font-bold text-slate-900 font-heading">Répartition des Déperditions Thermiques Estimées</h3>
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+          <div className="bg-amber-50/60 p-4 rounded-2xl border border-amber-100 text-center">
+            <span className="text-xs text-slate-500 font-bold uppercase block mb-1">Toiture & Combles</span>
+            <span className="text-2xl font-extrabold text-amber-900 font-heading">{thermalLoss.roof}%</span>
+            <span className="text-[11px] text-slate-500 block mt-1">1er poste de déperdition</span>
+          </div>
+          <div className="bg-amber-50/60 p-4 rounded-2xl border border-amber-100 text-center">
+            <span className="text-xs text-slate-500 font-bold uppercase block mb-1">Murs Extérieurs</span>
+            <span className="text-2xl font-extrabold text-amber-900 font-heading">{thermalLoss.walls}%</span>
+            <span className="text-[11px] text-slate-500 block mt-1">Façade & pignons</span>
+          </div>
+          <div className="bg-amber-50/60 p-4 rounded-2xl border border-amber-100 text-center">
+            <span className="text-xs text-slate-500 font-bold uppercase block mb-1">Fenêtres & Portes</span>
+            <span className="text-2xl font-extrabold text-amber-900 font-heading">{thermalLoss.windows}%</span>
+            <span className="text-[11px] text-slate-500 block mt-1">Vitrage & ponts thermiques</span>
+          </div>
+          <div className="bg-amber-50/60 p-4 rounded-2xl border border-amber-100 text-center">
+            <span className="text-xs text-slate-500 font-bold uppercase block mb-1">Renouvellement d'Air</span>
+            <span className="text-2xl font-extrabold text-amber-900 font-heading">{thermalLoss.ventilation}%</span>
+            <span className="text-[11px] text-slate-500 block mt-1">Ventilation VMC</span>
+          </div>
+        </div>
+      </div>
+
     </div>
   );
 };
+

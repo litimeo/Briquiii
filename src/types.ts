@@ -26,6 +26,11 @@ export interface BANData {
   parcelAreaM2: number;
   buildingFootprintM2: number;
   cadastreSectionName: string;
+  gardenAreaM2?: number;
+  landCoveragePercent?: number;
+  buildableAreaM2?: number;
+  epsgProjection?: string;
+  cadastreUpdateDate?: string;
 }
 
 export interface DVFTransaction {
@@ -48,6 +53,10 @@ export interface DVFData {
   totalTransactionsInArea: number;
   recentSales: DVFTransaction[];
   historicalPriceTrend: Array<{ year: string; pricePerM2: number }>;
+  streetVsCityPriceGapPercent?: number;
+  negotiabilityMarginPercent?: number;
+  avgPricePerRoom?: number;
+  liquidityScore?: number;
 }
 
 export interface DPEData {
@@ -66,6 +75,12 @@ export interface DPEData {
   };
   isPassoireThermique: boolean;
   rentalBanDate: string | null;
+  estimatedMonthlyCostMin?: number;
+  estimatedMonthlyCostMax?: number;
+  recommendedRenovationBudget?: number;
+  maPrimeRenovGrantEstimate?: number;
+  co2EquivalentCarKm?: number;
+  thermalLossBreakdown?: { roof: number; walls: number; windows: number; ventilation: number };
 }
 
 export interface RiskFactor {
@@ -102,6 +117,11 @@ export interface GeorisquesData {
     description: string;
   };
   allFactors: RiskFactor[];
+  mouvementsTerrain?: { level: 'Faible' | 'Modéré' | 'Élevé'; description: string };
+  cavitesSouterraines?: { count: number; description: string };
+  basiasPollution?: { count: number; description: string };
+  insuranceSurprimePercent?: number;
+  ialObligationCompliant?: boolean;
 }
 
 export interface InseeData {
@@ -115,6 +135,12 @@ export interface InseeData {
   unemploymentRatePercent: number;
   executiveWorkersPercent: number;
   safetyScore: number; // 0-100
+  employeesPercent?: number;
+  workersPercent?: number;
+  retireesPercent?: number;
+  singlePersonHouseholdsPercent?: number;
+  familiesWithChildrenPercent?: number;
+  avgHouseholdSize?: number;
 }
 
 export interface Amenity {
@@ -134,6 +160,10 @@ export interface PluAndAmenitiesData {
   noiseLevelDb: number;
   noiseCategory: 'Calme (<55dB)' | 'Modéré (55-65dB)' | 'Bruyant (>65dB)';
   nearbyAmenities: Amenity[];
+  maxGreenSpacePercent?: number;
+  abfProtectionZone?: boolean;
+  abfZoneName?: string;
+  airQualityAtmoIndex?: 'Bon (1/6)' | 'Moyen (2/6)' | 'Dégradé (3/6)' | 'Mauvais (4/6)';
 }
 
 export interface WaterQualityData {
@@ -146,6 +176,10 @@ export interface WaterQualityData {
   overallSanitaryStatus: 'Excellente Qualité' | 'Bonne Qualité' | 'Vigilance Sanitaire';
   lastArsControlDate: string;
   networkManager: string;
+  pesticidesDetected?: boolean;
+  heavyMetalsConformity?: boolean;
+  waterOrigin?: string;
+  limescaleRiskScore?: number;
 }
 
 export interface RentalMarketData {
@@ -158,6 +192,13 @@ export interface RentalMarketData {
   avgRent60m2T3Eur: number;
   occupancyRatePercent: number;
   dataYear: string;
+  avgRentStudio30m2?: number;
+  avgRentT2_45m2?: number;
+  avgRentT3_60m2?: number;
+  avgRentT4_80m2?: number;
+  netYieldPercent?: number;
+  rentControlStatus?: string;
+  avgDaysToLease?: number;
 }
 
 export interface SafetySecurityData {
@@ -169,6 +210,10 @@ export interface SafetySecurityData {
   nationalBurglariesAvgPer1000: number;
   nationalDamageAvgPer1000: number;
   policeDistrictName: string;
+  vehicleTheftsPer1000?: number;
+  assaultsPer1000?: number;
+  serenityRankInDept?: string;
+  nighttimeSafetyScore?: number;
 }
 
 export interface QualityOfLifeItem {
@@ -187,6 +232,9 @@ export interface QualityOfLifeData {
     transports: QualityOfLifeItem;
     environnement: QualityOfLifeItem;
   };
+  airQualityIndex?: number;
+  greenSpaceM2PerHab?: number;
+  atmoRating?: string;
 }
 
 export interface ConstructionPermit {
@@ -207,6 +255,8 @@ export interface ConstructionPermitData {
   majorProjectsCount: number;
   constructionActivityLevel: 'Forte Activité / Secteur en Mutation' | 'Activité Modérée / Renouvellement Urbain' | 'Secteur Stable / Peu de Chantier';
   recentPermits: ConstructionPermit[];
+  housingUnitsCreated?: number;
+  impactOnNeighborhoodValue?: string;
 }
 
 export interface PropertyReport {

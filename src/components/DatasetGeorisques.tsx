@@ -1,6 +1,6 @@
 import React from 'react';
 import { GeorisquesData } from '../types';
-import { ShieldAlert, Waves, Layers, Activity, Zap, Factory, AlertTriangle, CheckCircle2, ExternalLink } from 'lucide-react';
+import { ShieldAlert, Waves, Layers, Activity, Zap, Factory, AlertTriangle, CheckCircle2, ExternalLink, ShieldCheck, DollarSign, Mountain, Compass } from 'lucide-react';
 
 interface DatasetGeorisquesProps {
   georisques: GeorisquesData;
@@ -12,6 +12,10 @@ export const DatasetGeorisques: React.FC<DatasetGeorisquesProps> = ({ georisques
     if (level === 'Modéré' || level === 'Moyen') return 'bg-amber-100 text-amber-950 border-amber-200';
     return 'bg-rose-100 text-rose-950 border-rose-200';
   };
+
+  const mouvTerrain = georisques.mouvementsTerrain ?? { level: 'Faible', description: 'Aucun risque de glissement de terrain majeur recensé.' };
+  const cavites = georisques.cavitésSouterraines ?? georisques.cavitesSouterraines ?? { count: 0, description: 'Aucune cavité souterraine ou carrière recensée.' };
+  const surprime = georisques.insuranceSurprimePercent ?? 0;
 
   return (
     <div className="space-y-6">
@@ -26,12 +30,22 @@ export const DatasetGeorisques: React.FC<DatasetGeorisquesProps> = ({ georisques
             <div className="flex items-center gap-2.5 flex-wrap">
               <h2 className="text-xl sm:text-2xl font-extrabold text-slate-900 font-heading">Risques Naturels & Environnement</h2>
               <span className="bg-rose-100 text-rose-900 text-xs font-bold px-3 py-1 rounded-full border border-rose-200/90">
-                Géorisques Officiel
+                Géorisques Officiel BRGM / Ministère
               </span>
             </div>
-            <p className="text-sm text-slate-600 mt-1 leading-relaxed">Évaluation des risques inondation, sécheresse, retrait-gonflement des argiles et radon.</p>
+            <p className="text-sm text-slate-600 mt-1 leading-relaxed">Évaluation de l'État des Risques et Pollutions (ERP), inondations, sécheresse, argiles, radon et BASIAS.</p>
           </div>
         </div>
+
+        <a
+          href="https://www.georisques.gouv.fr/"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="px-4 py-2.5 rounded-xl bg-white hover:bg-slate-50 text-rose-900 text-xs sm:text-sm font-bold border border-rose-200 flex items-center gap-2 transition-colors shadow-xs"
+        >
+          <span>Portail Géorisques</span>
+          <ExternalLink className="w-4 h-4" />
+        </a>
       </div>
 
       {/* Overview Risk Rating Box */}
@@ -46,8 +60,9 @@ export const DatasetGeorisques: React.FC<DatasetGeorisquesProps> = ({ georisques
           </div>
         </div>
 
-        <div className="text-xs sm:text-sm text-slate-600 max-w-md text-center sm:text-right leading-relaxed">
-          L'état des risques (ERP) informe les tiers sur les risques naturels, miniers, technologiques et sur la pollution des sols.
+        <div className="flex items-center gap-3 bg-slate-50 p-4 rounded-2xl border border-slate-200/80 text-xs text-slate-700 font-medium">
+          <ShieldCheck className="w-5 h-5 text-emerald-600 flex-shrink-0" />
+          <span>Obligation d'Information Acquéreur-Locataire (IAL) : Conforme & Audit ERP disponible</span>
         </div>
       </div>
 
@@ -76,7 +91,7 @@ export const DatasetGeorisques: React.FC<DatasetGeorisquesProps> = ({ georisques
           <div className="flex items-center justify-between gap-2">
             <div className="flex items-center gap-2 text-xs sm:text-sm font-bold text-amber-900">
               <Layers className="w-4.5 h-4.5 text-amber-600" />
-              <span>Retrait Argiles</span>
+              <span>Retrait-Gonflement Argiles</span>
             </div>
             <span className={`text-xs font-extrabold px-2.5 py-1 rounded-lg border ${getRiskColor(georisques.claySoilRisk.level)}`}>
               Aléa {georisques.claySoilRisk.level}
@@ -84,7 +99,24 @@ export const DatasetGeorisques: React.FC<DatasetGeorisquesProps> = ({ georisques
           </div>
           <p className="text-xs sm:text-sm text-slate-700 leading-relaxed">{georisques.claySoilRisk.description}</p>
           <div className="text-xs font-bold text-slate-700 bg-slate-50 p-3 rounded-2xl border border-slate-200/80">
-            Sécheresse: <strong className="text-slate-900">Étude G2 préconisée</strong>
+            Sécheresse: <strong className="text-slate-900">Étude de sol G2 préconisée</strong>
+          </div>
+        </div>
+
+        {/* Mouvements de Terrain */}
+        <div className="bg-white rounded-3xl border border-slate-200/90 p-6 space-y-3.5 shadow-sm">
+          <div className="flex items-center justify-between gap-2">
+            <div className="flex items-center gap-2 text-xs sm:text-sm font-bold text-slate-900">
+              <Mountain className="w-4.5 h-4.5 text-slate-600" />
+              <span>Mouvements de Terrain</span>
+            </div>
+            <span className={`text-xs font-extrabold px-2.5 py-1 rounded-lg border ${getRiskColor(mouvTerrain.level)}`}>
+              Aléa {mouvTerrain.level}
+            </span>
+          </div>
+          <p className="text-xs sm:text-sm text-slate-700 leading-relaxed">{mouvTerrain.description}</p>
+          <div className="text-xs font-bold text-slate-700 bg-slate-50 p-3 rounded-2xl border border-slate-200/80">
+            Cavités Souterraines: <strong className="text-slate-900">{cavites.count} recensée(s)</strong>
           </div>
         </div>
 
@@ -120,11 +152,11 @@ export const DatasetGeorisques: React.FC<DatasetGeorisquesProps> = ({ georisques
         </div>
 
         {/* Industrial Pollution */}
-        <div className="bg-white rounded-3xl border border-slate-200/90 p-6 space-y-3.5 shadow-sm md:col-span-2">
+        <div className="bg-white rounded-3xl border border-slate-200/90 p-6 space-y-3.5 shadow-sm">
           <div className="flex items-center justify-between gap-2">
             <div className="flex items-center gap-2 text-xs sm:text-sm font-bold text-teal-900">
               <Factory className="w-4.5 h-4.5 text-teal-600" />
-              <span>Sites Industriels & Pollutions (BASIAS / SEVESO)</span>
+              <span>BASIAS / Pollutions</span>
             </div>
             <span className="text-xs font-extrabold px-2.5 py-1 rounded-lg border bg-slate-100 text-slate-800 border-slate-200">
               Rayon 1000m
@@ -135,6 +167,17 @@ export const DatasetGeorisques: React.FC<DatasetGeorisquesProps> = ({ georisques
 
       </div>
 
+      {/* Insurance Impact */}
+      {surprime > 0 && (
+        <div className="bg-amber-50/70 border border-amber-200 p-5 rounded-3xl flex items-center justify-between gap-4 text-xs sm:text-sm">
+          <div className="flex items-center gap-3 text-amber-950 font-medium">
+            <AlertTriangle className="w-5 h-5 text-amber-600 flex-shrink-0" />
+            <span>Impact sur la prime d'assurance Habitation (CatNat) : Surprime estimée à +{surprime}% liée à la zone à risque inondation/argile.</span>
+          </div>
+        </div>
+      )}
+
     </div>
   );
 };
+

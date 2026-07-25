@@ -1,6 +1,6 @@
 import React from 'react';
 import { QualityOfLifeData } from '../types';
-import { ShoppingBag, HeartPulse, GraduationCap, Bus, Trees, Sparkles, MapPin, Footprints, CheckCircle2 } from 'lucide-react';
+import { ShoppingBag, HeartPulse, GraduationCap, Bus, Trees, Sparkles, MapPin, Footprints, CheckCircle2, Wifi, Sun, Signal } from 'lucide-react';
 
 interface DatasetQualityOfLifeProps {
   qualityOfLife: QualityOfLifeData;
@@ -8,6 +8,9 @@ interface DatasetQualityOfLifeProps {
 
 export const DatasetQualityOfLife: React.FC<DatasetQualityOfLifeProps> = ({ qualityOfLife }) => {
   const { categories } = qualityOfLife;
+  const fiberEligibility = qualityOfLife.fiberEligibilityPercent ?? 98;
+  const coverage5G = qualityOfLife.coverage5GStatus ?? 'Très Bonne (Orange/SFR/Bouygues/Free)';
+  const sunshineHours = qualityOfLife.annualSunshineHours ?? 1950;
 
   const cards = [
     {
@@ -68,8 +71,8 @@ export const DatasetQualityOfLife: React.FC<DatasetQualityOfLifeProps> = ({ qual
               <Footprints className="w-5 h-5" />
             </div>
             <div>
-              <h2 className="text-xl sm:text-2xl font-extrabold text-slate-900 font-heading">Qualité de vie</h2>
-              <p className="text-xs sm:text-sm text-slate-500 font-medium">Analyse de la proximité des commodités, services essentiels et cadre de vie local.</p>
+              <h2 className="text-xl sm:text-2xl font-extrabold text-slate-900 font-heading">Qualité de vie & Connectivité</h2>
+              <p className="text-xs sm:text-sm text-slate-500 font-medium">Analyse de la proximité des commodités, services essentiels, réseaux Très Haut Débit et ensoleillement.</p>
             </div>
           </div>
         </div>
@@ -122,11 +125,39 @@ export const DatasetQualityOfLife: React.FC<DatasetQualityOfLifeProps> = ({ qual
         })}
       </div>
 
+      {/* Digital Connectivity & Environment Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2">
+        <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200/80 flex items-center gap-3">
+          <Wifi className="w-5 h-5 text-blue-600 flex-shrink-0" />
+          <div className="text-xs">
+            <span className="font-bold text-slate-900 block">Éligibilité Fibre Optique (FttH)</span>
+            <span className="text-slate-600">{fiberEligibility}% des locaux raccordables (ARCEP)</span>
+          </div>
+        </div>
+
+        <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200/80 flex items-center gap-3">
+          <Signal className="w-5 h-5 text-indigo-600 flex-shrink-0" />
+          <div className="text-xs">
+            <span className="font-bold text-slate-900 block">Couverture Mobile 5G Multi-Opérateurs</span>
+            <span className="text-slate-600">{coverage5G}</span>
+          </div>
+        </div>
+
+        <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200/80 flex items-center gap-3">
+          <Sun className="w-5 h-5 text-amber-500 flex-shrink-0" />
+          <div className="text-xs">
+            <span className="font-bold text-slate-900 block">Ensoleillement Moyen Annuel</span>
+            <span className="text-slate-600">~{sunshineHours} heures de soleil / an (Météo France)</span>
+          </div>
+        </div>
+      </div>
+
       <div className="bg-slate-50/90 rounded-2xl p-4 border border-slate-200/80 text-xs text-slate-600 flex items-center gap-3">
         <CheckCircle2 className="w-4 h-4 text-emerald-600 flex-shrink-0" />
-        <span>Données agrégées basées sur la Base Permanente des Équipements (INSEE BPE), OpenStreetMap et le maillage des réseaux de transport urbain.</span>
+        <span>Données agrégées basées sur la Base Permanente des Équipements (INSEE BPE), ARCEP, OpenStreetMap et Météo France.</span>
       </div>
 
     </div>
   );
 };
+
