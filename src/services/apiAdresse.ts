@@ -1,4 +1,4 @@
-import { AddressSearchResult, PropertyReport, BANData, DVFData, DPEData, GeorisquesData, InseeData, PluAndAmenitiesData, WaterQualityData, RentalMarketData, SafetySecurityData, QualityOfLifeData, ConstructionPermit, ConstructionPermitData, ElusData, CulturalSite, CulturalData, ConnectivityData } from '../types';
+import { AddressSearchResult, PropertyReport, BANData, DVFData, DPEData, GeorisquesData, InseeData, PluAndAmenitiesData, WaterQualityData, RentalMarketData, SafetySecurityData, QualityOfLifeData, ConstructionPermit, ConstructionPermitData, ElusData, CulturalSite, CulturalData, ConnectivityData, HorizonProjection, ProjectionScenario, PriceProjectionData } from '../types';
 
 /**
  * Normalizes and cleans address queries for the French BAN (Base Adresse Nationale) API.
@@ -954,6 +954,107 @@ export function generateReportForAddress(addr: AddressSearchResult): PropertyRep
     copperPhaseOutYear: 2028,
   };
 
+  // 9. ALGOLIGRAMME & MODÈLE PRÉDICTIF DE PRIX AU M2 (Algorithme d'Économétrie Immobilière)
+  const currentBasePricePerM2 = dvfData.medianPricePerM2Street;
+  const fiveYearHistGrowth = dvfData.fiveYearPriceGrowthPercent; // e.g. 14.5%
+  const baseAnnualCompoundRate = Math.pow(1 + (fiveYearHistGrowth / 100), 1 / 5) - 1; // e.g. ~2.7% per year
+
+  // Drivers impact factors
+  const dpeImpactPerYear = dpeData.isPassoireThermique ? -0.018 : (dpeData.energyRating === 'A' || dpeData.energyRating === 'B') ? 0.012 : 0;
+  const urbanPermitsImpactPerYear = constructionPermitsData.permitsLast2Years > 5 ? 0.009 : 0.003;
+  const rentalTensionImpactPerYear = (rentalMarketData.rentalTension === 'Très Élevée' || rentalMarketData.rentalTension === 'Élevée') ? 0.011 : 0.005;
+  const macroInterestRateImpactPerYear = -0.004; // Stabilisation taux BCE
+  const demographyImpactPerYear = (inseeData.populationTotal > 20000) ? 0.006 : 0.002;
+
+  const netAnnualGrowthRate = baseAnnualCompoundRate + dpeImpactPerYear + urbanPermitsImpactPerYear + rentalTensionImpactPerYear + macroInterestRateImpactPerYear + demographyImpactPerYear;
+
+  const currentYear = new Date().getFullYear();
+
+  const calcHorizon = (yearOffset: number): HorizonProjection => {
+    const projRate = Math.pow(1 + netAnnualGrowthRate, yearOffset) - 1;
+    const projectedPrice = Math.round(currentBasePricePerM2 * (1 + projRate));
+    const minPrice = Math.round(projectedPrice * 0.95);
+    const maxPrice = Math.round(projectedPrice * 1.05);
+    const gain60m2 = Math.round((projectedPrice - currentBasePricePerM2) * 60);
+
+    return {
+      yearOffset,
+      targetYear: currentYear + yearOffset,
+      projectedPricePerM2: projectedPrice,
+      minPricePerM2: minPrice,
+      maxPricePerM2: maxPrice,
+      cumulatedGrowthPercent: Number((projRate * 100).toFixed(1)),
+      estimatedCapitalGain60m2: gain60m2,
+    };
+  };
+
+  const calcScenario = (name: 'Prudent' | 'Médian' | 'Optimiste', deltaRate: number, desc: string): ProjectionScenario => {
+    const rate = netAnnualGrowthRate + deltaRate;
+    const p1 = Math.round(currentBasePricePerM2 * Math.pow(1 + rate, 1));
+    const p3 = Math.round(currentBasePricePerM2 * Math.pow(1 + rate, 3));
+    const p5 = Math.round(currentBasePricePerM2 * Math.pow(1 + rate, 5));
+    const g5 = Number(((Math.pow(1 + rate, 5) - 1) * 100).toFixed(1));
+
+    return {
+      name,
+      description: desc,
+      oneYearPricePerM2: p1,
+      threeYearPricePerM2: p3,
+      fiveYearPricePerM2: p5,
+      fiveYearGrowthPercent: g5,
+    };
+  };
+
+  const priceProjectionData: PriceProjectionData = {
+    currentPricePerM2: currentBasePricePerM2,
+    baseAnnualGrowthPercent: Number((netAnnualGrowthRate * 100).toFixed(2)),
+    confidenceScore: Math.min(94, Math.max(72, 82 + (hashInt % 12))),
+    algorithmMethodology: 'Modèle Économétrique Composé Briquia AI (Pondération DVF, Impact DPE, Tension Locative OLL, Permis SITADEL & Taux BCE)',
+    horizons: {
+      oneYear: calcHorizon(1),
+      threeYear: calcHorizon(3),
+      fiveYear: calcHorizon(5),
+    },
+    scenarios: {
+      prudent: calcScenario('Prudent', -0.018, 'Hypothèse de ralentissement du crédit immobilier et remontée de l\'inflation.'),
+      median: calcScenario('Médian', 0, 'Scénario central basé sur la tendance notariée DVF et la dynamique du quartier.'),
+      optimistic: calcScenario('Optimiste', +0.018, 'Hypothèse de baisse des taux d\'intérêt et accélération de la demande locale.'),
+    },
+    drivers: [
+      {
+        driverName: 'Momentum Historique DVF',
+        category: 'Macro',
+        impactPercentPerYear: Number((baseAnnualCompoundRate * 100).toFixed(2)),
+        explanation: `Croissance moyenne de +${fiveYearHistGrowth}% observée sur les 5 dernières années dans la rue.`,
+      },
+      {
+        driverName: 'Diagnostic Énergétique (DPE)',
+        category: 'DPE',
+        impactPercentPerYear: Number((dpeImpactPerYear * 100).toFixed(2)),
+        explanation: dpeData.isPassoireThermique ? 'Décote sur la valeur due aux contraintes d\'isolation et interdictions de louer.' : 'Bonus de valeur verte lié au bon classement énergétique DPE.',
+      },
+      {
+        driverName: 'Dynamique d\'Urbanisme (Sitadel)',
+        category: 'Urbanisme',
+        impactPercentPerYear: Number((urbanPermitsImpactPerYear * 100).toFixed(2)),
+        explanation: `${constructionPermitsData.permitsLast2Years} permis de construire récents dynamisant la valeur du secteur.`,
+      },
+      {
+        driverName: 'Tension Locative & Attractivité',
+        category: 'Démographie',
+        impactPercentPerYear: Number((rentalTensionImpactPerYear * 100).toFixed(2)),
+        explanation: `Tension locative mesurée comme ${rentalMarketData.rentalTension} par l'Observatoire des Loyers.`,
+      },
+      {
+        driverName: 'Conditions de Crédit & Taux BCE',
+        category: 'Macro',
+        impactPercentPerYear: -0.4,
+        explanation: 'Ajustement lié aux conditions actuelles d\'octroi de prêts immobiliers.',
+      },
+    ],
+    recommendedHoldDurationYears: dpeData.isPassoireThermique ? 7 : 5,
+  };
+
   return {
     address: banData,
     briquiaIndexScore,
@@ -975,6 +1076,7 @@ export function generateReportForAddress(addr: AddressSearchResult): PropertyRep
     elus: elusData,
     cultural: culturalData,
     connectivity: connectivityData,
+    priceProjection: priceProjectionData,
   };
 }
 

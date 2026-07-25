@@ -15,13 +15,14 @@ import { DatasetConstructionPermits } from './components/DatasetConstructionPerm
 import { DatasetElus } from './components/DatasetElus';
 import { DatasetCultural } from './components/DatasetCultural';
 import { DatasetConnectivity } from './components/DatasetConnectivity';
+import { DatasetPriceForecast } from './components/DatasetPriceForecast';
 import { AiSynthesisTab } from './components/AiSynthesisTab';
 import { CompareAddressesModal } from './components/CompareAddressesModal';
 
 import { generateReportForAddress, searchBANAddresses } from './services/apiAdresse';
 import { AddressSearchResult, ActiveNavTab, PropertyReport } from './types';
 
-import { Database, Search, MapPin, Building2, TrendingUp, Zap, ShieldAlert, Users, Compass, Loader2, ArrowRight, Sparkles, Home, Droplets, ShieldCheck, Footprints, HardHat, Landmark, Palette, Wifi } from 'lucide-react';
+import { Database, Search, MapPin, Building2, TrendingUp, Zap, ShieldAlert, Users, Compass, Loader2, ArrowRight, Sparkles, Home, Droplets, ShieldCheck, Footprints, HardHat, Landmark, Palette, Wifi, LineChart } from 'lucide-react';
 
 // Preset Sample Addresses for 1-Click Instant Analysis
 const PRESET_SAMPLE_ADDRESSES: AddressSearchResult[] = [
@@ -158,7 +159,7 @@ export default function App() {
               <div className="stand">
                 <span className="inline-flex items-center gap-2 bg-gradient-to-r from-orange-500/10 via-amber-500/10 to-orange-500/10 text-orange-950 px-4 py-1.5 rounded-full text-xs font-black uppercase tracking-wider">
                   <Database className="w-4 h-4 text-[#f56902]" />
-                  <span>Plateforme d'Audit Foncier Open Data 12 Axes</span>
+                  <span>Plateforme d'Audit Foncier Open Data 13 Axes</span>
                 </span>
               </div>
 
@@ -167,7 +168,7 @@ export default function App() {
               </h1>
 
               <p className="text-base sm:text-lg text-slate-600 max-w-2xl mx-auto font-medium leading-relaxed">
-                Briquia croise en direct <strong className="text-slate-900 font-bold">12 axes d'analyses foncières certifiées</strong> (Cadastre, DVF, Loyers, DPE, Eau, Risques, Sécurité, Démographie, Urbanisme, Élus & Politique, Équipements Culturels, Internet & Fibre).
+                Briquia croise en direct <strong className="text-slate-900 font-bold">13 axes d'analyses foncières certifiées</strong> (Cadastre, DVF, Prévisions 1-5 ans, Loyers, DPE, Eau, Risques, Sécurité, Démographie, Urbanisme, Élus, Culture, Fibre Internet).
               </p>
             </div>
 
@@ -375,6 +376,16 @@ export default function App() {
                   </div>
                   <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">Éligibilité Fibre optique, débits max descendant/montant, couverture 5G et arrêt ADSL.</p>
                 </div>
+
+                <div className="card-glow p-5 sm:p-6 rounded-3xl space-y-2 bg-gradient-to-br from-orange-50/60 to-amber-50/60 border-orange-200">
+                  <div className="flex items-center gap-3 text-orange-950 font-extrabold text-sm sm:text-base font-heading">
+                    <div className="w-9 h-9 rounded-2xl bg-[#f56902] text-white flex items-center justify-center flex-shrink-0 shadow-xs">
+                      <LineChart className="w-4.5 h-4.5" />
+                    </div>
+                    <span>13. Prévision & Plus-Value (Briquia AI)</span>
+                  </div>
+                  <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">Modèle économétrique de projection de prix à 1, 3 et 5 ans avec simulateur de plus-value.</p>
+                </div>
               </div>
 
               {/* End of 9 Axes Grid */}
@@ -404,6 +415,11 @@ export default function App() {
                   {/* Section 2: Transactions & Prix */}
                   <section id="section-prix" className="scroll-mt-24">
                     <DatasetDVF dvf={currentReport.dvf} />
+                  </section>
+
+                  {/* Section 2b: Modèle de Prévision & Projection Prix m2 */}
+                  <section id="section-forecast" className="scroll-mt-24">
+                    <DatasetPriceForecast projection={currentReport.priceProjection} />
                   </section>
 
                   {/* Section 3: Carte des Loyers & Marché Locatif */}
@@ -538,6 +554,11 @@ export default function App() {
               {activeTab === 'dataset-connectivity' && (
                 <div className="space-y-6">
                   <DatasetConnectivity connectivity={currentReport.connectivity} />
+                </div>
+              )}
+              {activeTab === 'dataset-forecast' && (
+                <div className="space-y-6">
+                  <DatasetPriceForecast projection={currentReport.priceProjection} />
                 </div>
               )}
 

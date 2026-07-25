@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { AddressSearchResult, ActiveNavTab } from '../types';
 import { searchBANAddresses } from '../services/apiAdresse';
-import { Search, MapPin, Database, Sparkles, ArrowRightLeft, FileText, Building2, TrendingUp, Zap, ShieldAlert, Users, Compass, Loader2, Home, Droplets, ShieldCheck, Command, Footprints, HardHat, Landmark, Palette, Wifi } from 'lucide-react';
+import { Search, MapPin, Database, Sparkles, ArrowRightLeft, FileText, Building2, TrendingUp, Zap, ShieldAlert, Users, Compass, Loader2, Home, Droplets, ShieldCheck, Command, Footprints, HardHat, Landmark, Palette, Wifi, LineChart } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 interface NavbarProps {
@@ -285,6 +285,19 @@ export const Navbar: React.FC<NavbarProps> = ({
             >
               <TrendingUp className="w-4 h-4 text-emerald-600" />
               <span>Prix & Ventes</span>
+            </button>
+
+            {/* Section 2b: Prévision Prix */}
+            <button
+              onClick={() => {
+                setActiveTab('search');
+                const el = document.getElementById('section-forecast');
+                if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+              }}
+              className="px-3.5 py-2 rounded-2xl text-xs sm:text-sm font-bold whitespace-nowrap text-[#f56902] bg-orange-50 hover:bg-orange-100 border border-orange-200 transition-all flex items-center gap-1.5"
+            >
+              <LineChart className="w-4 h-4 text-[#f56902]" />
+              <span>Prévision Prix 1-5 ans</span>
             </button>
 
             {/* Section 3: Marché Locatif */}

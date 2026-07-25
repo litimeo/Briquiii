@@ -326,6 +326,51 @@ export interface ConnectivityData {
   copperPhaseOutYear: number;
 }
 
+export interface HorizonProjection {
+  yearOffset: number; // 1, 3, 5
+  targetYear: number; // e.g. 2027, 2029, 2031
+  projectedPricePerM2: number;
+  minPricePerM2: number;
+  maxPricePerM2: number;
+  cumulatedGrowthPercent: number;
+  estimatedCapitalGain60m2: number;
+}
+
+export interface ProjectionScenario {
+  name: 'Prudent' | 'Médian' | 'Optimiste';
+  description: string;
+  oneYearPricePerM2: number;
+  threeYearPricePerM2: number;
+  fiveYearPricePerM2: number;
+  fiveYearGrowthPercent: number;
+}
+
+export interface DriverImpact {
+  driverName: string;
+  category: 'Macro' | 'DPE' | 'Démographie' | 'Urbanisme' | 'Attractivité';
+  impactPercentPerYear: number; // e.g. +1.2%, -0.5%
+  explanation: string;
+}
+
+export interface PriceProjectionData {
+  currentPricePerM2: number;
+  baseAnnualGrowthPercent: number;
+  confidenceScore: number; // 0 to 100
+  algorithmMethodology: string;
+  horizons: {
+    oneYear: HorizonProjection;
+    threeYear: HorizonProjection;
+    fiveYear: HorizonProjection;
+  };
+  scenarios: {
+    prudent: ProjectionScenario;
+    median: ProjectionScenario;
+    optimistic: ProjectionScenario;
+  };
+  drivers: DriverImpact[];
+  recommendedHoldDurationYears: number;
+}
+
 export interface PropertyReport {
   address: BANData;
   briquiaIndexScore: number; // 0 to 100
@@ -347,7 +392,8 @@ export interface PropertyReport {
   elus: ElusData;
   cultural: CulturalData;
   connectivity: ConnectivityData;
+  priceProjection: PriceProjectionData;
 }
 
-export type ActiveNavTab = 'search' | 'dataset-ban' | 'dataset-dvf' | 'dataset-dpe' | 'dataset-georisques' | 'dataset-insee' | 'dataset-plu' | 'dataset-water' | 'dataset-rental' | 'dataset-safety' | 'dataset-quality' | 'dataset-permits' | 'dataset-elus' | 'dataset-cultural' | 'dataset-connectivity' | 'compare' | 'ai-synthesis';
+export type ActiveNavTab = 'search' | 'dataset-ban' | 'dataset-dvf' | 'dataset-dpe' | 'dataset-georisques' | 'dataset-insee' | 'dataset-plu' | 'dataset-water' | 'dataset-rental' | 'dataset-safety' | 'dataset-quality' | 'dataset-permits' | 'dataset-elus' | 'dataset-cultural' | 'dataset-connectivity' | 'dataset-forecast' | 'compare' | 'ai-synthesis';
 
