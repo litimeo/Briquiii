@@ -104,19 +104,19 @@ export const Navbar: React.FC<NavbarProps> = ({
             </nav>
           ) : (
             /* BAN Address Search Input Header when Address is Selected */
-            <div ref={searchRef} className="relative flex-1 max-w-xl">
+            <div ref={searchRef} className="relative flex-1 min-w-0 max-w-xl mx-2 sm:mx-0">
               <div className="relative">
-                <Search className="w-4.5 h-4.5 text-slate-400 absolute left-4 top-1/2 -translate-y-1/2" />
+                <Search className="w-4 h-4 text-slate-400 absolute left-3 sm:left-4 top-1/2 -translate-y-1/2 flex-shrink-0" />
                 <input
                   ref={inputRef}
                   type="text"
-                  placeholder="Rechercher une adresse (ex: 15 Rue de la Paix, Paris)..."
+                  placeholder="Rechercher une adresse..."
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
                   onFocus={() => {
                     if (results.length > 0) setShowDropdown(true);
                   }}
-                  className="w-full bg-slate-50 text-slate-900 placeholder-slate-400 text-xs sm:text-sm pl-11 pr-16 py-2.5 rounded-full border border-slate-200 focus:bg-white focus:outline-none focus:border-slate-800 focus:ring-2 focus:ring-slate-900/10 font-medium transition-all"
+                  className="w-full bg-slate-50 text-slate-900 placeholder-slate-400 text-xs sm:text-sm pl-9 sm:pl-11 pr-8 sm:pr-16 py-2 sm:py-2.5 rounded-full border border-slate-200 focus:bg-white focus:outline-none focus:border-slate-800 focus:ring-2 focus:ring-slate-900/10 font-medium transition-all min-w-0"
                 />
 
                 <div className="absolute right-3 top-1/2 -translate-y-1/2 hidden sm:flex items-center gap-0.5 px-2 py-0.5 rounded-md bg-slate-200/60 border border-slate-300/60 text-[10px] font-mono font-bold text-slate-600 pointer-events-none">
@@ -125,7 +125,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                 </div>
 
                 {isLoading && (
-                  <div className="absolute right-12 top-1/2 -translate-y-1/2 text-emerald-600">
+                  <div className="absolute right-2.5 sm:right-12 top-1/2 -translate-y-1/2 text-emerald-600">
                     <Loader2 className="w-4 h-4 animate-spin" />
                   </div>
                 )}

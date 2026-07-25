@@ -155,10 +155,10 @@ export const HomePage: React.FC<HomePageProps> = ({
 
         {/* Hero Search Box */}
         <div className="mt-10 max-w-2xl mx-auto relative z-30" ref={heroSearchRef}>
-          <div className="bg-white p-2.5 sm:p-3 rounded-full border border-slate-200 shadow-xl flex flex-col sm:flex-row items-center gap-2 focus-within:border-slate-800 focus-within:ring-4 focus-within:ring-slate-900/5 transition-all">
+          <div className="bg-white p-2 sm:p-3 rounded-2xl sm:rounded-full border border-slate-200 shadow-xl flex flex-col sm:flex-row items-center gap-2 focus-within:border-slate-800 focus-within:ring-4 focus-within:ring-slate-900/5 transition-all">
             
-            <div className="relative flex-1 flex items-center pl-4 pr-2 w-full">
-              <MapPin className="w-5 h-5 text-emerald-500 flex-shrink-0 mr-3" />
+            <div className="relative flex-1 flex items-center pl-3 sm:pl-4 pr-2 w-full min-w-0">
+              <MapPin className="w-5 h-5 text-emerald-500 flex-shrink-0 mr-2.5 sm:mr-3" />
               <input
                 id="hero-search-input"
                 type="text"
@@ -168,7 +168,7 @@ export const HomePage: React.FC<HomePageProps> = ({
                 onFocus={() => {
                   if (heroResults.length > 0) setShowHeroDropdown(true);
                 }}
-                className="w-full py-3 text-slate-900 placeholder-slate-400 text-base font-medium focus:outline-none bg-transparent"
+                className="w-full py-2.5 sm:py-3 text-slate-900 placeholder-slate-400 text-sm sm:text-base font-medium focus:outline-none bg-transparent min-w-0"
               />
               {isHeroSearching && (
                 <Loader2 className="w-5 h-5 text-emerald-500 animate-spin flex-shrink-0 ml-2" />
@@ -185,7 +185,7 @@ export const HomePage: React.FC<HomePageProps> = ({
                   });
                 }
               }}
-              className="w-full sm:w-auto px-8 py-3.5 bg-slate-900 hover:bg-slate-800 text-white rounded-full font-bold text-sm sm:text-base transition-all flex items-center justify-center gap-2 shadow-md flex-shrink-0 cursor-pointer"
+              className="w-full sm:w-auto px-6 sm:px-8 py-3 sm:py-3.5 bg-slate-900 hover:bg-slate-800 text-white rounded-xl sm:rounded-full font-bold text-sm sm:text-base transition-all flex items-center justify-center gap-2 shadow-md flex-shrink-0 cursor-pointer"
             >
               <span>Analyser l'adresse</span>
               <ArrowRight className="w-4 h-4" />
@@ -256,10 +256,10 @@ export const HomePage: React.FC<HomePageProps> = ({
               </div>
 
               {/* Showcase Tab Switchers */}
-              <div className="flex items-center gap-1 bg-slate-800 p-1 rounded-xl text-xs font-semibold overflow-x-auto max-w-full">
+              <div className="flex items-center gap-1 bg-slate-800 p-1 rounded-xl text-xs font-semibold overflow-x-auto max-w-full w-full sm:w-auto scrollbar-none">
                 <button
                   onClick={() => setActiveShowcaseTab('dpe')}
-                  className={`px-3 py-1.5 rounded-lg transition-all ${
+                  className={`px-3 py-1.5 rounded-lg transition-all shrink-0 whitespace-nowrap ${
                     activeShowcaseTab === 'dpe'
                       ? 'bg-white text-slate-900 font-bold shadow-xs'
                       : 'text-slate-400 hover:text-white'
@@ -269,7 +269,7 @@ export const HomePage: React.FC<HomePageProps> = ({
                 </button>
                 <button
                   onClick={() => setActiveShowcaseTab('dvf')}
-                  className={`px-3 py-1.5 rounded-lg transition-all ${
+                  className={`px-3 py-1.5 rounded-lg transition-all shrink-0 whitespace-nowrap ${
                     activeShowcaseTab === 'dvf'
                       ? 'bg-white text-slate-900 font-bold shadow-xs'
                       : 'text-slate-400 hover:text-white'
@@ -279,7 +279,7 @@ export const HomePage: React.FC<HomePageProps> = ({
                 </button>
                 <button
                   onClick={() => setActiveShowcaseTab('rent')}
-                  className={`px-3 py-1.5 rounded-lg transition-all ${
+                  className={`px-3 py-1.5 rounded-lg transition-all shrink-0 whitespace-nowrap ${
                     activeShowcaseTab === 'rent'
                       ? 'bg-white text-slate-900 font-bold shadow-xs'
                       : 'text-slate-400 hover:text-white'
@@ -289,7 +289,7 @@ export const HomePage: React.FC<HomePageProps> = ({
                 </button>
                 <button
                   onClick={() => setActiveShowcaseTab('water')}
-                  className={`px-3 py-1.5 rounded-lg transition-all ${
+                  className={`px-3 py-1.5 rounded-lg transition-all shrink-0 whitespace-nowrap ${
                     activeShowcaseTab === 'water'
                       ? 'bg-white text-slate-900 font-bold shadow-xs'
                       : 'text-slate-400 hover:text-white'
@@ -340,7 +340,7 @@ export const HomePage: React.FC<HomePageProps> = ({
                   </div>
 
                   {/* DPE Color Ladder */}
-                  <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs col-span-1 md:col-span-2 flex flex-col justify-between">
+                  <div className="bg-white p-4 sm:p-6 rounded-2xl border border-slate-200 shadow-xs col-span-1 md:col-span-2 flex flex-col justify-between">
                     <div className="flex justify-between items-center mb-4">
                       <h4 className="text-sm font-bold text-slate-900">Échelle DPE Diagnostic Énergétique</h4>
                       <span className="text-xs text-slate-500">Janvier 2024</span>
@@ -356,13 +356,13 @@ export const HomePage: React.FC<HomePageProps> = ({
                         { letter: 'F', range: '331 - 420', color: 'bg-orange-500', active: false },
                         { letter: 'G', range: '> 420', color: 'bg-rose-600', active: false },
                       ].map((item) => (
-                        <div key={item.letter} className="flex items-center gap-3">
-                          <div className={`h-7 rounded-lg text-white font-black text-xs px-3 flex items-center justify-between transition-all ${item.color} ${item.active ? 'w-full shadow-sm scale-[1.01]' : 'w-2/3 opacity-50'}`}>
+                        <div key={item.letter} className="flex flex-wrap sm:flex-nowrap items-center gap-2 sm:gap-3">
+                          <div className={`h-7 rounded-lg text-white font-black text-xs px-3 flex items-center justify-between transition-all min-w-0 ${item.color} ${item.active ? 'flex-1 sm:w-full shadow-sm scale-[1.01]' : 'w-2/3 opacity-50'}`}>
                             <span>Classe {item.letter}</span>
                             <span>{item.range} kWh/m²</span>
                           </div>
                           {item.active && (
-                            <span className="text-xs font-bold text-amber-700 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded-md whitespace-nowrap">
+                            <span className="text-[11px] sm:text-xs font-bold text-amber-700 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded-md whitespace-nowrap">
                               ← Adresse analysée
                             </span>
                           )}
@@ -375,7 +375,7 @@ export const HomePage: React.FC<HomePageProps> = ({
 
               {activeShowcaseTab === 'dvf' && (
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                  <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs">
+                  <div className="bg-white p-4 sm:p-6 rounded-2xl border border-slate-200 shadow-xs">
                     <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">Actes Notariés DVF</span>
                     <div className="mt-3 text-3xl font-black text-slate-900">11 480 €<span className="text-base font-medium text-slate-500">/m²</span></div>
                     <p className="text-xs text-emerald-600 font-bold mt-1 flex items-center gap-1">
@@ -388,13 +388,13 @@ export const HomePage: React.FC<HomePageProps> = ({
                     </div>
                   </div>
 
-                  <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs col-span-1 md:col-span-2">
+                  <div className="bg-white p-4 sm:p-6 rounded-2xl border border-slate-200 shadow-xs col-span-1 md:col-span-2">
                     <div className="flex justify-between items-center mb-4">
                       <h4 className="text-sm font-bold text-slate-900">Évolution Historique des Prix au m² (DVF DGFiP)</h4>
                       <span className="text-xs font-bold text-slate-600 bg-slate-100 px-2.5 py-1 rounded-lg">Source Notaires</span>
                     </div>
 
-                    <div className="h-44 flex items-end justify-between gap-3 pt-6 pb-2 px-2 border-b border-slate-200">
+                    <div className="h-44 flex items-end justify-between gap-1.5 sm:gap-3 pt-6 pb-2 px-1 sm:px-2 border-b border-slate-200">
                       {[
                         { year: '2020', price: 9800, height: '60%' },
                         { year: '2021', price: 10400, height: '70%' },
@@ -403,10 +403,10 @@ export const HomePage: React.FC<HomePageProps> = ({
                         { year: '2024', price: 11480, height: '92%' },
                         { year: '2025', price: 11850, height: '100%' },
                       ].map((bar) => (
-                        <div key={bar.year} className="flex-1 flex flex-col items-center gap-2 group">
-                          <span className="text-[10px] font-bold text-slate-600 opacity-0 group-hover:opacity-100 transition-opacity">{bar.price}€</span>
+                        <div key={bar.year} className="flex-1 flex flex-col items-center gap-1.5 group min-w-0">
+                          <span className="text-[9px] sm:text-[10px] font-bold text-slate-600 opacity-0 group-hover:opacity-100 transition-opacity truncate">{bar.price}€</span>
                           <div className={`w-full rounded-t-lg bg-emerald-500 transition-all group-hover:bg-emerald-600`} style={{ height: bar.height }} />
-                          <span className="text-xs font-semibold text-slate-500">{bar.year}</span>
+                          <span className="text-[10px] sm:text-xs font-semibold text-slate-500">{bar.year}</span>
                         </div>
                       ))}
                     </div>
@@ -416,7 +416,7 @@ export const HomePage: React.FC<HomePageProps> = ({
 
               {activeShowcaseTab === 'rent' && (
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                  <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs">
+                  <div className="bg-white p-4 sm:p-6 rounded-2xl border border-slate-200 shadow-xs">
                     <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">Marché Locatif & Rendement</span>
                     <div className="mt-3 text-3xl font-black text-slate-900">32.40 €<span className="text-base font-medium text-slate-500">/m²/mois</span></div>
                     <p className="text-xs text-slate-500 font-medium mt-1">Loyer médian secteur</p>
@@ -427,16 +427,16 @@ export const HomePage: React.FC<HomePageProps> = ({
                     </div>
                   </div>
 
-                  <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs col-span-1 md:col-span-2">
+                  <div className="bg-white p-4 sm:p-6 rounded-2xl border border-slate-200 shadow-xs col-span-1 md:col-span-2">
                     <h4 className="text-sm font-bold text-slate-900 mb-4">Loyers Médians par Typologie de Bien</h4>
-                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
                       {[
                         { label: 'Studio (T1)', rent: '720 €', m2: '33.5 €/m²' },
                         { label: 'T2 (2 pièces)', rent: '1 150 €', m2: '31.8 €/m²' },
                         { label: 'T3 (3 pièces)', rent: '1 680 €', m2: '29.2 €/m²' },
                         { label: 'T4+ (Familial)', rent: '2 400 €', m2: '27.5 €/m²' },
                       ].map((t) => (
-                        <div key={t.label} className="p-4 rounded-xl bg-slate-50 border border-slate-200 text-center">
+                        <div key={t.label} className="p-3.5 sm:p-4 rounded-xl bg-slate-50 border border-slate-200 text-center">
                           <span className="text-xs font-semibold text-slate-500 block">{t.label}</span>
                           <span className="text-lg font-black text-slate-900 block mt-1">{t.rent}</span>
                           <span className="text-[11px] text-emerald-600 font-bold block">{t.m2}</span>
@@ -449,7 +449,7 @@ export const HomePage: React.FC<HomePageProps> = ({
 
               {activeShowcaseTab === 'water' && (
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                  <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs">
+                  <div className="bg-white p-4 sm:p-6 rounded-2xl border border-slate-200 shadow-xs">
                     <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">Agence Régionale de Santé (ARS)</span>
                     <div className="mt-3 text-3xl font-black text-emerald-600 flex items-center gap-2">
                       99.6% <ShieldCheck className="w-7 h-7 text-emerald-500" />
@@ -462,12 +462,12 @@ export const HomePage: React.FC<HomePageProps> = ({
                     </div>
                   </div>
 
-                  <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs col-span-1 md:col-span-2 flex flex-col justify-between">
+                  <div className="bg-white p-4 sm:p-6 rounded-2xl border border-slate-200 shadow-xs col-span-1 md:col-span-2 flex flex-col justify-between">
                     <h4 className="text-sm font-bold text-slate-900 mb-2">Bilan Qualité de l'Eau au Robinet</h4>
                     <p className="text-xs text-slate-600 leading-relaxed mb-4">
                       Réseau d'eau sous contrôle continu de l'ARS d'Île-de-France. Eau conforme à l'ensemble des limites réglementaires de qualité sanitaires.
                     </p>
-                    <div className="grid grid-cols-3 gap-3">
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                       <div className="p-3 bg-emerald-50 border border-emerald-200 rounded-xl">
                         <span className="text-[11px] font-bold text-emerald-800 block">Bactériologie</span>
                         <span className="text-base font-black text-emerald-900">Excellente</span>
@@ -553,29 +553,29 @@ export const HomePage: React.FC<HomePageProps> = ({
                   <span className="text-xs text-slate-400">13 Modules Synchronisés</span>
                 </div>
 
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="bg-slate-800/80 p-4 rounded-2xl border border-slate-700">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                  <div className="bg-slate-800/80 p-3.5 sm:p-4 rounded-2xl border border-slate-700 min-w-0">
                     <span className="text-xs text-slate-400 block font-medium">Prix au m² DVF</span>
-                    <span className="text-xl font-black text-white mt-1 block">3 662 € / m²</span>
+                    <span className="text-lg sm:text-xl font-black text-white mt-1 block truncate">3 662 € / m²</span>
                     <span className="text-[11px] text-emerald-400 font-bold mt-1 block">+2.9% / an sur 5 ans</span>
                   </div>
 
-                  <div className="bg-slate-800/80 p-4 rounded-2xl border border-slate-700">
+                  <div className="bg-slate-800/80 p-3.5 sm:p-4 rounded-2xl border border-slate-700 min-w-0">
                     <span className="text-xs text-slate-400 block font-medium">Note DPE Énergie</span>
-                    <span className="text-xl font-black text-amber-400 mt-1 block">Classe C (142 kWh)</span>
+                    <span className="text-lg sm:text-xl font-black text-amber-400 mt-1 block truncate">Classe C (142 kWh)</span>
                     <span className="text-[11px] text-slate-300 font-medium mt-1 block">Coût : ~1 250 € / an</span>
                   </div>
 
-                  <div className="bg-slate-800/80 p-4 rounded-2xl border border-slate-700">
+                  <div className="bg-slate-800/80 p-3.5 sm:p-4 rounded-2xl border border-slate-700 min-w-0">
                     <span className="text-xs text-slate-400 block font-medium">Risques Naturels</span>
-                    <span className="text-xl font-black text-emerald-400 mt-1 block">Inondation Faible</span>
+                    <span className="text-lg sm:text-xl font-black text-emerald-400 mt-1 block truncate">Inondation Faible</span>
                     <span className="text-[11px] text-slate-300 font-medium mt-1 block">Retrait-gonflement argiles</span>
                   </div>
 
-                  <div className="bg-slate-800/80 p-4 rounded-2xl border border-slate-700">
+                  <div className="bg-slate-800/80 p-3.5 sm:p-4 rounded-2xl border border-slate-700 min-w-0">
                     <span className="text-xs text-slate-400 block font-medium">Connectivité Fibre</span>
-                    <span className="text-xl font-black text-emerald-400 mt-1 block">Éligible 100%</span>
-                    <span className="text-[11px] text-slate-300 font-medium mt-1 block">Orange, SFR, Bouygues, Free</span>
+                    <span className="text-lg sm:text-xl font-black text-emerald-400 mt-1 block truncate">Éligible 100%</span>
+                    <span className="text-[11px] text-slate-300 font-medium mt-1 block">Orange, SFR, Free...</span>
                   </div>
                 </div>
 
@@ -864,9 +864,9 @@ export const HomePage: React.FC<HomePageProps> = ({
 
           {/* CTA Search Input Box */}
           <div className="mt-10 max-w-xl mx-auto relative" ref={ctaSearchRef}>
-            <div className="bg-[#F8FAFC] p-2.5 rounded-full border border-slate-200 shadow-xl flex flex-col sm:flex-row items-center gap-2 focus-within:border-slate-800 transition-all">
-              <div className="relative flex-1 flex items-center pl-4 pr-2 w-full">
-                <MapPin className="w-5 h-5 text-emerald-500 flex-shrink-0 mr-3" />
+            <div className="bg-[#F8FAFC] p-2 sm:p-2.5 rounded-2xl sm:rounded-full border border-slate-200 shadow-xl flex flex-col sm:flex-row items-center gap-2 focus-within:border-slate-800 transition-all">
+              <div className="relative flex-1 flex items-center pl-3 sm:pl-4 pr-2 w-full min-w-0">
+                <MapPin className="w-5 h-5 text-emerald-500 flex-shrink-0 mr-2.5 sm:mr-3" />
                 <input
                   type="text"
                   placeholder="Entrez une adresse..."
@@ -875,7 +875,7 @@ export const HomePage: React.FC<HomePageProps> = ({
                   onFocus={() => {
                     if (ctaResults.length > 0) setShowCtaDropdown(true);
                   }}
-                  className="w-full py-3 text-slate-900 placeholder-slate-400 text-base font-medium focus:outline-none bg-transparent"
+                  className="w-full py-2.5 sm:py-3 text-slate-900 placeholder-slate-400 text-sm sm:text-base font-medium focus:outline-none bg-transparent min-w-0"
                 />
                 {isCtaSearching && (
                   <Loader2 className="w-5 h-5 text-emerald-500 animate-spin flex-shrink-0 ml-2" />
@@ -892,7 +892,7 @@ export const HomePage: React.FC<HomePageProps> = ({
                     });
                   }
                 }}
-                className="w-full sm:w-auto px-8 py-3.5 bg-slate-900 hover:bg-slate-800 text-white rounded-full font-bold text-sm sm:text-base transition-all flex items-center justify-center gap-2 shadow-md flex-shrink-0 cursor-pointer"
+                className="w-full sm:w-auto px-6 sm:px-8 py-3 sm:py-3.5 bg-slate-900 hover:bg-slate-800 text-white rounded-xl sm:rounded-full font-bold text-sm sm:text-base transition-all flex items-center justify-center gap-2 shadow-md flex-shrink-0 cursor-pointer"
               >
                 <span>Générer le rapport</span>
                 <ArrowRight className="w-4 h-4" />
