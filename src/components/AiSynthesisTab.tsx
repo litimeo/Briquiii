@@ -14,7 +14,7 @@ interface Message {
 
 const FormattedMessage: React.FC<{ text: string; isUser?: boolean }> = ({ text, isUser }) => {
   if (isUser) {
-    return <div>{text}</div>;
+    return <div className="break-words">{text}</div>;
   }
 
   // Sanitize out raw horizontal rules '---' or '***' and rigid ### headers
@@ -29,7 +29,7 @@ const FormattedMessage: React.FC<{ text: string; isUser?: boolean }> = ({ text, 
   const paragraphs = cleanedText.split('\n\n');
 
   return (
-    <div className="space-y-3.5">
+    <div className="space-y-3">
       {paragraphs.map((p, pIdx) => {
         const lines = p.split('\n');
 
@@ -58,7 +58,7 @@ const FormattedMessage: React.FC<{ text: string; isUser?: boolean }> = ({ text, 
               return (
                 <p
                   key={lIdx}
-                  className={`${isBullet ? 'pl-2 text-slate-800 flex items-start gap-1.5' : 'text-slate-800 leading-relaxed'}`}
+                  className={`${isBullet ? 'pl-1.5 sm:pl-2 text-slate-800 flex items-start gap-1.5 break-words' : 'text-slate-800 leading-relaxed break-words'}`}
                 >
                   {parsedContent}
                 </p>
@@ -339,66 +339,66 @@ export const AiSynthesisTab: React.FC<AiSynthesisTabProps> = ({ report }) => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto space-y-6 pb-12">
+    <div className="max-w-4xl mx-auto space-y-4 sm:space-y-6 pb-8 sm:pb-12">
       
       {/* Header */}
-      <div className="card-glow p-6 sm:p-7 rounded-3xl flex items-center gap-4">
-        <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-[#f56902] to-amber-500 text-white flex items-center justify-center font-bold shadow-md shadow-orange-500/20 flex-shrink-0">
-          <Bot className="w-7 h-7 stroke-[2.5]" />
+      <div className="card-glow p-4 sm:p-7 rounded-2xl sm:rounded-3xl flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4">
+        <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-gradient-to-tr from-[#f56902] to-amber-500 text-white flex items-center justify-center font-bold shadow-md shadow-orange-500/20 shrink-0">
+          <Bot className="w-5 h-5 sm:w-7 sm:h-7 stroke-[2.5]" />
         </div>
-        <div>
-          <div className="flex items-center gap-2.5 flex-wrap">
-            <h1 className="text-xl sm:text-2xl font-extrabold text-slate-900 font-heading">Synthèse IA & Expert Immobilier</h1>
-            <span className="bg-orange-50 text-orange-950 text-xs font-extrabold px-3 py-1 rounded-full border border-orange-200/90 flex items-center gap-1.5 shadow-2xs">
-              <Sparkles className="w-3.5 h-3.5 text-[#f56902]" />
+        <div className="min-w-0">
+          <div className="flex items-center gap-2 flex-wrap">
+            <h1 className="text-lg sm:text-2xl font-extrabold text-slate-900 font-heading leading-tight">Synthèse IA & Expert Immobilier</h1>
+            <span className="bg-orange-50 text-orange-950 text-[11px] sm:text-xs font-extrabold px-2.5 py-0.5 sm:px-3 sm:py-1 rounded-full border border-orange-200/90 flex items-center gap-1.5 shadow-2xs shrink-0">
+              <Sparkles className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-[#f56902]" />
               Assistant IA
             </span>
           </div>
-          <p className="text-sm text-slate-600 mt-1 leading-relaxed">Assistant IA conversationnel : discutez librement, brainstormez vos projets et obtenez une analyse sur-mesure de cet emplacement.</p>
+          <p className="text-xs sm:text-sm text-slate-600 mt-1 leading-relaxed">Assistant IA conversationnel : discutez librement, brainstormez vos projets et obtenez une analyse sur-mesure de cet emplacement.</p>
         </div>
       </div>
 
       {/* Suggested Questions */}
-      <div className="space-y-2.5">
-        <span className="text-xs font-bold text-slate-500 uppercase tracking-wider block font-heading">Questions Fréquentes sur cet Emplacement</span>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+      <div className="space-y-2">
+        <span className="text-[11px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider block font-heading">Questions Fréquentes sur cet Emplacement</span>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-2.5">
           {quickPrompts.map((q, idx) => (
             <button
               key={idx}
               onClick={() => handleSend(q)}
               disabled={loading}
-              className="text-left p-3.5 sm:p-4 rounded-2xl bg-white hover:bg-orange-50/70 text-slate-800 hover:text-orange-950 text-xs sm:text-sm font-semibold border border-slate-200/90 hover:border-orange-300 transition-all flex items-center justify-between group shadow-xs"
+              className="text-left p-3 sm:p-4 rounded-xl sm:rounded-2xl bg-white hover:bg-orange-50/70 text-slate-800 hover:text-orange-950 text-xs sm:text-sm font-semibold border border-slate-200/90 hover:border-orange-300 transition-all flex items-center justify-between group shadow-xs min-w-0"
             >
-              <span className="line-clamp-1">{q}</span>
-              <Compass className="w-4 h-4 text-[#f56902] opacity-60 group-hover:opacity-100 flex-shrink-0 ml-2" />
+              <span className="line-clamp-1 min-w-0">{q}</span>
+              <Compass className="w-4 h-4 text-[#f56902] opacity-60 group-hover:opacity-100 shrink-0 ml-2" />
             </button>
           ))}
         </div>
       </div>
 
       {/* Chat / Synthesis Box */}
-      <div className="bg-white rounded-3xl border border-slate-200/90 shadow-sm overflow-hidden flex flex-col h-[580px]">
+      <div className="bg-white rounded-2xl sm:rounded-3xl border border-slate-200/90 shadow-sm overflow-hidden flex flex-col h-[480px] sm:h-[580px] max-h-[75vh]">
         
         {/* Messages Container */}
-        <div className="p-6 sm:p-7 overflow-y-auto space-y-4 flex-1 custom-scrollbar">
+        <div className="p-3.5 sm:p-7 overflow-y-auto space-y-3.5 sm:space-y-4 flex-1 custom-scrollbar">
           {messages.map((m, idx) => (
             <div
               key={idx}
-              className={`flex items-start gap-3 ${m.sender === 'user' ? 'flex-row-reverse' : ''}`}
+              className={`flex items-start gap-2.5 sm:gap-3 ${m.sender === 'user' ? 'flex-row-reverse' : ''}`}
             >
-              <div className={`w-9 h-9 rounded-xl flex items-center justify-center font-extrabold text-xs flex-shrink-0 ${
+              <div className={`w-8 h-8 sm:w-9 sm:h-9 rounded-lg sm:rounded-xl flex items-center justify-center font-extrabold text-xs shrink-0 ${
                 m.sender === 'user' ? 'bg-[#f56902] text-white shadow-xs' : 'bg-slate-900 text-white'
               }`}>
-                {m.sender === 'user' ? 'Vous' : <Bot className="w-5 h-5 text-amber-400" />}
+                {m.sender === 'user' ? 'Vous' : <Bot className="w-4 h-4 sm:w-5 sm:h-5 text-amber-400" />}
               </div>
 
-              <div className={`max-w-[85%] p-4 sm:p-5 rounded-2xl text-xs sm:text-sm leading-relaxed space-y-2 ${
+              <div className={`max-w-[90%] sm:max-w-[85%] p-3.5 sm:p-5 rounded-2xl text-xs sm:text-sm leading-relaxed space-y-2 min-w-0 break-words ${
                 m.sender === 'user'
                   ? 'bg-gradient-to-r from-[#f56902] to-orange-600 text-white font-semibold rounded-tr-none shadow-xs'
                   : 'bg-slate-50 text-slate-900 border border-slate-200/90 rounded-tl-none font-sans shadow-2xs'
               }`}>
                 <FormattedMessage text={m.text} isUser={m.sender === 'user'} />
-                <span className={`block text-[11px] mt-1 ${m.sender === 'user' ? 'text-orange-100 font-medium' : 'text-slate-400 font-mono'}`}>
+                <span className={`block text-[10px] sm:text-[11px] mt-1 ${m.sender === 'user' ? 'text-orange-100 font-medium' : 'text-slate-400 font-mono'}`}>
                   {m.time}
                 </span>
               </div>
@@ -406,12 +406,12 @@ export const AiSynthesisTab: React.FC<AiSynthesisTabProps> = ({ report }) => {
           ))}
 
           {loading && (
-            <div className="flex items-center gap-3">
-              <div className="w-9 h-9 rounded-xl bg-orange-50 text-[#f56902] flex items-center justify-center border border-orange-200">
-                <Loader2 className="w-5 h-5 animate-spin" />
+            <div className="flex items-center gap-2.5 sm:gap-3">
+              <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-lg sm:rounded-xl bg-orange-50 text-[#f56902] flex items-center justify-center border border-orange-200 shrink-0">
+                <Loader2 className="w-4 h-4 sm:w-5 sm:h-5 animate-spin" />
               </div>
-              <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200/90 text-xs sm:text-sm text-slate-700 font-medium flex items-center gap-2">
-                <span>Analyse et évaluation foncière de l'emplacement en cours...</span>
+              <div className="p-3 sm:p-4 rounded-xl sm:rounded-2xl bg-slate-50 border border-slate-200/90 text-xs sm:text-sm text-slate-700 font-medium flex items-center gap-2 min-w-0">
+                <span className="truncate sm:whitespace-normal">Analyse et évaluation foncière en cours...</span>
               </div>
             </div>
           )}
@@ -420,27 +420,27 @@ export const AiSynthesisTab: React.FC<AiSynthesisTabProps> = ({ report }) => {
         </div>
 
         {/* Input Form */}
-        <div className="p-4 sm:p-5 bg-slate-50/80 border-t border-slate-200/90">
+        <div className="p-2.5 sm:p-5 bg-slate-50/80 border-t border-slate-200/90">
           <form
             onSubmit={(e) => {
               e.preventDefault();
               handleSend();
             }}
-            className="flex items-center gap-2.5"
+            className="flex items-center gap-2 sm:gap-2.5 min-w-0"
           >
             <input
               type="text"
-              placeholder="Posez votre question sur ce bien (négociation, travaux, fiscalité, plus-value...)..."
+              placeholder="Posez votre question sur ce bien..."
               value={inputPrompt}
               onChange={(e) => setInputPrompt(e.target.value)}
               disabled={loading}
-              className="flex-1 bg-white text-slate-900 placeholder-slate-400 text-xs sm:text-sm px-4.5 py-3.5 sm:py-4 rounded-2xl border border-slate-200/90 focus:outline-none focus:border-[#f56902] focus:ring-2 focus:ring-orange-100 shadow-xs"
+              className="flex-1 min-w-0 bg-white text-slate-900 placeholder-slate-400 text-xs sm:text-sm px-3.5 sm:px-4.5 py-2.5 sm:py-4 rounded-xl sm:rounded-2xl border border-slate-200/90 focus:outline-none focus:border-[#f56902] focus:ring-2 focus:ring-orange-100 shadow-xs"
             />
 
             <button
               type="submit"
               disabled={!inputPrompt.trim() || loading}
-              className={`p-3.5 sm:p-4 rounded-2xl transition-all shadow-xs flex items-center justify-center ${
+              className={`p-3 sm:p-4 shrink-0 rounded-xl sm:rounded-2xl transition-all shadow-xs flex items-center justify-center ${
                 !inputPrompt.trim() || loading
                   ? 'bg-slate-100 text-slate-400 cursor-not-allowed border border-slate-200'
                   : 'btn-glow'
