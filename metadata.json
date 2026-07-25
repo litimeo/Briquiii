@@ -1,6 +1,6 @@
 {
-  "name": "Briquia - Open Data Property Report Aggregator",
-  "description": "Address-based real estate data aggregator utilizing 6 official open datasets from French government platform data.gouv.fr (BAN, DVF, DPE ADEME, Géorisques, Cadastre, INSEE & PLU).",
+  "name": "Signal Immo - Intelligence & Audit Foncier",
+  "description": "Plateforme d'intelligence foncière et d'audit d'adresse Signal Immo exploitant 13 sources de données ouvertes officielles (BAN, DVF, DPE ADEME, Géorisques, Cadastre, INSEE, PLU, ARS, Permis, Élus, Culture, Connectivité & Prévisions).",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }

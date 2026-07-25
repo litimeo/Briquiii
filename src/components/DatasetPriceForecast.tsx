@@ -45,8 +45,8 @@ export const DatasetPriceForecast: React.FC<DatasetPriceForecastProps> = ({ proj
           <div>
             <div className="flex items-center gap-2.5 flex-wrap">
               <h2 className="text-xl sm:text-2xl font-extrabold text-slate-900 font-heading">Modèle de Prévision & Projection du Prix au m²</h2>
-              <span className="bg-orange-100 text-orange-950 text-xs font-bold px-3 py-1 rounded-full border border-orange-200/90 font-mono">
-                Briquia Predictive Engine
+              <span className="bg-emerald-100 text-emerald-950 text-xs font-bold px-3 py-1 rounded-full border border-emerald-200/90 font-mono">
+                Signal Immo Predictive Engine
               </span>
             </div>
             <p className="text-sm text-slate-600 mt-1 leading-relaxed">
@@ -268,7 +268,7 @@ export const DatasetPriceForecast: React.FC<DatasetPriceForecastProps> = ({ proj
       <div className="bg-slate-900 text-slate-200 p-6 rounded-3xl space-y-2 text-xs leading-relaxed">
         <div className="flex items-center gap-2 font-bold text-white text-sm">
           <Sparkles className="w-4 h-4 text-orange-400" />
-          <span>Faisabilité Technique & Rigueur du Modèle Prédictif Briquia</span>
+          <span>Faisabilité Technique & Rigueur du Modèle Prédictif Signal Immo</span>
         </div>
         <p>
           Ce modèle s'appuie sur une démarche algorithmique d'économétrie composée, similaire à celle employée par les calculateurs financiers et simulateurs de valorisation professionnelle. Il combine de manière transparente le momentum des transactions notariées DVF sur 5 ans, les coefficients d'impact du Diagnostic de Performance Énergétique (DPE), les indices de tension locative de l'Observatoire des Loyers (OLL), les autorisations d'urbanisme Sitadel et les variables macro-économiques d'intérêt.

@@ -1009,7 +1009,7 @@ export function generateReportForAddress(addr: AddressSearchResult): PropertyRep
     currentPricePerM2: currentBasePricePerM2,
     baseAnnualGrowthPercent: Number((netAnnualGrowthRate * 100).toFixed(2)),
     confidenceScore: Math.min(94, Math.max(72, 82 + (hashInt % 12))),
-    algorithmMethodology: 'Modèle Économétrique Composé Briquia AI (Pondération DVF, Impact DPE, Tension Locative OLL, Permis SITADEL & Taux BCE)',
+    algorithmMethodology: 'Modèle Économétrique Composé Signal Immo AI (Pondération DVF, Impact DPE, Tension Locative OLL, Permis SITADEL & Taux BCE)',
     horizons: {
       oneYear: calcHorizon(1),
       threeYear: calcHorizon(3),

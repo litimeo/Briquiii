@@ -40,11 +40,11 @@ export const CompareAddressesModal: React.FC<CompareAddressesModalProps> = ({ cu
   if (compareReport) {
     const scoreDiff = currentReport.briquiaIndexScore - compareReport.briquiaIndexScore;
     if (scoreDiff > 0) {
-      winnerText = `🏆 L'Emplacement N°1 (${currentReport.address.city}) surpasse l'Emplacement N°2 de +${scoreDiff} points sur l'Indice Briquia.`;
+      winnerText = `🏆 L'Emplacement N°1 (${currentReport.address.city}) surpasse l'Emplacement N°2 de +${scoreDiff} points sur l'Indice Signal Immo.`;
     } else if (scoreDiff < 0) {
-      winnerText = `🏆 L'Emplacement N°2 (${compareReport.address.city}) surpasse l'Emplacement N°1 de +${Math.abs(scoreDiff)} points sur l'Indice Briquia.`;
+      winnerText = `🏆 L'Emplacement N°2 (${compareReport.address.city}) surpasse l'Emplacement N°1 de +${Math.abs(scoreDiff)} points sur l'Indice Signal Immo.`;
     } else {
-      winnerText = `⚖️ Les deux emplacements présentent un Indice Briquia équivalent (${currentReport.briquiaIndexScore}/100).`;
+      winnerText = `⚖️ Les deux emplacements présentent un Indice Signal Immo équivalent (${currentReport.briquiaIndexScore}/100).`;
     }
 
     // Key Advantage Highlights
@@ -102,7 +102,7 @@ export const CompareAddressesModal: React.FC<CompareAddressesModalProps> = ({ cu
             <span className="text-[10px] font-extrabold uppercase text-blue-700 tracking-wider">Emplacement Actuel (N°1)</span>
             <div className="text-sm sm:text-base font-black text-slate-900 line-clamp-1">{currentReport.address.label}</div>
             <div className="text-xs text-slate-600 font-mono flex items-center gap-2">
-              <span>Score Briquia: <strong className="text-blue-700 font-black text-sm">{currentReport.briquiaIndexScore}/100</strong></span>
+              <span>Score Signal Immo: <strong className="text-blue-700 font-black text-sm">{currentReport.briquiaIndexScore}/100</strong></span>
               <span className="px-2 py-0.5 rounded-full bg-blue-100 text-blue-800 text-[10px] font-bold">{currentReport.ratingLabel}</span>
             </div>
           </div>
@@ -149,7 +149,7 @@ export const CompareAddressesModal: React.FC<CompareAddressesModalProps> = ({ cu
 
             {compareReport && (
               <div className="text-xs text-slate-600 font-mono flex items-center gap-2">
-                <span>Score Briquia: <strong className="text-emerald-700 font-black text-sm">{compareReport.briquiaIndexScore}/100</strong></span>
+                <span>Score Signal Immo: <strong className="text-emerald-700 font-black text-sm">{compareReport.briquiaIndexScore}/100</strong></span>
                 <span className="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[10px] font-bold">{compareReport.ratingLabel}</span>
               </div>
             )}
@@ -162,7 +162,7 @@ export const CompareAddressesModal: React.FC<CompareAddressesModalProps> = ({ cu
           <div className="p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-slate-900 to-slate-800 text-white space-y-2.5 shadow-md">
             <div className="flex items-center gap-2 text-amber-400 font-extrabold text-xs uppercase tracking-wider">
               <Trophy className="w-4 h-4 text-amber-400" />
-              <span>Synthèse Comparative Briquia</span>
+              <span>Synthèse Comparative Signal Immo</span>
             </div>
             <div className="text-sm sm:text-base font-bold leading-snug">{winnerText}</div>
             {winnerDetails.length > 0 && (
@@ -194,7 +194,7 @@ export const CompareAddressesModal: React.FC<CompareAddressesModalProps> = ({ cu
                 {/* Score Row */}
                 <tr className="bg-slate-50">
                   <td className="py-3.5 px-4 font-bold text-slate-900">
-                    Indice Foncier Briquia (0-100)
+                    Indice Foncier Signal Immo (0-100)
                   </td>
                   <td className="py-3.5 px-4 font-black text-blue-700 text-sm">
                     {currentReport.briquiaIndexScore} / 100

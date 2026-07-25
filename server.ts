@@ -49,7 +49,7 @@ app.use((req, res, next) => {
 
 // Health Check API
 app.get('/api/health', (req, res) => {
-  res.json({ status: 'ok', service: 'Briquia DataGouv Aggregator', timestamp: new Date().toISOString() });
+  res.json({ status: 'ok', service: 'Signal Immo DataGouv Aggregator', timestamp: new Date().toISOString() });
 });
 
 // AI Property Report Synthesis API Handler function
@@ -59,20 +59,21 @@ async function handleAiReportRequest(req: express.Request, res: express.Response
 
     const gemini = getGeminiClient();
 
-    const systemInstruction = `Vous êtes Briquia AI, un assistant IA conversationnel intelligent, chaleureux et polyvalent, spécialisé dans le conseil immobilier, l'urbanisme, la négociation et l'analyse foncière en France.
+    const systemInstruction = `Vous êtes Signal Immo AI, un conseiller et expert en intelligence foncière et en immobilier en France. Vous vous adressez directement à un investisseur ou un acquéreur de manière chaleureuse, professionnelle, fluide et parfaitement naturelle.
 
-RÈGLES ET COMPORTEMENT :
-1. COMPORTEMENT CONVERSATIONNEL : Soyez naturel, fluide, chaleureux et prêt à discuter, brainstormer, expliquer ou répondre à n'importe quelle question (immobilier, stratégie d'achat, finance, rénovation, négociation, culture générale ou salutations simples).
-2. ADAPTATION DU TON :
-   - Pour des salutations ou questions ouvertes ("Bonjour", "Aide-moi à brainstormer", "Que penses-tu de...") : Répondez avec entrain, saluez l'utilisateur de manière amicale et proposez des pistes concrètes de réflexion ou de discussion.
-   - Pour des questions précises sur le bien ou le quartier : Utilisez les données de rapport fournies comme contexte pour donner des réponses ultra-précises, chiffrées et pertinentes.
-   - Pour une demande de synthèse générale : Présentez une analyse structurée et claire de l'emplacement.
-3. NE MENTIONNEZ PAS le jargon technique de sous-sol (ex: "tables SQL", "bases de données internes", "datasets raw", etc.). Parlez naturellement en expert et compagnon de projet.
-4. Répondez toujours clairement dans la langue de l'utilisateur (principalement le français).`;
+RÈGLES DE STYLE ET DE TYPOGRAPHIE (CRUCIALES) :
+1. TON FLUIDE ET HUMAIN : Répondez comme un expert humain passionné. Pas de jargon mécanique, pas de ton automatisé.
+2. PAS DE LIGNES OU SÉPARATEURS MARKDOWN : N'utilisez JAMAIS de lignes horizontales ("---"), ni de titres rigides numérotés ("### 1.", "### 2.").
+3. PAS DE MENUS RIGIDES NI D'OPTIONS SANS ÂME : Ne proposez JAMAIS de listes "Option A", "Option B", "Option C". Concluez toujours naturellement avec une question ouverte et amicale qui invite à la discussion.
+4. SOIGNER LA TYPOGRAPHIE ET LA PONCTUATION :
+   - Utilisez une ponctuation française impeccable (virgules, majuscules, accents corrects).
+   - Utilisez du gras avec parcimonie pour faire ressortir uniquement les chiffres ou concepts clés (ex: **3 558 €/m²**, **DPE F**).
+   - Aérez vos paragraphes de manière équilibrée et agréable à lire.
+5. EXCELLENCE DU CONTENU : Syntétisez avec clarté les atouts de l'emplacement, les opportunités de négociation (DPE, écart DVF), les données d'urbanisme et de qualité de vie, sans surcharger le texte.`;
 
     const fullPrompt = `Propriété / Emplacement analysé en contexte (si pertinent) :
 Adresse : ${propertyReport?.address?.address || 'Non spécifiée'}
-Indice Briquia : ${propertyReport?.briquiaIndexScore || 80}/100 (${propertyReport?.ratingLabel || 'Standard'})
+Indice Signal Immo : ${propertyReport?.briquiaIndexScore || 80}/100 (${propertyReport?.ratingLabel || 'Standard'})
 
 Chiffres clés du bien :
 - Prix moyen rue (DVF) : ${propertyReport?.dvf?.medianPricePerM2Street} €/m²
@@ -83,7 +84,7 @@ Chiffres clés du bien :
 - Permis de construire : ${propertyReport?.constructionPermits?.totalPermits500m || 12} permis à 500m (${propertyReport?.constructionPermits?.constructionActivityLevel || 'Activité Modérée'})
 - Qualité de vie : ${propertyReport?.qualityOfLife?.overallScore || 75}/100 (Commerces ${propertyReport?.qualityOfLife?.categories?.commerces?.score}, Transports ${propertyReport?.qualityOfLife?.categories?.transports?.score}, Santé ${propertyReport?.qualityOfLife?.categories?.sante?.score})
 
-${chatHistory && chatHistory.length > 0 ? `Historique récent de la discussion :\n${chatHistory.map((h: any) => `${h.sender === 'user' ? 'Utilisateur' : 'Briquia AI'}: ${h.text}`).join('\n')}\n` : ''}
+${chatHistory && chatHistory.length > 0 ? `Historique récent de la discussion :\n${chatHistory.map((h: any) => `${h.sender === 'user' ? 'Utilisateur' : 'Signal Immo AI'}: ${h.text}`).join('\n')}\n` : ''}
 
 Dernier message de l'utilisateur : "${userQuestion || 'Bonjour, fais-moi une présentation de ce bien et de ce secteur.'}"`;
 
@@ -132,122 +133,101 @@ function generateFallbackSynthesis(report: any, question?: string): string {
     const qLower = question.toLowerCase().trim();
 
     if (qLower.includes('bonjour') || qLower.includes('salut') || qLower.includes('hello') || qLower.includes('coucou') || qLower.includes('qui es-tu') || qLower.includes('comment vas')) {
-      return `Bonjour ! 👋 Je suis **Briquia AI**, votre assistant conversationnel et partenaire d'expertise pour l'immobilier, l'urbanisme et l'évaluation foncière.
+      return `Bonjour ! 👋 Je suis **Signal Immo AI**, votre assistant et partenaire d'expertise immobilière.
 
-Comment puis-je vous aider aujourd'hui concernant l'adresse **${addr}** ou tout autre sujet ?
-- **Brainstormer** des idées de valorisation ou de stratégie d'achat
-- Calculer et optimiser vos leviers de **négociation de prix**
-- Analyser le quartier, l'urbanisme et la **qualité de vie**
-- Répondre à vos questions libres et discuter de votre projet !`;
+Je suis à votre disposition pour analyser le **${addr}** ou échanger librement sur votre projet :
+• Évaluer et optimiser votre **stratégie de négociation**
+• Chiffrer l'impact des **travaux d'isolation DPE** et du rendement locatif
+• Analyser l'urbanisme, les **élus locaux**, la **culture** et la **fibre optique**
+• Répondre à toutes vos questions d'achat ou d'investissement.
+
+Comment puis-je vous guider aujourd'hui ?`;
     }
 
     if (qLower.includes('brainstorm') || qLower.includes('idée') || qLower.includes('projet') || qLower.includes('conseil') || qLower.includes('stratégie')) {
-      return `💡 **Brainstorming & Pistes d'Action pour ${addr}** :
+      return `💡 **Pistes Stratégiques pour le ${addr}**
 
-Voici 4 axes stratégiques sur lesquels nous pouvons travailler ensemble :
+Voici les principaux axes de valeur à explorer pour cet emplacement :
 
-1. **Rénovation & Plus-Value Verte** :
-   ${dpe?.isPassoireThermique ? `Le logement étant classé passoire énergétique (${dpe?.energyRating}), il y a un fort potentiel d'achat décoté. En chiffrant les travaux d'isolation, vous créez une plus-value nette à la revente.` : `Le DPE est en classe ${dpe?.energyRating || 'D'}, ce qui permet de cibler des améliorations ciblées (pompe à chaleur, domotique) pour maximiser la rentabilité.`}
+• **Levier Négociation & DPE** : ${dpe?.isPassoireThermique ? `Le classement en passoire thermique (${dpe?.energyRating}) permet d'exiger une réfaction de prix équivalente aux devis d'isolation.` : `Le DPE (${dpe?.energyRating || 'D'}) est favorable ; axez la négociation sur l'écart par rapport au prix notarié.`}
+• **Ancrage Prix DVF** : Le prix médian observé dans la rue est de **${dvf?.medianPricePerM2Street || 4200} €/m²**.
+• **Dynamique Locale** : **${report?.constructionPermits?.totalPermits500m || 12} permis de construire** à 500m témoignent d'un secteur en pleine valorisation.
+• **Potentiel Locatif** : Loyer moyen de **${rental?.avgRentApartmentPerM2 || 18} €/m²** pour un rendement brut estimé à **${rental?.estimatedGrossYieldPercent || 5}%**.
 
-2. **Ancrage de Négociation DVF** :
-   Le prix moyen constaté dans la rue est de **${dvf?.medianPricePerM2Street || 4200} €/m²**. Si le vendeur demande plus, nous pouvons bâtir un dossier argumenté fondé sur les actes notariés récents.
-
-3. **Transformation du Quartier** :
-   Il y a **${report?.constructionPermits?.totalPermits500m || 12} permis de construire** enregistrés dans un rayon de 500m, ce qui témoigne d'un dynamisme et d'un renouvellement urbain prometteur.
-
-4. **Rentabilité Locative** :
-   Loyer moyen estimé à **${rental?.avgRentApartmentPerM2 || 18} €/m²** pour un rendement brut d'environ **${rental?.estimatedGrossYieldPercent || 5}%**.
-
-Quel sujet souhaitez-vous approfondir ou brainstormer en priorité ?`;
+Sur lequel de ces sujets souhaitez-vous concentrer notre réflexion ?`;
     }
 
     if (qLower.includes('négoci') || qLower.includes('prix') || qLower.includes('achat') || qLower.includes('argument')) {
-      return `💡 **Stratégie & Leviers de Négociation pour ${addr}** :
+      return `💡 **Stratégie & Arguments de Négociation pour le ${addr}**
 
-1. **Passoire Énergétique & Travaux (DPE ${dpe?.energyRating || 'D'})** :
-   ${dpe?.isPassoireThermique ? `Le logement étant classé passoire thermique (${dpe?.energyRating}), l'interdiction de mise en location à venir constitue votre levier prioritaire. Exigez un devis de travaux d'isolation (estimé entre 15 000€ et 30 000€) pour négocier une réduction directe équivalente sur le prix de vente.` : `Le bien est en classe DPE ${dpe?.energyRating}, ce qui est satisfaisant. Les arguments de négociation se concentreront sur les finitions et le prix au m².`}
+Pour négocier au plus juste, voici vos 4 leviers prioritaires :
 
-2. **Écart de Prix Notarié DVF** :
-   Dans cette rue, le prix médian notarié constaté est de **${dvf?.medianPricePerM2Street || 4200} €/m²**. Comparez le prix affiché par le vendeur à ce niveau de transaction réel. Tout écart supérieur à +5% par rapport au prix DVF moyen est un argument solide pour faire baisser l'offre.
+• **Diagnostic Énergétique** : ${dpe?.isPassoireThermique ? `Le logement étant classé passoire thermique (${dpe?.energyRating}), utilisez l'interdiction de louer sans travaux pour obtenir une réduction immédiate égale au montant de la rénovation.` : `Le DPE est en classe ${dpe?.energyRating || 'D'}, vous pouvez concentrer la négociation sur les finitions.`}
+• **Référentiel Notarié DVF** : Le prix médian réel dans la rue est de **${dvf?.medianPricePerM2Street || 4200} €/m²**. Tout prix affiché au-dessus de cette référence doit être rigoureusement argumenté par le vendeur.
+• **Risques & Assurance** : Niveau d'aléa naturel à **${georisques?.riskScoreNumber || 3}/10** (${georisques?.floodRisk?.inPpriZone ? 'Zone PPRI réglementée' : 'Hors zone d\'aléa prioritaire'}).
+• **Rentabilité Locative** : Loyer estimé à **${rental?.avgRentApartmentPerM2 || 18} €/m²**, offrant un rendement brut indicatif de **${rental?.estimatedGrossYieldPercent || 5}%**.
 
-3. **Risques Naturels & Assurance (Indice ${georisques?.riskScoreNumber || 3}/10)** :
-   ${georisques?.floodRisk?.inPpriZone ? `Le bien est situé en zone d'aléa inondation PPRI, ce qui engendre des contraintes constructives et des surprimes d'assurance. Mettez ce point en avant dans vos discussions.` : `Le niveau d'aléa naturel est mesuré comme faible (${georisques?.overallRiskLevel || 'Faible'}), assurant une bonne valeur de revente.`}
-
-4. **Rentabilité Locative & Rendement** :
-   Le loyer médian estimé est de **${rental?.avgRentApartmentPerM2 || 18} €/m²**, offrant un rendement brut indicatif de **${rental?.estimatedGrossYieldPercent || 5}%**.`;
+Souhaitez-vous que nous préparions une simulation d'offre d'achat chiffrée ?`;
     }
 
     if (qLower.includes('dpe') || qLower.includes('renov') || qLower.includes('travaux') || qLower.includes('énerg')) {
-      return `⚡ **Analyse Énergétique & Rénovation pour ${addr}** :
+      return `⚡ **Analyse Énergétique & Rénovation du ${addr}**
 
-- **Diagnostic Officiel** : Classement **DPE ${dpe?.energyRating || 'D'}** (${dpe?.consumptionKwhM2Year || 210} kWh/m²/an).
-- **Émissions de GES** : Indice Climat **${dpe?.climateRating || 'C'}** (${dpe?.co2EmissionsKgM2Year || 45} kg CO2/m²/an).
-- **Facture Énergétique Estimée** : Entre **${dpe?.estimatedAnnualCostMin || 1200} €** et **${dpe?.estimatedAnnualCostMax || 1600} €** par an.
-- **État des Parois** : Murs (${dpe?.insulationQuality?.walls || 'Moyenne'}), Toiture (${dpe?.insulationQuality?.roof || 'Moyenne'}), Fenêtres (${dpe?.insulationQuality?.windows || 'Double Vitrage'}).
-- **Statut Réglementaire** : ${dpe?.isPassoireThermique ? `⚠️ Classé en Passoire Thermique. Interdiction de mise en location prévue. Travaux d'isolation thermique prioritaires conseillés avant tout projet locatif.` : `✅ Bien conforme aux standards de décence énergétique.`}`;
+• **Diagnostic Officiel** : Classe **DPE ${dpe?.energyRating || 'D'}** (${dpe?.consumptionKwhM2Year || 210} kWh/m²/an) et Climat **${dpe?.climateRating || 'C'}**.
+• **Facture Estimée** : Entre **${dpe?.estimatedAnnualCostMin || 1200} €** et **${dpe?.estimatedAnnualCostMax || 1600} €** par an.
+• **Statut Réglementaire** : ${dpe?.isPassoireThermique ? `⚠️ Classé Passoire Thermique. Travaux d'isolation prioritaires requis avant mise en location.` : `✅ Conforme aux critères de décence locative.`}
+
+Voulez-vous simuler l'enveloppe budgétaire de rénovation ou vérifier les aides disponibles ?`;
     }
 
     if (qLower.includes('risque') || qLower.includes('inondation') || qLower.includes('argile')) {
-      return `🛡️ **Risques Naturels & Qualité Environnementale pour ${addr}** :
+      return `🛡️ **Risques Naturels & Qualité Environnementale du ${addr}**
 
-- **Indice de Risque Synthétique** : **${georisques?.riskScoreNumber || 3}/10** (${georisques?.overallRiskLevel || 'Faible'}).
-- **Risque Inondation (PPRI)** : ${georisques?.floodRisk?.inPpriZone ? '⚠️ Présence d\'un Plan de Prévention des Risques Inondation (PPRI).' : '✅ Emplacement situé hors zone PPRI prioritaire.'}
-- **Retrait-Gonflement des Argiles** : Niveau **${georisques?.claySoilRisk?.level || 'Faible'}**.
-- **Qualité de l'Eau Potable (ARS)** : **${report?.waterQuality?.complianceBacterialPercent || 100}% de conformité** (${report?.waterQuality?.overallSanitaryStatus || 'Excellente Qualité'}).
-- **Tranquillité SSMSI** : Score de sérénité du quartier de **${report?.safetySecurity?.securityIndexScore || 85}/100**.`;
+• **Indice Synthétique** : **${georisques?.riskScoreNumber || 3}/10** (${georisques?.overallRiskLevel || 'Faible'}).
+• **Zone PPRI** : ${georisques?.floodRisk?.inPpriZone ? 'En zone d\'aléa inondation PPRI' : 'Hors zone PPRI prioritaire'}.
+• **Argiles & Sols** : Retrait-gonflement des argiles niveau **${georisques?.claySoilRisk?.level || 'Faible'}**.
+• **Qualité Eau ARS** : **${report?.waterQuality?.complianceBacterialPercent || 100}% de conformité** (${report?.waterQuality?.overallSanitaryStatus || 'Excellente Qualité'}).
+
+Avez-vous besoin d'autres détails sur la qualité environnementale du quartier ?`;
     }
 
     if (qLower.includes('pense') || qLower.includes('avis') || qLower.includes('opinion') || qLower.includes('propriété') || qLower.includes('bien') || qLower.includes('que tu') || qLower.includes('tu en')) {
-      return `🏡 **Mon Avis & Analyse Globale sur la Propriété à ${addr}** :
+      return `🏡 **Avis & Synthèse d'Expertise pour le ${addr}**
 
-Honnêtement, c'est une adresse avec un **très bon potentiel général** (Note Briquia : **${score}/100**). Voici ce que j'en pense sur les points majeurs :
+C'est une adresse qui présente un **très bon potentiel général** (Note Signal Immo : **${score}/100**). Voici le bilan synthétique :
 
-1. **Emplacement & Valorisation (DVF ${dvf?.medianPricePerM2Street || 4200} €/m²)** :
-   Le marché notarié réel dans la rue est solide avec une tendance sur 5 ans de **+${dvf?.fiveYearPriceGrowthPercent || 12}%**. L'adresse bénéficie d'une excellente dynamique d'attractivité.
+• **Valorisation** : Marché notarié DVF solide à **${dvf?.medianPricePerM2Street || 4200} €/m²** (+${dvf?.fiveYearPriceGrowthPercent || 12}% sur 5 ans).
+• **Cadre de Vie** : Équipements et transports très accessibles avec un bon niveau de sécurité.
+• **Point d'Attention** : ${dpe?.isPassoireThermique ? `Le DPE classé passoire (${dpe?.energyRating}) impose de négocier le prix d'achat pour intégrer les travaux.` : `Le DPE (${dpe?.energyRating}) est satisfaisant et préserve votre budget.`}
 
-2. **DPE & Performance Énergétique (${dpe?.energyRating || 'D'})** :
-   ${dpe?.isPassoireThermique ? `⚠️ Point d'attention majeur : Le bien étant classé passoire énergétique (${dpe?.energyRating}), il faudra prévoir une enveloppe travaux d'isolation (et négocier le prix d'achat en conséquence).` : `Le bilan DPE (${dpe?.energyRating}) est satisfaisant et rassurant, ne nécessitant pas de lourds travaux d'urgence.`}
-
-3. **Environnement & Cadre de Vie (${report?.qualityOfLife?.overallScore || 75}/100)** :
-   Le quartier offre un bon confort au quotidien (Score Commerces: ${report?.qualityOfLife?.categories?.commerces?.score || 74}, Transports: ${report?.qualityOfLife?.categories?.transports?.score || 77}) et un bon niveau de sécurité.
-
-**Mon Conseil Global** : Si le prix demandé est aligné sur le prix notarié moyen (${dvf?.medianPricePerM2Street || 4200} €/m²), c'est une opportunité à étudier de très près ! Souhaitez-vous qu'on prépare une stratégie d'offre ou qu'on étudie les travaux ?`;
+Si le prix demandé est aligné sur le prix notarié moyen, c'est une opportunité très intéressante. Souhaitez-vous que nous étudions l'offre d'achat ou le rendement locatif ?`;
     }
 
-    return `Analyse personnalisée Briquia AI pour **${addr}** (Indice global : ${score}/100) :
+    return `Analyse personnalisée Signal Immo AI pour **${addr}** (Indice global : ${score}/100) :
 
 • **Valorisation DVF** : Prix médian notarié à **${dvf?.medianPricePerM2Street || 4200} €/m²** dans la rue.
 • **Marché Locatif** : Loyer moyen à **${rental?.avgRentApartmentPerM2 || 18} €/m²** pour un rendement brut estimé de **${rental?.estimatedGrossYieldPercent || 5}%**.
 • **Performance DPE** : Énergie classe **${dpe?.energyRating || 'D'}**, avec une dépense annuelle estimée de ${dpe?.estimatedAnnualCostMin || 1100}€ à ${dpe?.estimatedAnnualCostMax || 1500}€.
-• **Conseil Expert** : Utilisez les indicateurs certifiés DVF et DPE pour négocier sereinement votre acquisition avec des données indiscutables.`;
+• **Conseil Expert** : Utilisez ces indicateurs certifiés pour négocier sereinement votre acquisition avec des données indiscutables.`;
   }
 
-  return `📊 **Synthèse d'Expertise Immobilière pour ${addr}**
-Indice Foncier Briquia : **${score}/100 (${report?.ratingLabel || 'Standard'})**
+  return `Bonjour ! C'est un plaisir de vous accompagner dans l'analyse de cet emplacement.
 
-📊 **Valorisation & Positionnement de Marché**
-- Prix médian notarié (DVF) dans la rue : **${dvf?.medianPricePerM2Street || 4200} €/m²** (Tendance 5 ans : +${dvf?.fiveYearPriceGrowthPercent || 12}%).
-- Marché locatif d'annonce : **${rental?.avgRentApartmentPerM2 || 18} €/m²** avec un rendement brut potentiel estimé à **${rental?.estimatedGrossYieldPercent || 5.2}%**.
+Le **${addr}** bénéficie d'une excellente localisation avec un **Indice Foncier Signal Immo de ${score}/100 (${report?.ratingLabel || 'Standard'})**. Cet emplacement réunit de solides atouts d'attractivité et un potentiel de valorisation très intéressant.
 
-⚡ **Performance Énergétique & Enjeux de Rénovation**
-- Classement DPE : **Énergie ${dpe?.energyRating || 'D'}** / Climat ${dpe?.climateRating || 'C'}.
-- Consommation : **${dpe?.consumptionKwhM2Year || 210} kWh/m²/an** (Facture annuelle estimée : ${dpe?.estimatedAnnualCostMin || 1100}€ - ${dpe?.estimatedAnnualCostMax || 1500}€).
-${dpe?.isPassoireThermique ? '⚠️ **Alerte Passoire Thermique** : Calendrier de gel des loyers et interdiction d\'intervenir en location sans travaux.' : '✅ **Conformité** : Aucun blocage locatif réglementaire direct.'}
+**Valorisation & Marché**
+• **Prix notarié médian** : **${dvf?.medianPricePerM2Street || 4200} €/m²** dans la rue (tendance à +${dvf?.fiveYearPriceGrowthPercent || 12}% sur 5 ans).
+• **Marché locatif** : Loyer estimé à **${rental?.avgRentApartmentPerM2 || 18} €/m²**, soit un rendement brut indicatif de **${rental?.estimatedGrossYieldPercent || 5.2}%**.
 
-🛡️ **Résilience Environnementale & Qualité de l'Eau**
-- Niveau de risque naturel Géorisques : **${georisques?.riskScoreNumber || 3}/10** (${georisques?.overallRiskLevel || 'Faible'}).
-- Risque Inondation PPRI : ${georisques?.floodRisk?.inPpriZone ? 'En zone réglementée PPRI' : 'Hors zone d\'aléa prioritaire'}.
-- Qualité de l'Eau Potable ARS : **${report?.waterQuality?.complianceBacterialPercent || 100}% de conformité microbiologique** (${report?.waterQuality?.overallSanitaryStatus || 'Excellente Qualité'}).
+**Performance Énergétique & Diagnostic**
+• Classement **DPE ${dpe?.energyRating || 'D'}** (Climat ${dpe?.climateRating || 'C'}).
+${dpe?.isPassoireThermique ? `• **Alerte Passoire Thermique** : Le logement nécessite des travaux d'isolation pour respecter le calendrier de décence locative. C'est votre principal levier pour négocier une décote significative sur le prix d'achat.` : `• Le bien présente un bilan énergétique satisfaisant qui ne bloque pas sa mise en location.`}
 
-🏙️ **Cadre de Vie & Sécurité du Quartier**
-- Indice de sérénité publique SSMSI : **${report?.safetySecurity?.securityIndexScore || 85}/100** (${report?.safetySecurity?.relativeLevel || 'Fort Niveau de Sérénité'}).
-- Revenu médian annuel des ménages (INSEE) : **${report?.insee?.medianAnnualIncomeEur || 28500} €/an**.
-- Accessibilité : **WalkScore ${report?.pluAmenities?.walkScore || 88}/100** (Zone PLU ${report?.pluAmenities?.pluZoneCode || 'U'}).
+**Environnement & Qualité de Vie**
+• **Sécurité & Cadre de Vie** : Score de sérénité de **${report?.safetySecurity?.securityIndexScore || 85}/100** et **${report?.qualityOfLife?.overallScore || 75}/100** pour le confort du quartier.
+• **Projets & Dynamisme** : **${report?.constructionPermits?.totalPermits500m || 12} permis de construire** récents aux alentours.
 
-💡 **Stratégie de Négociation & Recommandations Acquéreur**
-1. ${dpe?.isPassoireThermique ? 'Chiffrez précisément le coût d\'isolation (DPE F/G) pour exiger une réfaction de prix équivalente.' : 'Le DPE est favorable, concentrez votre négociation sur l\'écart entre le prix demandé et la valeur médiane DVF.'}
-2. Présentez l\'historique DVF des ventes récentes de la rue comme argument d\'ancrage lors de votre première proposition.
-3. Exploitates la transparence des indicateurs d\'urbanisme et de sécurité pour conforter la valeur de revente à terme.`;
+En résumé, il s'agit d'une adresse de choix avec de vrais leviers d'optimisation. Quel aspect souhaitez-vous approfondir ensemble pour la suite de votre projet ?`;
 }
 
 async function startServer() {
@@ -280,7 +260,7 @@ async function startServer() {
   }
 
   app.listen(PORT, '0.0.0.0', () => {
-    console.log(`Briquia DataGouv server running on http://0.0.0.0:${PORT}`);
+    console.log(`Signal Immo DataGouv server running on http://0.0.0.0:${PORT}`);
   });
 }
 

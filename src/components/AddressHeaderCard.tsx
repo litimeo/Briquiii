@@ -65,10 +65,10 @@ export const AddressHeaderCard: React.FC<AddressHeaderCardProps> = ({ report, on
           </div>
         </div>
 
-        {/* Briquia Property Index Radial Gauge (Mantine RingProgress) */}
+        {/* Signal Immo Property Index Radial Gauge (Mantine RingProgress) */}
         <Paper radius="2xl" p="md" withBorder className="bg-gradient-to-br from-slate-50/90 to-white flex items-center gap-5 shadow-xs border-slate-200/90 self-stretch sm:self-auto justify-between sm:justify-start">
           <div className="text-right space-y-1">
-            <span className="text-[11px] font-extrabold uppercase tracking-wider text-slate-500 block font-heading">Indice Foncier Briquia</span>
+            <span className="text-[11px] font-extrabold uppercase tracking-wider text-slate-500 block font-heading">Indice Foncier Signal Immo</span>
             <div>
               <Badge color={scoreMantineColor} size="lg" variant="filled" radius="xl" className="font-bold">
                 {report.ratingLabel}
