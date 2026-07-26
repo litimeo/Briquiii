@@ -126,14 +126,14 @@ export const HomePage: React.FC<HomePageProps> = ({
       </div>
 
       {/* HERO SECTION */}
-      <section className="relative z-10 pt-16 pb-20 sm:pt-24 sm:pb-32 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="relative z-10 pt-6 pb-20 sm:pt-10 sm:pb-32 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Top Floating Announcement Badge */}
         <motion.div 
           initial={{ opacity: 0, y: -12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="flex justify-center mb-8"
+          className="flex justify-center mb-6"
         >
           <motion.div 
             whileHover={{ scale: 1.03 }}
