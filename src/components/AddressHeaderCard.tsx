@@ -102,7 +102,10 @@ export const AddressHeaderCard: React.FC<AddressHeaderCardProps> = ({ report, on
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-9 gap-2.5 pt-4 border-t border-slate-200/80">
         
         {/* Terrain */}
-        <div className="bg-sky-50/70 p-3 rounded-2xl border border-sky-100/90 flex items-center gap-2.5 hover:bg-sky-100/60 transition-colors">
+        <motion.div 
+          whileHover={{ y: -3, scale: 1.03 }}
+          className="bg-sky-50/70 p-3 rounded-2xl border border-sky-100/90 flex items-center gap-2.5 hover:bg-sky-100/60 transition-colors cursor-pointer"
+        >
           <div className="w-8 h-8 rounded-xl bg-sky-200/70 text-sky-800 flex items-center justify-center flex-shrink-0">
             <Building2 className="w-4 h-4" />
           </div>
@@ -110,10 +113,13 @@ export const AddressHeaderCard: React.FC<AddressHeaderCardProps> = ({ report, on
             <span className="block text-[10px] text-slate-500 font-bold uppercase tracking-wider">Cadastre</span>
             <span className="text-xs sm:text-sm font-extrabold text-slate-900 truncate block">{report.ban.parcelAreaM2} m²</span>
           </div>
-        </div>
+        </motion.div>
 
         {/* Prix / m2 */}
-        <div className="bg-emerald-50/70 p-3 rounded-2xl border border-emerald-100/90 flex items-center gap-2.5 hover:bg-emerald-100/60 transition-colors">
+        <motion.div 
+          whileHover={{ y: -3, scale: 1.03 }}
+          className="bg-emerald-50/70 p-3 rounded-2xl border border-emerald-100/90 flex items-center gap-2.5 hover:bg-emerald-100/60 transition-colors cursor-pointer"
+        >
           <div className="w-8 h-8 rounded-xl bg-emerald-200/70 text-emerald-800 flex items-center justify-center flex-shrink-0">
             <TrendingUp className="w-4 h-4" />
           </div>
@@ -121,10 +127,13 @@ export const AddressHeaderCard: React.FC<AddressHeaderCardProps> = ({ report, on
             <span className="block text-[10px] text-slate-500 font-bold uppercase tracking-wider">Prix Vente</span>
             <span className="text-xs sm:text-sm font-extrabold text-emerald-800 truncate block">{report.dvf.medianPricePerM2Street.toLocaleString('fr-FR')} €/m²</span>
           </div>
-        </div>
+        </motion.div>
 
         {/* Loyers */}
-        <div className="bg-blue-50/70 p-3 rounded-2xl border border-blue-100/90 flex items-center gap-2.5 hover:bg-blue-100/60 transition-colors">
+        <motion.div 
+          whileHover={{ y: -3, scale: 1.03 }}
+          className="bg-blue-50/70 p-3 rounded-2xl border border-blue-100/90 flex items-center gap-2.5 hover:bg-blue-100/60 transition-colors cursor-pointer"
+        >
           <div className="w-8 h-8 rounded-xl bg-blue-200/70 text-blue-800 flex items-center justify-center flex-shrink-0">
             <Home className="w-4 h-4" />
           </div>
@@ -132,10 +141,13 @@ export const AddressHeaderCard: React.FC<AddressHeaderCardProps> = ({ report, on
             <span className="block text-[10px] text-slate-500 font-bold uppercase tracking-wider">Loyer Apt</span>
             <span className="text-xs sm:text-sm font-extrabold text-blue-800 truncate block">{report.rentalMarket.avgRentApartmentPerM2} €/m²</span>
           </div>
-        </div>
+        </motion.div>
 
         {/* Énergie DPE */}
-        <div className="bg-amber-50/70 p-3 rounded-2xl border border-amber-100/90 flex items-center gap-2.5 hover:bg-amber-100/60 transition-colors">
+        <motion.div 
+          whileHover={{ y: -3, scale: 1.03 }}
+          className="bg-amber-50/70 p-3 rounded-2xl border border-amber-100/90 flex items-center gap-2.5 hover:bg-amber-100/60 transition-colors cursor-pointer"
+        >
           <div className="w-8 h-8 rounded-xl bg-amber-200/70 text-amber-800 flex items-center justify-center flex-shrink-0">
             <Zap className="w-4 h-4" />
           </div>
@@ -143,10 +155,13 @@ export const AddressHeaderCard: React.FC<AddressHeaderCardProps> = ({ report, on
             <span className="block text-[10px] text-slate-500 font-bold uppercase tracking-wider">DPE</span>
             <span className="text-xs sm:text-sm font-extrabold text-amber-900 truncate block">Classe {report.dpe.energyRating}</span>
           </div>
-        </div>
+        </motion.div>
 
         {/* Eau Potable ARS */}
-        <div className="bg-cyan-50/70 p-3 rounded-2xl border border-cyan-100/90 flex items-center gap-2.5 hover:bg-cyan-100/60 transition-colors">
+        <motion.div 
+          whileHover={{ y: -3, scale: 1.03 }}
+          className="bg-cyan-50/70 p-3 rounded-2xl border border-cyan-100/90 flex items-center gap-2.5 hover:bg-cyan-100/60 transition-colors cursor-pointer"
+        >
           <div className="w-8 h-8 rounded-xl bg-cyan-200/70 text-cyan-800 flex items-center justify-center flex-shrink-0">
             <Droplets className="w-4 h-4" />
           </div>
@@ -154,10 +169,13 @@ export const AddressHeaderCard: React.FC<AddressHeaderCardProps> = ({ report, on
             <span className="block text-[10px] text-slate-500 font-bold uppercase tracking-wider">Eau Potable</span>
             <span className="text-xs sm:text-sm font-extrabold text-cyan-800 truncate block">{report.waterQuality.complianceBacterialPercent}%</span>
           </div>
-        </div>
+        </motion.div>
 
         {/* Risques */}
-        <div className="bg-rose-50/70 p-3 rounded-2xl border border-rose-100/90 flex items-center gap-2.5 hover:bg-rose-100/60 transition-colors">
+        <motion.div 
+          whileHover={{ y: -3, scale: 1.03 }}
+          className="bg-rose-50/70 p-3 rounded-2xl border border-rose-100/90 flex items-center gap-2.5 hover:bg-rose-100/60 transition-colors cursor-pointer"
+        >
           <div className="w-8 h-8 rounded-xl bg-rose-200/70 text-rose-800 flex items-center justify-center flex-shrink-0">
             <ShieldAlert className="w-4 h-4" />
           </div>
@@ -165,10 +183,13 @@ export const AddressHeaderCard: React.FC<AddressHeaderCardProps> = ({ report, on
             <span className="block text-[10px] text-slate-500 font-bold uppercase tracking-wider">Aléa Risques</span>
             <span className="text-xs sm:text-sm font-extrabold text-rose-800 truncate block">Aléa {report.georisques.overallRiskLevel}</span>
           </div>
-        </div>
+        </motion.div>
 
         {/* Sécurité */}
-        <div className="bg-violet-50/70 p-3 rounded-2xl border border-violet-100/90 flex items-center gap-2.5 hover:bg-violet-100/60 transition-colors">
+        <motion.div 
+          whileHover={{ y: -3, scale: 1.03 }}
+          className="bg-violet-50/70 p-3 rounded-2xl border border-violet-100/90 flex items-center gap-2.5 hover:bg-violet-100/60 transition-colors cursor-pointer"
+        >
           <div className="w-8 h-8 rounded-xl bg-violet-200/70 text-violet-800 flex items-center justify-center flex-shrink-0">
             <ShieldCheck className="w-4 h-4" />
           </div>
@@ -176,10 +197,13 @@ export const AddressHeaderCard: React.FC<AddressHeaderCardProps> = ({ report, on
             <span className="block text-[10px] text-slate-500 font-bold uppercase tracking-wider">Sérénité</span>
             <span className="text-xs sm:text-sm font-extrabold text-violet-800 truncate block">{report.safetySecurity.securityIndexScore}/100</span>
           </div>
-        </div>
+        </motion.div>
 
         {/* Revenus */}
-        <div className="bg-indigo-50/70 p-3 rounded-2xl border border-indigo-100/90 flex items-center gap-2.5 hover:bg-indigo-100/60 transition-colors">
+        <motion.div 
+          whileHover={{ y: -3, scale: 1.03 }}
+          className="bg-indigo-50/70 p-3 rounded-2xl border border-indigo-100/90 flex items-center gap-2.5 hover:bg-indigo-100/60 transition-colors cursor-pointer"
+        >
           <div className="w-8 h-8 rounded-xl bg-indigo-200/70 text-indigo-800 flex items-center justify-center flex-shrink-0">
             <Users className="w-4 h-4" />
           </div>
@@ -187,10 +211,13 @@ export const AddressHeaderCard: React.FC<AddressHeaderCardProps> = ({ report, on
             <span className="block text-[10px] text-slate-500 font-bold uppercase tracking-wider">Revenu Foyer</span>
             <span className="text-xs sm:text-sm font-extrabold text-indigo-900 truncate block">{report.insee.medianAnnualIncomeEur.toLocaleString('fr-FR')} €</span>
           </div>
-        </div>
+        </motion.div>
 
         {/* Urbanisme */}
-        <div className="bg-teal-50/70 p-3 rounded-2xl border border-teal-100/90 flex items-center gap-2.5 hover:bg-teal-100/60 transition-colors">
+        <motion.div 
+          whileHover={{ y: -3, scale: 1.03 }}
+          className="bg-teal-50/70 p-3 rounded-2xl border border-teal-100/90 flex items-center gap-2.5 hover:bg-teal-100/60 transition-colors cursor-pointer"
+        >
           <div className="w-8 h-8 rounded-xl bg-teal-200/70 text-teal-800 flex items-center justify-center flex-shrink-0">
             <Compass className="w-4 h-4" />
           </div>
@@ -198,7 +225,7 @@ export const AddressHeaderCard: React.FC<AddressHeaderCardProps> = ({ report, on
             <span className="block text-[10px] text-slate-500 font-bold uppercase tracking-wider">PLU Zone</span>
             <span className="text-xs sm:text-sm font-extrabold text-teal-800 truncate block">{report.pluAmenities.pluZoneCode}</span>
           </div>
-        </div>
+        </motion.div>
 
       </div>
 

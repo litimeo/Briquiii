@@ -1,6 +1,6 @@
-# Briquia - Plateforme d'Expertise Foncier & Immobilier
+# Signal Immo - Plateforme d'Expertise Foncier & Immobilier
 
-Briquia est une application web d'expertise immobilière croisant en direct **9 bases de données publiques et officielles françaises** (data.gouv.fr, Cadastre, DVF, DPE ADEME, Géorisques, INSEE, PLU, Qualité de l'Eau ARS, Sécurité SSMSI) combinées à un assistant IA d'évaluation foncière (Gemini API).
+Signal Immo est une application web d'expertise immobilière croisant en direct **13 bases de données publiques et officielles françaises** (data.gouv.fr, Cadastre, DVF, DPE ADEME, Géorisques, INSEE, PLU, Qualité de l'Eau ARS, Sécurité SSMSI) combinées à un assistant IA d'évaluation foncière (Gemini API).
 
 ---
 
