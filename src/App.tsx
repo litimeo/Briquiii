@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Logo } from './components/Logo';
 import { Navbar } from './components/Navbar';
 import { HomePage } from './components/HomePage';
@@ -106,9 +106,130 @@ const PRESET_SAMPLE_ADDRESSES: AddressSearchResult[] = [
   },
 ];
 
+// Parse address & tab state from URL (e.g., /report?q=15+Rue+de+la+Paix...)
+function parseStateFromUrl(): { address: AddressSearchResult | null; tab: ActiveNavTab } {
+  if (typeof window === 'undefined') {
+    return { address: null, tab: 'search' };
+  }
+
+  const pathname = window.location.pathname;
+  const searchParams = new URLSearchParams(window.location.search);
+
+  const isReportPath = pathname.startsWith('/report');
+  const q = searchParams.get('q') || searchParams.get('label') || searchParams.get('address');
+  const idParam = searchParams.get('id');
+
+  if (!isReportPath && !q && !idParam) {
+    return { address: null, tab: 'search' };
+  }
+
+  // Check presets by ID
+  if (idParam) {
+    const presetById = PRESET_SAMPLE_ADDRESSES.find((p) => p.id === idParam);
+    if (presetById) {
+      const tab = (searchParams.get('tab') as ActiveNavTab) || 'search';
+      return { address: presetById, tab };
+    }
+  }
+
+  // Check presets by Label or Name
+  if (q) {
+    const presetByLabel = PRESET_SAMPLE_ADDRESSES.find(
+      (p) => p.label.toLowerCase() === q.toLowerCase() || p.name.toLowerCase() === q.toLowerCase()
+    );
+    if (presetByLabel) {
+      const tab = (searchParams.get('tab') as ActiveNavTab) || 'search';
+      return { address: presetByLabel, tab };
+    }
+  }
+
+  // Reconstruct address object from URL parameters
+  if (q || searchParams.get('lat')) {
+    const labelStr = q || 'Adresse Sélectionnée';
+    const postcode = searchParams.get('postcode') || (labelStr.match(/\b\d{5}\b/)?.[0] || '75000');
+    const city = searchParams.get('city') || labelStr.split(',')[1]?.trim() || '';
+    const citycode = searchParams.get('citycode') || '';
+    const context = searchParams.get('context') || '';
+    const street = searchParams.get('street') || '';
+    const housenumber = searchParams.get('housenumber') || '';
+    const lat = parseFloat(searchParams.get('lat') || '') || 48.8566;
+    const lon = parseFloat(searchParams.get('lon') || '') || 2.3522;
+    const tab = (searchParams.get('tab') as ActiveNavTab) || 'search';
+
+    const reconstructed: AddressSearchResult = {
+      id: idParam || `addr-url-${encodeURIComponent(labelStr)}`,
+      label: labelStr,
+      name: labelStr.split(',')[0] || labelStr,
+      postcode,
+      city,
+      citycode,
+      context,
+      street,
+      housenumber,
+      lat,
+      lon,
+    };
+
+    return { address: reconstructed, tab };
+  }
+
+  // Fallback for /report route
+  if (isReportPath) {
+    const tab = (searchParams.get('tab') as ActiveNavTab) || 'search';
+    return { address: PRESET_SAMPLE_ADDRESSES[0], tab };
+  }
+
+  return { address: null, tab: 'search' };
+}
+
+// Build URL from state
+function buildUrlFromState(address: AddressSearchResult | null, tab: ActiveNavTab): string {
+  if (!address) {
+    return '/';
+  }
+
+  const params = new URLSearchParams();
+  if (address.label) params.set('q', address.label);
+  if (address.id) params.set('id', address.id);
+  if (address.lat) params.set('lat', address.lat.toString());
+  if (address.lon) params.set('lon', address.lon.toString());
+  if (address.postcode) params.set('postcode', address.postcode);
+  if (address.city) params.set('city', address.city);
+  if (address.citycode) params.set('citycode', address.citycode);
+  if (address.context) params.set('context', address.context);
+  if (address.street) params.set('street', address.street);
+  if (address.housenumber) params.set('housenumber', address.housenumber);
+  if (tab && tab !== 'search') params.set('tab', tab);
+
+  return `/report?${params.toString()}`;
+}
+
 export default function App() {
-  const [activeTab, setActiveTab] = useState<ActiveNavTab>('search');
-  const [selectedAddress, setSelectedAddress] = useState<AddressSearchResult | null>(null);
+  const [initialParsed] = useState(() => parseStateFromUrl());
+  const [activeTab, setActiveTab] = useState<ActiveNavTab>(initialParsed.tab);
+  const [selectedAddress, setSelectedAddress] = useState<AddressSearchResult | null>(initialParsed.address);
+
+  // Sync state to browser URL dynamically
+  useEffect(() => {
+    const targetUrl = buildUrlFromState(selectedAddress, activeTab);
+    const currentUrl = window.location.pathname + window.location.search;
+
+    if (currentUrl !== targetUrl) {
+      window.history.pushState({ address: selectedAddress, tab: activeTab }, '', targetUrl);
+    }
+  }, [selectedAddress, activeTab]);
+
+  // Handle browser Back / Forward buttons
+  useEffect(() => {
+    const handlePopState = () => {
+      const parsed = parseStateFromUrl();
+      setSelectedAddress(parsed.address);
+      setActiveTab(parsed.tab);
+    };
+
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
 
   // Compute property report dynamically if an address is selected
   const currentReport: PropertyReport | null = selectedAddress ? generateReportForAddress(selectedAddress) : null;
@@ -319,7 +440,16 @@ export default function App() {
       {selectedAddress && (
         <footer className="border-t border-slate-200 bg-white py-10 text-center text-xs text-slate-500 space-y-2">
           <div className="flex items-center justify-center">
-            <Logo size="sm" />
+            <button
+              onClick={() => {
+                setSelectedAddress(null);
+                setActiveTab('search');
+              }}
+              className="cursor-pointer hover:opacity-80 transition-opacity"
+              title="Retour à l'accueil"
+            >
+              <Logo size="sm" />
+            </button>
           </div>
           <p className="max-w-2xl mx-auto text-[11px] text-slate-500">
             Analyse foncière multicritère certifiée : Cadastre, Historique des Ventes DVF, Diagnostic Énergétique, Risques Naturels, Démographie et Urbanisme.

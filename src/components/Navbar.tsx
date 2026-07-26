@@ -9,7 +9,7 @@ interface NavbarProps {
   activeTab: ActiveNavTab;
   setActiveTab: (tab: ActiveNavTab) => void;
   selectedAddress: AddressSearchResult | null;
-  onSelectAddress: (addr: AddressSearchResult) => void;
+  onSelectAddress: (addr: AddressSearchResult | null) => void;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
@@ -87,8 +87,12 @@ export const Navbar: React.FC<NavbarProps> = ({
           
           {/* Predikt Brand Logo */}
           <button
-            onClick={() => setActiveTab('search')}
-            className="flex items-center gap-2 sm:gap-3 text-left group focus:outline-none shrink-0"
+            onClick={() => {
+              onSelectAddress(null);
+              setActiveTab('search');
+            }}
+            className="flex items-center gap-2 sm:gap-3 text-left group focus:outline-none shrink-0 cursor-pointer"
+            title="Retour à l'accueil"
           >
             <Logo size="md" />
           </button>
