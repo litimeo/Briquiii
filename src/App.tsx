@@ -18,6 +18,7 @@ import { DatasetElus } from './components/DatasetElus';
 import { DatasetCultural } from './components/DatasetCultural';
 import { DatasetConnectivity } from './components/DatasetConnectivity';
 import { DatasetPriceForecast } from './components/DatasetPriceForecast';
+import { DatasetLocalTaxation } from './components/DatasetLocalTaxation';
 import { AiSynthesisTab } from './components/AiSynthesisTab';
 import { CompareAddressesModal } from './components/CompareAddressesModal';
 
@@ -281,6 +282,11 @@ export default function App() {
                     <DatasetPriceForecast projection={currentReport.priceProjection} />
                   </section>
 
+                  {/* Section 2c: Taxe Foncière & Fiscalité Locale (DGFiP REI) */}
+                  <section id="section-fiscalite" className="scroll-mt-24">
+                    <DatasetLocalTaxation taxation={currentReport.localTaxation} />
+                  </section>
+
                   {/* Section 3: Carte des Loyers & Marché Locatif */}
                   <section id="section-loyers" className="scroll-mt-24">
                     <DatasetRentalMarket rentalMarket={currentReport.rentalMarket} />
@@ -418,6 +424,11 @@ export default function App() {
               {activeTab === 'dataset-forecast' && (
                 <div className="space-y-6">
                   <DatasetPriceForecast projection={currentReport.priceProjection} />
+                </div>
+              )}
+              {activeTab === 'dataset-taxation' && (
+                <div className="space-y-6">
+                  <DatasetLocalTaxation taxation={currentReport.localTaxation} />
                 </div>
               )}
 

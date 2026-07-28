@@ -371,6 +371,25 @@ export interface PriceProjectionData {
   recommendedHoldDurationYears: number;
 }
 
+export interface LocalTaxData {
+  communeName: string;
+  communeCode: string;
+  departmentCode: string;
+  tfpbRatePercent: number; // Taux Taxe Foncière Propriétés Bâties (%)
+  teomRatePercent: number; // Taxe Ordures Ménagères (%)
+  tfpnbRatePercent: number; // Taxe Foncière Non Bâties (%)
+  nationalAvgTfpbPercent: number; // e.g. ~38.2%
+  deptAvgTfpbPercent: number;
+  estimatedAnnualTaxeFonciereEur: number; // Estimated €/year
+  estimatedTaxeFoncierePerM2Eur: number; // Estimated €/m²/year
+  fiveYearTaxRateEvolutionPercent: number; // Rate change over 5 years
+  fiscalPressureIndex: 'Fiscalité Basse' | 'Fiscalité Modérée' | 'Fiscalité Élevée' | 'Fiscalité Très Élevée';
+  annualReiDataYear: string;
+  epciName: string;
+  epciTfpbRatePercent: number;
+  totalTaxableBaseEurM: number;
+}
+
 export interface PropertyReport {
   address: BANData;
   briquiaIndexScore: number; // 0 to 100
@@ -393,7 +412,8 @@ export interface PropertyReport {
   cultural: CulturalData;
   connectivity: ConnectivityData;
   priceProjection: PriceProjectionData;
+  localTaxation: LocalTaxData;
 }
 
-export type ActiveNavTab = 'search' | 'dataset-ban' | 'dataset-dvf' | 'dataset-dpe' | 'dataset-georisques' | 'dataset-insee' | 'dataset-plu' | 'dataset-water' | 'dataset-rental' | 'dataset-safety' | 'dataset-quality' | 'dataset-permits' | 'dataset-elus' | 'dataset-cultural' | 'dataset-connectivity' | 'dataset-forecast' | 'compare' | 'ai-synthesis';
+export type ActiveNavTab = 'search' | 'dataset-ban' | 'dataset-dvf' | 'dataset-dpe' | 'dataset-georisques' | 'dataset-insee' | 'dataset-plu' | 'dataset-water' | 'dataset-rental' | 'dataset-safety' | 'dataset-quality' | 'dataset-permits' | 'dataset-elus' | 'dataset-cultural' | 'dataset-connectivity' | 'dataset-forecast' | 'dataset-taxation' | 'compare' | 'ai-synthesis';
 

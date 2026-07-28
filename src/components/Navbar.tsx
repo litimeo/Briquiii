@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { AddressSearchResult, ActiveNavTab } from '../types';
 import { searchBANAddresses } from '../services/apiAdresse';
 import { Logo } from './Logo';
-import { Search, MapPin, Database, Sparkles, ArrowRightLeft, FileText, Building2, TrendingUp, Zap, ShieldAlert, Users, Compass, Loader2, Home, Droplets, ShieldCheck, Command, Footprints, HardHat, Landmark, Palette, Wifi, LineChart, ChevronRight } from 'lucide-react';
+import { Search, MapPin, Database, Sparkles, ArrowRightLeft, FileText, Building2, TrendingUp, Zap, ShieldAlert, Users, Compass, Loader2, Home, Droplets, ShieldCheck, Command, Footprints, HardHat, Landmark, Palette, Wifi, LineChart, ChevronRight, Receipt } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 interface NavbarProps {
@@ -274,6 +274,17 @@ export const Navbar: React.FC<NavbarProps> = ({
             >
               <LineChart className="w-3.5 h-3.5 text-emerald-600" />
               <span>Prévisions 1-5 ans</span>
+            </button>
+
+            <button
+              onClick={() => {
+                setActiveTab('search');
+                document.getElementById('section-fiscalite')?.scrollIntoView({ behavior: 'smooth' });
+              }}
+              className="px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap text-slate-700 hover:text-slate-950 hover:bg-white border border-transparent hover:border-slate-200 transition-all flex items-center gap-1.5"
+            >
+              <Receipt className="w-3.5 h-3.5 text-indigo-600" />
+              <span>Taxe Foncière & Fiscalité</span>
             </button>
 
             <button
